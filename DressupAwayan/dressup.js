@@ -19,13 +19,13 @@ var hairLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/transparent
 var shirtLinks = ["https://i.imgur.com/vNLNc6V.png", 
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/sweater.png", 
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/polo.png", 
-                 "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/shirt.png"
+                 "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/tshirt.png"
                 ];
 
 var pantsLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/dark.png", 
-                 "https://i.imgur.com/yk3zFDt.png", 
+                 "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/blackpants.png", 
                  "https://i.imgur.com/mF21MeN.png", 
-                  "https://i.imgur.com/ki89EhN.png"
+                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/joggingpants.png"
                 ];
 
 var shoesLinks = ["https://i.imgur.com/EMbMtDy.png", 
@@ -401,7 +401,7 @@ function directions() {
         fill(255);
         rect(width / 2, height / 2, 400, 150, 30);
         noStroke();
-        fill("BLUE");
+        fill("MAGENTA");
         text("Drag and drop the clothes to dress up Arjay", width / 2, height / 2 - 20);
         text("Click the color wheel to recolor shirts", width / 2, height / 2 + 20);
         text("(Press any key to escape)", width / 2, height / 2 + 60);
