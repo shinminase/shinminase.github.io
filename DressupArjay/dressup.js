@@ -1,4 +1,4 @@
-​//This program uses images to simulate an interactive dressup game.
+//This program uses images to simulate an interactive dressup game.
 //It allows users to click on items which will then jump to the 
 //front of the screen via reordering of the array. Users can drag 
 //clothing close to the body, where it will then snap into place
@@ -22,7 +22,7 @@ var shirtLinks = ["https://i.imgur.com/vNLNc6V.png",
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/tshirt.png"
                 ];
 
-var pantsLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/dark.png", 
+var pantsLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/pantstest.png", 
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/blackpants.png", 
                  "https://i.imgur.com/mF21MeN.png", 
                   "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/joggingpants.png"
@@ -402,8 +402,9 @@ function directions() {
         rect(width / 2, height / 2, 400, 150, 30);
         noStroke();
         fill("MAGENTA");
-        text("Drag and drop the clothes to dress up Arjay", width / 2, height / 2 - 20);
-        text("Click the color wheel to recolor shirts", width / 2, height / 2 + 20);
+        text("Drag and drop the clothes to make one chic as heck fashion diva", width / 2, height / 2 - 30);
+        text("Click her face to change hair styles", width / 2, height / 2 - 5);
+        text("Click the color wheel to recolor her shirt", width / 2, height / 2 + 20);
         text("(Press any key to escape)", width / 2, height / 2 + 60);
     }
     //exits directions when a key is pressed
