@@ -22,7 +22,7 @@ var shirtLinks = ["https://i.imgur.com/vNLNc6V.png",
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/tshirt.png"
                 ];
 
-var pantsLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/pantstest.png", 
+var pantsLinks = ["https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/dark.png", 
                  "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/blackpants.png", 
                  "https://i.imgur.com/mF21MeN.png", 
                   "https://file.garden/ZlwiKgzAvyz0wLRz/DressupAwayan/joggingpants.png"
