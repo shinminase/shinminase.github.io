@@ -323,16 +323,21 @@
             width: 48px;
             height: 48px;
             margin-bottom: 5px;
+
         }
+		
+		.desktop-icon a , a:visited {
+			color: #ffffff;
+			text-decoration-line: none
+		}
 
 		.grid-container {
 			display: grid;
-			grid-template-columns: 1fr 1fr; /* Creates two equal columns */
-			gap: 20px; /* Adjust spacing between columns as needed */
+			grid-template-columns: 1fr 1fr; 
+			gap: 20px; 
 		}
 
 		.grid-item {
-			/* Optional styling for items */
 			padding: 10px;
 		}
 		
