@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>serph's marquee generator</title>
+  <style>
+    body {
+      margin: 20px;
+    }
+    #drop-area {
+      width: 100%;
+      max-width: 600px;
+      height: 200px;
+      border: 2px dashed #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #888;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #drop-area.hover {
+      border-color: #333;
+    }
+    #preview {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .file-entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .file-name {
+      cursor: move;
+      background-color: #f8f8f8;
+      padding: 10px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      width: 150px;
+    }
+    .file-name.dragging {
+      opacity: 0.5;
+    }
+    #svg-preview {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    input {
+      width: 60px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+<center>
+  <h1>serph's marquee generator</h1>
+  <p> under construction. note that the viewbox cannot be changed (maximum of 800 pixels) so i advise to use only blinkies. </p>
+
+  <div id="drop-area">
+    <p>drag / drop / click to upload</p>
+    <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
+    <button class="button" onclick="document.getElementById('fileElem').click();">Upload Images</button>
+  </div>
+  
+  <div id="preview"></div>
+
+  <button class="button" onclick="generateSVG()">generate SVG</button>
+  <button class="button" id="copyButton" onclick="copyToClipboard()">copy code</button>
+<hr>
+  <textarea id="svg-output" rows="10" cols="80" readonly></textarea>
+
+  <div id="svg-preview"></div>
+
+  <script src="app.js"></script>
+</center>
+</body>
+</html>
