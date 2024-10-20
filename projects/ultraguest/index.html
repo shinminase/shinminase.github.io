@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Container</title>
+    <style>
+@font-face {
+    font-family: handwritten;
+    src: url(https://files.catbox.moe/n565jq.ttf);
+}
+      
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+            animation: cursor 0.3s linear infinite;
+        }
+      
+
+        .content-wrapper {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .custom-container {
+            width: 380px;
+            height: 440px;
+            background-image: url('https://files.catbox.moe/lsyin3.png');
+            background-size: fit;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .cbox {
+            position: absolute;
+            top: 65px;
+            left: 2px;
+            width: 438px;
+            height: 380px;
+        }
+
+        .stickynote {
+            background-image: url('https://pngimg.com/d/sticky_note_PNG18952.png');
+            background-size: contain;
+            margin-left: 20px;
+            background-repeat: no-repeat;
+            width: 438px;
+            height: 400px;
+        }
+
+        .stickynotecontainer {
+            margin-top: 50px;
+            margin-left: 20px;
+        }
+
+        .stickynote img {
+            transition: transform 0.2s ease;
+            float: left;
+            margin-right: 10px; 
+        }
+
+        .stickynote img:hover {
+            transform: scale(1.2);
+            cursor: url("https://files.catbox.moe/bkbsm1.png"), auto;
+        }
+
+        .stickynote p {
+            font-size: 20px;
+            position: relative;
+            margin-left: 10px;
+            margin-top: 50px;
+            font-family: "handwritten";
+            width: 338px;
+        }
+      .stickynote p span {
+         font-size: 16px;
+        line-height: 1.8;
+      }
+
+        @keyframes cursor {
+            0% {
+                cursor: url("https://files.catbox.moe/7xm71l.png"), auto;
+            }
+            100% {
+                cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+            }
+        }
+      mark {
+        background-color: rgba(52, 225, 235,0.5);
+      }
+    </style>
+</head> 
+<body>
+    <div class="content-wrapper">
+        <div class="custom-container">
+            <div class="cbox">
+                <iframe src="https://www3.cbox.ws/box/?boxid=3538381&boxtag=Ik5LXr" width="375" height="333" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>
+            </div>
+        </div>
+        <div class="stickynote">
+            <div class="stickynotecontainer">
+                <img src="https://files.catbox.moe/cn9l90.gif" width="35%">
+              <p><br><br>
+                <mark>WORK IN PROGRESS</mark><img src="https://files.catbox.moe/jmexsx.gif">
+                <br>
+                stellular.org (where my music player file is hosted) is down and i lost my music player FAWKKK i'll get it back i swear im so pissed LMFAOOO
+                <br><br>
+                layout coded by me! ٩(ˊᗜˋ*)و ♡
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
