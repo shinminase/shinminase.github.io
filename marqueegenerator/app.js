@@ -182,18 +182,25 @@ function updateImagePositions() {
 }
 
 function generateSVG() {
+  const speed = document.getElementById('speedInput').value;
+  const direction = document.getElementById('directionInput').value;
+  const translateStart = document.getElementById('translateStartInput').value;
+  const translateEnd = document.getElementById('translateEndInput').value;
+
+  let animationDirection = direction === 'left' ? [translateEnd, translateStart] : [translateStart, translateEnd];
+
   let svgTemplate = `
   <svg viewBox="0 0 800 90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <style>
       .marquee {
-        animation: scroll 15s linear infinite;
+        animation: scroll ${speed}s linear infinite;
       }
       @keyframes scroll {
         0% {
-          transform: translateX(100%);
+          transform: translateX(${animationDirection[0]}%);
         }
         100% {
-          transform: translateX(-250%);
+          transform: translateX(${animationDirection[1]}%);
         }
       }
     </style>
