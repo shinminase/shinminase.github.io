@@ -96,13 +96,13 @@
     <p> under construction. note that the viewbox cannot be changed (maximum of 800 pixels) so i advise to use only blinkies. </p>
     <p> leave me a star on<a href="https://github.com/shinminase/marquee"> this repository</a> please im a starving IT student</p>
 
+		<sub> small issue: when using left to right, please manually change the end-translate x to 0 or until it works im too lazy to change it </sub>
     <div id="drop-area">
       <p>drag / drop / click to upload</p>
       <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
       <button class="button" onclick="document.getElementById('fileElem').click();">Upload Images</button>
     </div>
     
-    <!-- Controls for speed, direction, and translateX -->
     <div id="controls">
       <div class="control-group">
         <label for="speedInput">Speed (s):</label>
@@ -111,8 +111,8 @@
       <div class="control-group">
         <label for="directionInput">Direction:</label>
         <select id="directionInput">
-          <option value="right">Right to Left</option>
-          <option value="left">Left to Right</option>
+          <option value="left">Right to Left</option>
+		  <option value="right">Left to Right</option>
         </select>
       </div>
       <div class="control-group">
