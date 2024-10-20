@@ -182,13 +182,15 @@ function updateImagePositions() {
 }
 
 function generateSVG() {
-  const speed = document.getElementById('speedInput').value;
-  const direction = document.getElementById('directionInput').value;
-  const translateStart = document.getElementById('translateStartInput').value;
-  const translateEnd = document.getElementById('translateEndInput').value;
+  const speed = document.getElementById('speedInput').value || 10; // Default speed
+  const direction = document.getElementById('directionInput').value || 'left'; // Default to left-to-right
+  const translateStart = document.getElementById('translateStartInput').value || '100'; // Default start translateX to 100%
+  const translateEnd = document.getElementById('translateEndInput').value || '0'; // Default end translateX to 0%
 
-  let animationDirection = direction === 'left' ? [translateEnd, translateStart] : [translateStart, translateEnd];
+  // Determine the direction for the animation
+  let animationDirection = direction === 'left' ? [translateStart, translateEnd] : [translateEnd, translateStart];
 
+  // Create the SVG template
   let svgTemplate = `
   <svg viewBox="0 0 800 90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <style>
@@ -210,6 +212,7 @@ function generateSVG() {
     <g class="marquee">
   `;
 
+  // Add each image to the SVG
   images.forEach((image, index) => {
     const attrs = imageAttributes[index];
     svgTemplate += `
@@ -223,6 +226,7 @@ function generateSVG() {
     </g>
   </svg>`;
 
+  // Output the generated SVG
   document.getElementById('svg-output').value = svgTemplate;
   svgPreview.innerHTML = svgTemplate;
 }
@@ -232,6 +236,6 @@ function copyToClipboard() {
   navigator.clipboard.writeText(svgCode).then(() => {
     alert("SVG code copied to clipboard!");
   }).catch(err => {
-    console.error('Failed to copy text: ', err);
+    console.error('Failed to copy: ', err);
   });
 }
