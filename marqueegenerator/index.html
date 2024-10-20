@@ -65,30 +65,76 @@
     .button:hover {
       background-color: #218838;
     }
+    #controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    #controls label {
+      font-weight: bold;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+    #controls input, #controls select {
+      width: 100px;
+      font-size: 12px;
+      padding: 5px;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
   </style>
 </head>
 <body>
-<center>
-  <h1><a href="https://github.com/shinminase" target="blank">serph's</a> marquee generator</h1>
-  <p> under construction. note that the viewbox cannot be changed (maximum of 800 pixels) so i advise to use only blinkies. </p>
-  <p> leave me a star on<a href="https://github.com/shinminase/marquee"> this repository please im a starving IT student</a></p>
+  <center>
+    <h1><a href="https://github.com/shinminase" target="blank">serph's</a> marquee generator</h1>
+    <p> under construction. note that the viewbox cannot be changed (maximum of 800 pixels) so i advise to use only blinkies. </p>
+    <p> leave me a star on<a href="https://github.com/shinminase/marquee"> this repository</a> please im a starving IT student</p>
 
-  <div id="drop-area">
-    <p>drag / drop / click to upload</p>
-    <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
-    <button class="button" onclick="document.getElementById('fileElem').click();">Upload Images</button>
-  </div>
-  
-  <div id="preview"></div>
+    <div id="drop-area">
+      <p>drag / drop / click to upload</p>
+      <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
+      <button class="button" onclick="document.getElementById('fileElem').click();">Upload Images</button>
+    </div>
+    
+    <!-- Controls for speed, direction, and translateX -->
+    <div id="controls">
+      <div class="control-group">
+        <label for="speedInput">Speed (s):</label>
+        <input type="number" id="speedInput" value="15" step="1" min="1" />
+      </div>
+      <div class="control-group">
+        <label for="directionInput">Direction:</label>
+        <select id="directionInput">
+          <option value="right">Right to Left</option>
+          <option value="left">Left to Right</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="translateStartInput">Start TranslateX (%):</label>
+        <input type="number" id="translateStartInput" value="100" />
+      </div>
+      <div class="control-group">
+        <label for="translateEndInput">End TranslateX (%):</label>
+        <input type="number" id="translateEndInput" value="-250" />
+      </div>
+    </div>
 
-  <button class="button" onclick="generateSVG()">generate SVG</button>
-  <button class="button" id="copyButton" onclick="copyToClipboard()">copy code</button>
-<hr>
-  <textarea id="svg-output" rows="10" cols="80" readonly></textarea>
+    <div id="preview"></div>
 
-  <div id="svg-preview"></div>
+    <button class="button" onclick="generateSVG()">generate SVG</button>
+    <button class="button" id="copyButton" onclick="copyToClipboard()">copy code</button>
+    <hr>
+    <textarea id="svg-output" rows="10" cols="80" readonly></textarea>
 
-  <script src="app.js"></script>
-</center>
+    <div id="svg-preview"></div>
+
+    <script src="app.js"></script>
+  </center>
 </body>
 </html>
