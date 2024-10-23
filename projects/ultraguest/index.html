@@ -316,7 +316,6 @@ function loadSongs() {
         playlistElement.appendChild(songElement);
     });
 
-
     const savedSongIndex = localStorage.getItem('currentSongIndex');
     if (savedSongIndex !== null) {
         currentSongIndex = parseInt(savedSongIndex, 10);
@@ -339,7 +338,11 @@ function loadSongs() {
 
     selectSong(currentSongIndex);
     updateActiveSong();
+
+    // Autoplay the current song when the page loads
+    playSong();
 }
+
 
 function selectSong(index) {
     currentSongIndex = index;
@@ -385,17 +388,23 @@ function playSong() {
     const song = songs[currentSongIndex];
     audioPlayer.src = song.url;
 
-
     const savedTime = localStorage.getItem('currentTime');
     const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
     if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
         audioPlayer.currentTime = parseFloat(savedTime);
     }
 
-    audioPlayer.play();
+    // Autoplay logic with delay to prevent autoplay blocking
+    setTimeout(() => {
+        audioPlayer.play().catch((error) => {
+            console.log("Autoplay was prevented. User interaction required.");
+        });
+    }, 500); // Optional: Adjust delay as necessary
+
     isPlaying = true;
     updatePlayPauseButton();
 }
+
 
 function updatePlayPauseButton() {
     if (isPlaying) {
