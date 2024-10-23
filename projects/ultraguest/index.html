@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Container</title>
+    <title>why are u here</title>
     <style>
-@font-face {
-    font-family: handwritten;
-    src: url(https://files.catbox.moe/n565jq.ttf);
-}
+        @font-face {
+            font-family: handwritten;
+            src: url(https://files.catbox.moe/n565jq.ttf);
+        }
       
         body {
+            font-family: 'Tahoma', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,7 +21,6 @@
             cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
             animation: cursor 0.3s linear infinite;
         }
-      
 
         .content-wrapper {
             display: flex;
@@ -30,7 +30,7 @@
         .custom-container {
             width: 380px;
             height: 440px;
-            background-image: url('https://files.catbox.moe/lsyin3.png');
+            background-image: url('container.png');
             background-size: fit;
             background-repeat: no-repeat;
             position: relative;
@@ -43,44 +43,160 @@
             width: 438px;
             height: 380px;
         }
-
-        .stickynote {
-            background-image: url('https://pngimg.com/d/sticky_note_PNG18952.png');
-            background-size: contain;
+/*music player*/ 
+        .music-player {
             margin-left: 20px;
-            background-repeat: no-repeat;
-            width: 438px;
-            height: 400px;
+            width: 400px;
+            border: 1px solid #003366;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
+            background-color: #ECE9D8;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .stickynotecontainer {
-            margin-top: 50px;
-            margin-left: 20px;
+        .title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0078d7;
+            color: #fff;
+            padding: 5px 10px;
         }
 
-        .stickynote img {
-            transition: transform 0.2s ease;
-            float: left;
-            margin-right: 10px; 
+        .title-bar .title {
+            font-weight: bold;
         }
 
-        .stickynote img:hover {
-            transform: scale(1.2);
-            cursor: url("https://files.catbox.moe/bkbsm1.png"), auto;
+        .title-bar .controls button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            padding: 0 5px;
         }
 
-        .stickynote p {
-            font-size: 20px;
-            position: relative;
-            margin-left: 10px;
-            margin-top: 50px;
-            font-family: "handwritten";
-            width: 338px;
+        .content {
+            padding: 10px;
         }
-      .stickynote p span {
-         font-size: 16px;
-        line-height: 1.8;
-      }
+
+
+.window {
+    width: 400px;
+    border: 1px solid #003366;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to top, #005AFF, #0000ff);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #fff;
+    padding: 5px 10px;
+}
+
+.title-bar .title {
+    font-weight: bold;
+}
+
+.title-bar .controls button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.content {
+    padding: 10px;
+}
+
+.player {
+    background-color: #2a2a2a;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.player .song-info {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    transition: opacity 0.5s ease;
+}
+
+.song-info.fade-out {
+    opacity: 0;
+}
+        
+.player-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.player-controls button {
+    background-color: #555;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.player-controls input[type="range"] {
+    margin-right: 5px;
+}
+
+.player-controls input[type="range"]:not(#volume) {
+    flex: 1;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.volume-container input[type="range"] {
+    width: 50px;
+}
+
+.playlist {
+    max-height: 230px;
+    overflow-y: auto;
+    border: 1px solid #9f9b84;
+    background-color: #ECE9D8;
+}
+
+.song {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.song span {
+    color: #7e7855;
+}
+
+.song:hover,
+.song.active {
+    background-color: rgba(46,113,255, 0.8);
+    color: #000;
+    font-weight: bold;
+}
+
+.song.active span, .song:hover span {
+    color: #fff;
+    font-weight: normal;
+}
 
         @keyframes cursor {
             0% {
@@ -90,9 +206,23 @@
                 cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
             }
         }
-      mark {
-        background-color: rgba(52, 225, 235,0.5);
-      }
+
+.music-player.minimized .content {
+    display: none;
+}
+
+.message {
+    padding: 10px;
+    background-color: #ECE9D8;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    display: none; 
+}
+
+.music-player.minimized .message {
+    display: block; 
+
     </style>
 </head> 
 <body>
@@ -102,18 +232,245 @@
                 <iframe src="https://www3.cbox.ws/box/?boxid=3538381&boxtag=Ik5LXr" width="375" height="333" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>
             </div>
         </div>
-        <div class="stickynote">
-            <div class="stickynotecontainer">
-                <img src="https://files.catbox.moe/cn9l90.gif" width="35%">
-              <p><br><br>
-                <mark>WOOPS! ERROR!</mark><img src="https://files.catbox.moe/jmexsx.gif">
-                <br>
-                stellular.org (where my music player file is hosted) is down and i lost my music player FAWKKK i'll get it back i swear im so pissed LMFAOOO stellular.org / sentry.cc come back
-                <br><br>
-                layout coded by me! ٩(ˊᗜˋ*)و ♡
-                </p>
-            </div>
+       <div class="music-player">
+    <div class="title-bar">
+        <div class="title">visitor's top hits</div>
+        <div class="controls">
+            <button onclick="minimize()">–</button>
+            <button onclick="maximize()">❑</button>
+            <button onclick="close()">×</button>
         </div>
     </div>
+    <div class="content">
+        <div class="player">
+            <div class="song-info">loading playlist...</div>
+            <div class="player-controls">
+                <button onclick="prevSong()">&#9664;</button>
+                <button onclick="playPause()">&#9654;</button>
+                <button onclick="nextSong()">&#9654;&#9654;</button>
+                <input type="range" id="progress" value="0" max="100">
+                <div class="volume-container">
+                    <input type="range" id="volume" value="100" max="100">
+                </div>
+            </div>
+            <div id="time">0:00 / 0:00</div>
+        </div>
+        <div class="playlist"></div>
+    </div>
+    <div class="message"> i can tell u like clicking buttons bc how else would u have found this <br><br>
+        <img src="https://i.pinimg.com/564x/60/86/57/60865736efdbe2e29887621426fe2245.jpg" width="330px" style="border: 1px solid #003366;">
+        <br><br>
+        add 'blobert' to ur message to lmk u found this and i shall grant you a very very special image
+   </div>
+    <audio id="audio-player"></audio>
+</div>
+
+    </div>
+    <script>
+const songs = [
+    { title: 'Carry On Wayward Son', artist: 'Kansas', url: 'https://files.catbox.moe/kw1gjm.mp3' },
+    { title: 'Oleander', artist: 'Mother Mother', url: 'https://files.catbox.moe/nhhvv0.mp3' },
+    { title: 'song of worship (prod. VELVET)', artist: 'aril is', url: 'https://files.catbox.moe/6w5re7.mp3' },
+    { title: 'The Catalyst', artist: 'Linkin Park', url: 'https://files.catbox.moe/rdij29.mp3' },
+    { title: 'Twist the Knife', artist: 'Chromatics', url: 'https://files.catbox.moe/4sp0xl.mp3' },
+    { title: 'Take Me To Church', artist: 'Hozier', url: 'https://files.catbox.moe/vkqgcx.mp3' },
+    { title: 'theres a halo around the moon', artist: 'Black Dresses', url: 'https://files.catbox.moe/vkg2xj.mp3' },
+    { title: 'Insomnia', artist: 'Niil', url: 'https://files.catbox.moe/1mtxkm.mp3' },
+    { title: 'Starman', artist: 'David Bowie', url: 'https://files.catbox.moe/ec2pya.mp3' },
+    { title: 'Angel Breaking', artist: 'Needy Streamer Overload', url: 'https://files.catbox.moe/k8blqz.mp3' },
+    { title: 'Sgt. Pepper’s Lonely Hearts Club Band', artist: 'The Beatles', url: 'https://files.catbox.moe/rfjhsf.mp3' },
+    { title: 'Nabokov', artist: 'Fontaines DC', url: 'https://files.catbox.moe/cb7ycf.mp3' },
+    { title: 'Good Luck, Babe!', artist: 'Chappell Roan', url: 'https://files.catbox.moe/5o64pw.mp3' },
+    { title: 'YOUR HEAD’S ON FIRE', artist: 'Louie Zong', url: 'https://files.catbox.moe/cn98vf.mp3' },
+    { title: '20 Ways To Kill Someone', artist: 'Phosgore', url: 'https://files.catbox.moe/xob9lc.mp3' },
+    { title:'Anal Grenade Insertion', artist: 'GUTFED', url: 'https://files.catbox.moe/zefvex.mp3'},
+    { title:'Forced Battle', artist: 'SMT III: Nocturne', url: 'https://files.catbox.moe/2rn42l.mp3'},
+    { title:'Dive', artist: 'Nirvana', url: 'https://files.catbox.moe/0y618n.mp3'},
+    { title:'Mascara', artist: 'Deftones', url: 'https://files.catbox.moe/lob8ao.mp3'},
+    { title:'Completely, Sweetly', artist: 'The Dead South', url: 'https://files.catbox.moe/zfr8t5.mp3'},
+    { title:'Only A Lad', artist: 'Oingo Boingo', url: 'https://files.catbox.moe/p3gk87.mp3'},
+    { title:'War?', artist: 'System of a Down', url: 'https://files.catbox.moe/y268y1.mp3'},
+    { title:'オトノケ (Otonoke)', artist: 'Creepy Nuts', url: 'https://files.catbox.moe/ebct2n.mp3'},
+    { title:'Concrete Over Water', artist: 'Jockstrap', url: 'https://files.catbox.moe/u2g373.mp3'},
+];
+
+const playlistElement = document.querySelector('.playlist');
+const songInfoElement = document.querySelector('.song-info');
+const timeElement = document.getElementById('time');
+const progressElement = document.getElementById('progress');
+const volumeElement = document.getElementById('volume');
+const audioPlayer = document.getElementById('audio-player');
+const playPauseButton = document.querySelector('.player-controls button:nth-child(2)');
+const musicPlayerElement = document.querySelector('.music-player');
+let currentSongIndex = 0;
+let isPlaying = false;
+
+function loadSongs() {
+    songs.forEach((song, index) => {
+        const songElement = document.createElement('div');
+        songElement.classList.add('song');
+        songElement.innerHTML = `${song.title} <span>${song.artist}</span>`;
+        songElement.onclick = () => selectSong(index);
+        playlistElement.appendChild(songElement);
+    });
+
+
+    const savedSongIndex = localStorage.getItem('currentSongIndex');
+    if (savedSongIndex !== null) {
+        currentSongIndex = parseInt(savedSongIndex, 10);
+    }
+
+    const savedVolume = localStorage.getItem('volume');
+    if (savedVolume !== null) {
+        audioPlayer.volume = parseFloat(savedVolume);
+        volumeElement.value = audioPlayer.volume * 100;
+    } else {
+        audioPlayer.volume = 0.5;
+        volumeElement.value = 50;
+    }
+
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
+    }
+
+    selectSong(currentSongIndex);
+    updateActiveSong();
+}
+
+function selectSong(index) {
+    currentSongIndex = index;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function updateSongInfo() {
+    const song = songs[currentSongIndex];
+
+
+    songInfoElement.classList.add('fade-out');
+
+
+    setTimeout(() => {
+
+        songInfoElement.textContent = `${song.title} - ${song.artist}`;
+
+
+        songInfoElement.classList.remove('fade-out');
+        void songInfoElement.offsetWidth; // Triggers reflow
+
+
+        songInfoElement.classList.add('fade-in');
+    }, 500); 
+}
+
+function playPause() {
+    if (isPlaying) {
+        audioPlayer.pause();
+    } else {
+        audioPlayer.play();
+    }
+    isPlaying = !isPlaying;
+    updatePlayPauseButton();
+}
+
+function playSong() {
+    updateSongInfo();
+    const song = songs[currentSongIndex];
+    audioPlayer.src = song.url;
+
+
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
+    }
+
+    audioPlayer.play();
+    isPlaying = true;
+    updatePlayPauseButton();
+}
+
+function updatePlayPauseButton() {
+    if (isPlaying) {
+        playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+    } else {
+        playPauseButton.innerHTML = '&#9654;'; // Play icon
+    }
+}
+
+function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function prevSong() {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function updateActiveSong() {
+    document.querySelectorAll('.song').forEach((element, index) => {
+        element.classList.toggle('active', index === currentSongIndex);
+    });
+}
+
+audioPlayer.ontimeupdate = () => {
+    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    progressElement.value = progress || 0;
+    timeElement.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
+
+    // Save the current time to localStorage
+    localStorage.setItem('currentTime', audioPlayer.currentTime);
+};
+
+audioPlayer.onended = nextSong;
+
+progressElement.oninput = (e) => {
+    const seekTime = (e.target.value / 100) * audioPlayer.duration;
+    audioPlayer.currentTime = seekTime;
+    localStorage.setItem('currentTime', seekTime);
+};
+
+volumeElement.oninput = (e) => {
+    audioPlayer.volume = e.target.value / 100;
+    localStorage.setItem('volume', audioPlayer.volume);
+};
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function minimize() {
+    musicPlayerElement.classList.add('minimized');
+}
+
+function maximize() {
+    musicPlayerElement.classList.remove('minimized');
+}
+
+function close() {
+    musicPlayerElement.style.display = 'none';
+}
+
+loadSongs();
+
+
+
+    </script>
 </body>
 </html>
