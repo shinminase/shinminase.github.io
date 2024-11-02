@@ -1,300 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<link rel="stylesheet" href="https://botoxparty.github.io/XP.css/98.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>why are u here</title>
-    <style>
-    @font-face {
-        font-family: handwritten;
-        src: url(https://files.catbox.moe/n565jq.ttf);
-    }
+    <head>
+        <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/98.css" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>why are u here</title>
+        <style>
+            @font-face {
+                font-family: handwritten;
+                src: url(https://files.catbox.moe/n565jq.ttf);
+            }
 
-    body {
-        font-family: 'Tahoma', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
-        animation: cursor 0.3s linear infinite;
-    }
+            body {
+                font-family: "Tahoma", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+                animation: cursor 0.3s linear infinite;
+            }
 
-    .content-wrapper {
-        display: flex;
-        align-items: flex-start;
-    }
+            .content-wrapper {
+                display: flex;
+                align-items: flex-start;
+            }
 
-    .custom-container {
-        width: 380px;
-        height: 440px;
-        background-image: url('https://files.catbox.moe/lsyin3.png');
-        background-size: fit;
-        background-repeat: no-repeat;
-        position: relative;
-    }
+            .custom-container {
+                width: 380px;
+                height: 440px;
+                background-image: url("https://files.catbox.moe/lsyin3.png");
+                background-size: fit;
+                background-repeat: no-repeat;
+                position: relative;
+            }
 
-    .cbox {
-        position: absolute;
-        top: 65px;
-        left: 2px;
-        width: 438px;
-        height: 380px;
-    }
+            .cbox {
+                position: absolute;
+                top: 65px;
+                left: 2px;
+                width: 438px;
+                height: 380px;
+            }
 
+            /* music player style */
+            .music-player {
+                margin-left: 20px;
+                width: 400px;
+                border: 1px solid #003366;
+                background-color: #bfbfbf;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
 
-    /* music player style */
-    .music-player {
-        margin-left: 20px;
-        width: 400px;
-        border: 1px solid #003366;
-        background-color: #bfbfbf;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
+            .title-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #0078d7;
+                color: #fff;
+                padding: 5px 10px;
+            }
 
-    .title-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #0078d7;
-        color: #fff;
-        padding: 5px 10px;
-    }
+            .title-bar .title {
+                font-weight: bold;
+            }
 
-    .title-bar .title {
-        font-weight: bold;
-    }
+            .title-bar .controls button {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1em;
+                cursor: pointer;
+                padding: 0 5px;
+            }
 
-    .title-bar .controls button {
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 1em;
-        cursor: pointer;
-        padding: 0 5px;
-    }
+            .content {
+                padding: 10px;
+            }
 
-    .content {
-        padding: 10px;
-    }
+            .player {
+                background-color: #2a2a2a;
+                color: #fff;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
 
-    .player {
-        background-color: #2a2a2a;
-        color: #fff;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
+            .player .song-info {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                transition: opacity 0.5s ease;
+            }
 
-    .player .song-info {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-        transition: opacity 0.5s ease;
-    }
+            .song-info.fade-out {
+                opacity: 0;
+            }
 
-    .song-info.fade-out {
-        opacity: 0;
-    }
+            .player-controls {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
 
-    .player-controls {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+            .player-controls button {
+                background-color: #555;
+                border: none;
+                color: #fff;
+                padding: 5px 10px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
 
-    .player-controls button {
-        background-color: #555;
-        border: none;
-        color: #fff;
-        padding: 5px 10px;
-        margin-right: 5px;
-        cursor: pointer;
-    }
+            .player-controls input[type="range"] {
+                margin-right: 5px;
+                cursor: pointer;
+            }
 
-    .player-controls input[type="range"] {
-        margin-right: 5px;
-        cursor: pointer;
-    }
+            .volume-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-left: auto;
+            }
 
-.volume-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-}
+            .playlist {
+                max-height: 230px;
+                overflow-y: auto;
+                border: 1px solid #2a2a2a;
+                background-color: #bfbfbf;
+            }
 
+            .song {
+                padding: 10px;
+                border-bottom: 1px solid #929292;
+                cursor: pointer;
+                transition:
+                    background-color 0.5s ease,
+                    color 0.5s ease;
+            }
 
-    .playlist {
-        max-height: 230px;
-        overflow-y: auto;
-        border: 1px solid #2a2a2a;
-        background-color: #bfbfbf;
-    }
+            .song span {
+                color: black;
+            }
+            .song {
+                color: #06329e;
+            }
 
-    .song {
-        padding: 10px;
-        border-bottom: 1px solid #929292;
-        cursor: pointer;
-        transition: background-color 0.5s ease, color 0.5s ease;
-    }
+            .song:hover,
+            .song.active {
+                background-color: rgba(46, 113, 255, 0.8);
+                color: #000;
+                font-weight: bold;
+            }
 
-    .song span {
-        color: black;
-    }
-    .song {
-        color: #06329e;
-    }
+            .song.active span,
+            .song:hover span {
+                color: #fff;
+                font-weight: normal;
+            }
 
-    .song:hover,
-    .song.active {
-        background-color: rgba(46, 113, 255, 0.8);
-        color: #000;
-        font-weight: bold;
-    }
+            @keyframes cursor {
+                0% {
+                    cursor: url("https://files.catbox.moe/7xm71l.png"), auto;
+                }
+                100% {
+                    cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+                }
+            }
 
-    .song.active span,
-    .song:hover span {
-        color: #fff;
-        font-weight: normal;
-    }
+            .music-player.minimized .content {
+                display: none;
+            }
 
-    @keyframes cursor {
-        0% {
-            cursor: url("https://files.catbox.moe/7xm71l.png"), auto;
-        }
-        100% {
-            cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
-        }
-    }
+            .message {
+                padding: 10px;
+                background-color: #bfbfbf;
+                text-align: center;
+                color: #333;
+                display: none;
+            }
 
-    .music-player.minimized .content {
-        display: none;
-    }
+            .music-player.minimized .message {
+                display: block;
+            }
 
-    .message {
-        padding: 10px;
-        background-color: #bfbfbf;
-        text-align: center;
-        color: #333;
-        display: none; 
-    }
+            /* prevent style override for 98 */
+            .music-player button {
+                background-color: #555;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+            }
 
-    .music-player.minimized .message {
-        display: block; 
-    }
+            .music-player button:hover {
+                background-color: #777;
+            }
 
-    /* prevent style override for 98 */
-    .music-player button {
-        background-color: #555; 
-        color: #fff;
-        border: none; 
-        border-radius: 3px;
-    }
+            .music-player .title-bar {
+                background-color: #0078d7;
+            }
 
-    .music-player button:hover {
-        background-color: #777; 
-    }
+            .music-player .title-bar .title-bar-controls button {
+                color: black;
+                background-color: #c0c0c0;
+                margin-right: 1.5px;
+            }
 
-    .music-player .title-bar {
-        background-color: #0078d7; 
-    }
+            .music-player .playlist::-webkit-scrollbar {
+                width: 12px;
+            }
 
-    .music-player .title-bar .title-bar-controls button {
-        color: black;
-        background-color: #c0c0c0;
-        margin-right: 1.5px;
-    }
+            .music-player .playlist::-webkit-scrollbar-thumb {
+                background-color: #999;
+                border-radius: 10px;
+            }
 
-    .music-player .playlist::-webkit-scrollbar {
-        width: 12px;
-    }
+            .music-player .playlist::-webkit-scrollbar-track {
+                background-color: #bfbfbf;
+            }
 
-    .music-player .playlist::-webkit-scrollbar-thumb {
-        background-color: #999;
-        border-radius: 10px;
-    }
+            /* message gridbox */
+            .gridbox {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                border: 1px solid black;
+            }
 
-    .music-player .playlist::-webkit-scrollbar-track {
-        background-color: #bfbfbf;
-    }
+            /* specific to images inside .gridbox */
+            .gridbox img {
+                max-width: 100%;
+                height: auto;
+            }
 
-        /* message gridbox */
-        .gridbox {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            border: 1px solid black;
-        }
+            .text-section {
+                padding: 10px;
+                text-align: left;
+            }
 
-        /* specific to images inside .gridbox */
-        .gridbox img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .text-section {
-            padding: 10px;
-            text-align: left;
-        }
-
-        /* emojis */
-        .text-section img {
-            width: auto;
-            height: auto; 
-        }
-
-</style>
-
-</head> 
-<body>
-    <div class="content-wrapper">
-        <div class="custom-container">
-            <div class="cbox">
-                <iframe src="https://www3.cbox.ws/box/?boxid=3538381&boxtag=Ik5LXr" width="375" height="333" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>
-            </div>
-        </div>
-       <div class="music-player">
-    <div class="title-bar">
-        <div class="title">visitor's top hits (click tabs for info)</div>
-        <div class="title-bar-controls">
-            <button aria-label="Minimize" onclick="minimize()"></button>
-            <button aria-label="Maximize" onclick="maximize()"></button>
-            <button aria-label="Close" onclick="close()"></button>
-        </div>
-    </div>
-    <div class="content">
-        <div class="player">
-            <div class="song-info">loading playlist...</div>
-            <div class="player-controls">
-                <button onclick="prevSong()">&#9664;</button>
-                <button onclick="playPause()">&#9654;</button>
-                <button onclick="nextSong()">&#9654;&#9654;</button>
-                <input type="range" id="progress" value="0" max="100">
-                <div class="volume-container">
-                    <input type="range" id="volume" value="100" max="100">
+            /* emojis */
+            .text-section img {
+                width: auto;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper">
+            <div class="custom-container">
+                <div class="cbox">
+                    <iframe
+                        src="https://www3.cbox.ws/box/?boxid=3538381&boxtag=Ik5LXr"
+                        width="375"
+                        height="333"
+                        allowtransparency="yes"
+                        allow="autoplay"
+                        frameborder="0"
+                        marginheight="0"
+                        marginwidth="0"
+                        scrolling="auto"
+                    ></iframe>
                 </div>
             </div>
-            <div id="time">0:00 / 0:00</div>
-        </div>
-        <div class="playlist"></div>
-    </div>
-    <div class="message">
-          <div class="gridbox" style="margin-bottom: 5px;">
-                            <img src="https://i.pinimg.com/564x/69/6c/8f/696c8f09c35345d2c359eed89b315df0.jpg">
-                            <div class="text-section">
-                                <p>be civil. that is all i ask <img src="https://i.imgur.com/ALAAFn1.gif"></p>
-                                <p>if you want to recommend a song, use the <a href="https://www.ultraguest.com/sign/1717388758" target="blank" style="color: #06329e">guestbook</a> not the cbox.<br>
-                                i use my chatbox (cbox) as a live groupchat and you should too!<br>
-                                <p>layout coded by me, <a href="https://botoxparty.github.io/XP.css/" target="blank" style="color: #06329e">imported css</a></p>
+            
+            <div class="music-player">
+                <div class="title-bar">
+                    <div class="title-bar-text">visitor's top hits (click tabs for info)</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" onclick="minimize()"></button>
+                        <button aria-label="Maximize" onclick="maximize()"></button>
+                        <button aria-label="Close" onclick="close()"></button>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="player">
+                        <div class="song-info">loading playlist...</div>
+                        <div class="player-controls">
+                            <button onclick="prevSong()">&#9664;</button>
+                            <button onclick="playPause()">&#9654;</button>
+                            <button onclick="nextSong()">&#9654;&#9654;</button>
+                            <input type="range" id="progress" value="0" max="100" />
+                            <div class="volume-container">
+                                <input
+                                    type="range"
+                                    id="volume"
+                                    value="100"
+                                    max="100"
+                                />
                             </div>
                         </div>
-   </div>
-    <audio id="audio-player"></audio>
-</div>
-
-    </div>
+                        <div id="time">0:00 / 0:00</div>
+                    </div>
+                    <div class="playlist"></div>
+                </div>
+                <div class="message">
+                    <div class="gridbox" style="margin-bottom: 5px">
+                        <img src="https://files.catbox.moe/xbuqai.png"/>
+                        <div class="text-section">
+                            <p>
+                                be civil. that is all i ask
+                                <img src="https://i.imgur.com/ALAAFn1.gif" />
+                            </p>
+                            <p>
+                                if you want to recommend a song, use the
+                                <a href="https://www.ultraguest.com/sign/1717388758" target="blank" style="color: #06329e">guestbook</a> not the cbox.<br />
+                            </p>
+                            <p>
+                                sorry, i turned off private messages for the meantime! 
+                            </p>
+                            <hr>
+                            <p>
+                                layout coded by me & uses
+                                <a href="https://botoxparty.github.io/XP.css/" target="blank" style="color: #06329e">XP/98 css</a> for scrollbar/tabs.
+                            </p>
+                            <p>all songs are background-checked and manually added by me on github.</p>
+                        </div>
+                    </div>
+                </div>
+                <audio id="audio-player"></audio>
+            </div>
+        </div>
     <script>
 const songs = [
     { title: 'Carry On Wayward Son', artist: 'Kansas', url: 'songs/COWS.mp3' },
