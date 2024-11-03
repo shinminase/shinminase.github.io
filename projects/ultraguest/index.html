@@ -270,7 +270,7 @@
                     <div class="title-bar-controls">
                         <button aria-label="Minimize" onclick="minimize()"></button>
                         <button aria-label="Maximize" onclick="maximize()"></button>
-                        <button aria-label="Close" onclick="close()"></button>
+                        <button aria-label="Close" onclick="openRender()"></button>
                     </div>
                 </div>
                 <div class="content">
@@ -536,7 +536,10 @@ function close() {
 
 loadSongs();
 
-
+        function openRender() {
+        var newTab = window.open("https://seven633x14.onrender.com/", "_blank");
+        newTab.focus();
+    }
 
     </script>
 </body>
