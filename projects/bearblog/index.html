@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/98.css" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>seriously, why are you here??</title>
+        <style>
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+            }
+  
+            .cbox {
+                position: absolute;
+                top: 65px;
+                left: 2px;
+                width: 438px;
+                height: 380px;
+            }
+
+            /* music player style */
+            .music-player {
+                margin-left: 20px;
+                width: 400px;
+                border: 1px solid black;
+                background-color: #bfbfbf;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
+
+            .title-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #0078d7;
+                color: #fff;
+                padding: 5px 10px;
+            }
+
+            .title-bar .title {
+                font-weight: bold;
+            }
+
+            .title-bar .controls button {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1em;
+                cursor: pointer;
+                padding: 0 5px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            .player {
+                background-color: #2a2a2a;
+                color: #fff;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .player .song-info {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                transition: opacity 0.5s ease;
+            }
+
+            .song-info.fade-out {
+                opacity: 0;
+            }
+
+            .player-controls {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .player-controls button {
+                background-color: #555;
+                border: none;
+                color: #fff;
+                padding: 5px 10px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+
+            .player-controls input[type="range"] {
+                margin-right: 5px;
+                cursor: pointer;
+            }
+
+            .volume-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-left: auto;
+            }
+
+            .playlist {
+                max-height: 230px;
+                overflow-y: auto;
+                border: 1px solid #2a2a2a;
+                background-color: #bfbfbf;
+            }
+
+            .song {
+                padding: 10px;
+                border-bottom: 1px solid #929292;
+                cursor: pointer;
+                transition:
+                    background-color 0.5s ease,
+                    color 0.5s ease;
+            }
+
+            .song span {
+                color: black;
+                font-weight: normal;
+            }
+            .song {
+                color: #115200;
+                font-weight: bold;
+            }
+
+            .song:hover,
+            .song.active {
+                background-color: rgba(42, 161, 10, 0.8);
+                color: #000;
+                font-weight: bold;
+            }
+
+            .song.active span,
+            .song:hover span {
+                color: #fff;
+                font-weight: normal;
+            }
+           
+
+            .music-player.minimized .content {
+                display: none;
+            }
+
+            .message {
+                padding: 10px;
+                background-color: #bfbfbf;
+                text-align: center;
+                color: #333;
+                display: none;
+            }
+
+            .music-player.minimized .message {
+                display: block;
+            }
+
+            /* prevent style override for 98 */
+            .music-player button {
+                background-color: #555;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+            }
+
+            .music-player button:hover {
+                background-color: #777;
+            }
+          
+          .title-bar {font-size:11px;background:linear-gradient(90deg,#1c7a01,#003d1c);padding:3px 2px 3px 3px;display:flex;justify-content:space-between;align-items:center}
+
+            .music-player .title-bar .title-bar-controls button {
+                color: black;
+                background-color: #c0c0c0;
+                margin-right: 1.5px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar-thumb {
+                background-color: #999;
+                border-radius: 10px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar-track {
+                background-color: #bfbfbf;
+            }
+
+            /* message gridbox */
+            .gridbox {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                border: 1px solid black;
+            }
+
+            /* specific to images inside .gridbox */
+            .gridbox img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .text-section {
+                padding: 10px;
+                text-align: left;
+            }
+
+            /* emojis */
+            .text-section img {
+                width: auto;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+            <div class="music-player">
+                <div class="title-bar">
+                    <div class="title-bar-text">redacted.exe</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" onclick="minimize()"></button>
+                        <button aria-label="Maximize" onclick="maximize()"></button>
+                        <button aria-label="Close" onclick="openRender()"></button>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="player">
+                        <div class="song-info">loading playlist...</div>
+                        <div class="player-controls">
+                            <button onclick="prevSong()">&#9664;</button>
+                            <button onclick="playPause()">&#9654;</button>
+                            <button onclick="nextSong()">&#9654;&#9654;</button>
+                            <input type="range" id="progress" value="0" max="100" />
+                            <div class="volume-container">
+                                <input
+                                    type="range"
+                                    id="volume"
+                                    value="100"
+                                    max="100"
+                                />
+                            </div>
+                        </div>
+                        <div id="time">0:00 / 0:00</div>
+                    </div>
+                    <div class="playlist"></div>
+                </div>
+                <div class="message">
+                    <div class="gridbox" style="margin-bottom: 5px">
+                        <img src="https://file.garden/ZlwiKgzAvyz0wLRz/GITHUB/snufkin"/>
+                        <div class="text-section">
+                            <p>
+                              collection of songs that i think fit my blog's vibe! by the way, welcome to my blog.</p> <p>i see you like pressing buttons... me too. i love buttons.</p> <p> Also yes i know my music taste is shit but thats a-okay!
+                          </p>
+                        </div>
+                    </div>
+                </div>
+                <audio id="audio-player"></audio>
+            </div>
+        </div>
+    <script>
+const songs = [
+    { title: 'Browser History', artist: 'Graham Kartna', url: 'songs/ENA.mp3' },
+    { title: 'Hello World', artist: 'Louie Zong', url: 'songs/hello world.mp3' },
+    { title: 'V. RITUAL GIRL', artist: 'Beau Jordan', url: 'songs/vritual girl.mp3' },
+    { title: 'Using You', artist: 'Mars Argo', url: 'songs/using you.mp3' },
+     { title: 'DQ', artist: 'Charly Bliss', url: 'songs/DQ.mp3' },
+    { title: 'Wasting Away', artist: 'Mars Argo', url: 'songs/wasting away.mp3' },
+    { title: 'Toxicity', artist: 'System of A Down', url: 'songs/toxicity.mp3' },
+    { title: 'Twilight', artist: 'Boa', url: 'songs/twilight.mp3' },
+    { title: 'The Author', artist: 'ROOS+BERG', url: 'songs/the author.mp3' },
+    { title: 'Stuff is Way', artist: 'They Might Be Giants', url: 'songs/stuff is way.mp3' },
+    { title: 'Stay', artist: 'Oingo Boingo', url: 'songs/stay.mp3' },
+    { title: 'Treehouse', artist: 'Alex G', url: 'songs/treehouse.mp3'},
+    { title: 'ghost', artist: 'nelward', url: 'songs/ghost.mp3' },
+    { title: 'Dinner is Not Over', artist: 'Jack Stauber', url: 'songs/dinner.mp3'},
+    { title: 'Homesick', artist: 'Cavetown', url: 'songs/homesick.mp3'},
+    { title: 'Strawberry Blonde', artist: 'Mitski', url: 'songs/strawberry.mp3'},
+    { title: 'Juno', artist: 'Sabrina Carpenter', url: 'songs/juno.mp3'},
+    { title: 'Play That Funky Music', artist: 'Wild Cherry', url: 'songs/whiteboy.mp3'},
+    { title: 'Virtual Insanity', artist: 'Jamiroquai', url: 'songs/virtual.mp3'},
+    { title: 'Lithium', artist: 'Nirvana', url: 'songs/lithium.mp3'},
+    { title: 'Black Sheep', artist: 'Metric', url: 'songs/blacksheep.mp3'},
+    { title: 'Completely, Sweetly', artist: 'The Dead South', url: 'songs/completely sweetly.mp3'},
+    { title: 'Latin Simone', artist: 'Gorillaz', url: 'songs/latin simone.mp3'},
+   { title: 'Regular People', artist: 'Moon Walker', url: 'songs/regular people.mp3'},
+
+
+];
+
+const playlistElement = document.querySelector('.playlist');
+const songInfoElement = document.querySelector('.song-info');
+const timeElement = document.getElementById('time');
+const progressElement = document.getElementById('progress');
+const volumeElement = document.getElementById('volume');
+const audioPlayer = document.getElementById('audio-player');
+const playPauseButton = document.querySelector('.player-controls button:nth-child(2)');
+const musicPlayerElement = document.querySelector('.music-player');
+let currentSongIndex = 0;
+let isPlaying = false;
+
+function loadSongs() {
+    songs.forEach((song, index) => {
+        const songElement = document.createElement('div');
+        songElement.classList.add('song');
+        songElement.innerHTML = `${song.title} <span>${song.artist}</span>`;
+        songElement.onclick = () => selectSong(index);
+        playlistElement.appendChild(songElement);
+    });
+
+    const savedSongIndex = localStorage.getItem('currentSongIndex');
+    if (savedSongIndex !== null) {
+        currentSongIndex = parseInt(savedSongIndex, 10);
+    }
+
+    const savedVolume = localStorage.getItem('volume');
+    if (savedVolume !== null) {
+        audioPlayer.volume = parseFloat(savedVolume);
+        volumeElement.value = audioPlayer.volume * 100;
+    } else {
+        audioPlayer.volume = 0.5;
+        volumeElement.value = 50;
+    }
+
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
+    }
+
+    selectSong(currentSongIndex);
+    updateActiveSong();
+
+    // Autoplay the current song when the page loads
+    playSong();
+}
+
+
+function selectSong(index) {
+    currentSongIndex = index;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function updateSongInfo() {
+    const song = songs[currentSongIndex];
+
+
+    songInfoElement.classList.add('fade-out');
+
+
+    setTimeout(() => {
+
+        songInfoElement.textContent = `${song.title} - ${song.artist}`;
+
+
+        songInfoElement.classList.remove('fade-out');
+        void songInfoElement.offsetWidth; // Triggers reflow
+
+
+        songInfoElement.classList.add('fade-in');
+    }, 500); 
+}
+
+function playPause() {
+    if (isPlaying) {
+        audioPlayer.pause();
+    } else {
+        audioPlayer.play();
+    }
+    isPlaying = !isPlaying;
+    updatePlayPauseButton();
+}
+
+function playSong() {
+    updateSongInfo();
+    const song = songs[currentSongIndex];
+    audioPlayer.src = song.url;
+
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
+    }
+
+    // Autoplay logic with delay to prevent autoplay blocking
+    setTimeout(() => {
+        audioPlayer.play().catch((error) => {
+            console.log("Autoplay was prevented. User interaction required.");
+        });
+    }, 500); // Optional: Adjust delay as necessary
+
+    isPlaying = true;
+    updatePlayPauseButton();
+}
+
+
+function updatePlayPauseButton() {
+    if (isPlaying) {
+        playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+    } else {
+        playPauseButton.innerHTML = '&#9654;'; // Play icon
+    }
+}
+
+function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function prevSong() {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function updateActiveSong() {
+    document.querySelectorAll('.song').forEach((element, index) => {
+        element.classList.toggle('active', index === currentSongIndex);
+    });
+}
+
+audioPlayer.ontimeupdate = () => {
+    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    progressElement.value = progress || 0;
+    timeElement.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
+
+    // Save the current time to localStorage
+    localStorage.setItem('currentTime', audioPlayer.currentTime);
+};
+
+audioPlayer.onended = nextSong;
+
+progressElement.oninput = (e) => {
+    const seekTime = (e.target.value / 100) * audioPlayer.duration;
+    audioPlayer.currentTime = seekTime;
+    localStorage.setItem('currentTime', seekTime);
+};
+
+volumeElement.oninput = (e) => {
+    audioPlayer.volume = e.target.value / 100;
+    localStorage.setItem('volume', audioPlayer.volume);
+};
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function minimize() {
+    musicPlayerElement.classList.add('minimized');
+}
+
+function maximize() {
+    musicPlayerElement.classList.remove('minimized');
+}
+
+function close() {
+    musicPlayerElement.style.display = 'none';
+}
+
+loadSongs();
+
+        function openRender() {
+        var newTab = window.open("https://shinminase.neocities.org/", "_blank");
+        newTab.focus();
+    }
+
+    </script>
+</body>
+</html>
