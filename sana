@@ -1,0 +1,76 @@
+class Book {
+    private String title;
+    private String author;
+    private String datePublished;
+
+    public Book(String title, String author, String datePublished) {
+        this.title = title;
+        this.author = author;
+        this.datePublished = datePublished;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getDatePublished() {
+        return datePublished;
+    }
+
+    public void displayInfo() {
+        System.out.println("Book Title: " + title);
+        System.out.println("Book Author: " + author);
+        System.out.println("Date Published: " + datePublished);
+    }
+}
+
+class BorrowedBook extends Book {
+    private String dateBorrowed;
+    private String dateReturn;
+    private String borrower;
+
+    public BorrowedBook(String title, String author, String datePublished, String dateBorrowed, String dateReturn, String borrower) {
+        super(title, author, datePublished);
+        this.dateBorrowed = dateBorrowed;
+        this.dateReturn = dateReturn;
+        this.borrower = borrower;
+    }
+
+    public void displayBorrowedInfo() {
+        displayInfo();
+        System.out.println("Date Borrowed: " + dateBorrowed);
+        System.out.println("Date Return: " + dateReturn);
+        System.out.println("Borrower: " + borrower);
+    }
+
+    public void isBorrowed() {
+        if (borrower != null) {
+            System.out.println("The book has been borrowed.");
+        } else {
+            System.out.println("You can borrow the book.");
+        }
+    }
+}
+
+public class Library {
+    public static void main(String[] args) {
+        Book[] books = new Book[10];
+
+        books[0] = new Book("The Great Gatsby", "F. Scott Fitzgerald", "1925");
+        books[1] = new BorrowedBook("1984", "George Orwell", "1949", "Nov 1, 2024", "Nov 15, 2024", "John Doe");
+        books[2] = new Book("To Kill a Mockingbird", "Harper Lee", "1960");
+        books[3] = new BorrowedBook("Moby Dick", "Herman Melville", "1851", "Nov 5, 2024", "Nov 20, 2024", "Jane Smith");
+
+        BorrowedBook borrowedBook = (BorrowedBook) books[1];
+        borrowedBook.displayBorrowedInfo();
+        borrowedBook.isBorrowed();
+
+        books[2].displayInfo();
+        System.out.println("You can borrow the book.");
+    }
+}
+
