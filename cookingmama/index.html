@@ -1,0 +1,444 @@
+​<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Food Menu</title>
+  <style>
+    body {
+      font-family: 'Copperplate', sans-serif;
+      background-color: #f8f9fa;
+      background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1.5px) brightness(0.9);
+  z-index: -1;
+}
+
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    .menu-container {
+      width: 800px;
+      padding: 30px;
+      background: white;
+      border-radius: 25px;
+      border: 8px solid #8ed0f3;
+      background-image: repeating-linear-gradient(
+        45deg,
+        #d3efff,
+        #d3efff 10px,
+        #c0e3ff 10px,
+        #c0e3ff 20px
+      );
+      box-shadow:
+        inset 0 0 0 4px white,
+        0 8px 16px rgba(0, 0, 0, 0.3);
+      margin: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px;
+      position: relative;
+    }
+
+    .menu-item {
+      background: #e7f6ff;
+      border-radius: 20px;
+      padding: 10px;
+      width: 160px;
+      text-align: center;
+      border: 3px solid white;
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 4px #b2e1f0;
+      position: relative;
+      overflow: hidden;
+      color: yellow;
+      text-shadow:
+        -2px 2px 0 blue,
+         2px 2px 0 blue,
+        -2px -2px 0 black,
+         2px -2px 0 black;
+    }
+
+.menu-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: filter 0.3s ease;
+}
+
+.menu-item img:hover {
+  filter: brightness(85%);
+}
+.menu-item img:hover {
+  filter: brightness(85%);
+}
+    .menu-item button {
+      margin-top: 10px;
+      background: linear-gradient(to bottom, #ffce63, #ff9a3c);
+      color: white;
+      text-shadow:
+        -2px 2px 0 blue,
+         2px 2px 0 blue,
+        -2px -2px 0 black,
+         2px -2px 0 black;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #d47c1d, 0 6px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      transform: scale(1);
+    }
+
+    .menu-item button:hover {
+      background: linear-gradient(to bottom, #ffe082, #ffb74d);
+      transform: scale(1.05);
+      box-shadow: 0 6px 0 #c8711a, 0 8px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu-item button:active {
+      transform: scale(0.95) translateY(2px);
+      box-shadow: 0 2px 0 #a55d12;
+    }
+
+    .mama-helper {
+      position: fixed;
+      bottom: 10px;
+      right: 40px;
+      z-index: 999;
+      transition: transform 0.3s ease;
+    }
+
+    .mama-helper img {
+      width: 200px;
+      height: auto;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+
+    .mama-helper:hover img {
+      transform: scale(1.3) rotate(1deg);
+      filter: brightness(1.1);
+    }
+
+@keyframes wiggleBounce {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  50% {
+    transform: scale(0.97) rotate(-2deg);
+  }
+  75% {
+    transform: scale(1.03) rotate(1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.wiggle-bounce {
+  animation: wiggleBounce 2s ease-in-out infinite;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+  </style>
+</head>
+<body>
+
+<div align="center" style="margin-bottom: 20px;">
+  <img class="wiggle-bounce" src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Cooking_Mama_Series_Logo.png">
+</div>
+
+  
+<div class="menu-container">
+  <div class="menu-item">
+    <img src="https://i.imgur.com/2Psov8N.png" alt="Salisbury Steak">
+    <h3>Salisbury Steak</h3>
+    <button onclick="order('Salisbury Steak')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/2dbjdg9.png" alt="Meatball">
+    <h3>Meatball</h3>
+    <button onclick="order('Meatball')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/pDXJTPa.png" alt="Spaghetti">
+    <h3>Spaghetti</h3>
+    <button onclick="order('Spaghetti')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/mSiZQzO.png" alt="Fried Rice">
+    <h3>Fried Rice</h3>
+    <button onclick="order('Fried Rice')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/daxpoqc.png" alt="Sushi">
+    <h3>Sushi</h3>
+    <button onclick="order('Sushi')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/gjqggJt.png" alt="Wonton">
+    <h3>Wonton Soup</h3>
+    <button onclick="order('Wonton Soup')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/pkxVZfR.png" alt="Curry">
+    <h3>Curry</h3>
+    <button onclick="order('Curry')">Order Now</button>
+  </div>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/UAKaoN2.png" alt="Pork Cutlet">
+    <h3>Pork Cutlet</h3>
+    <button onclick="order('Pork Cutlet')">Order Now</button>
+  </div>
+</div>
+
+<!-- mama here -->
+<div class="mama-helper">
+  <img src="https://i.imgur.com/NkaKGHp.png" alt="Cooking Mama">
+</div>
+
+<script>
+  function order(itemName) {
+    let quantity = prompt(`How many ${itemName}s would you like to order?`);
+
+    if (quantity && !isNaN(quantity) && quantity > 0) {
+      quantity = parseInt(quantity);
+
+      if (quantity >= 100) {
+        document.body.innerHTML = `
+<style>
+    body {
+      font-family: 'Copperplate', sans-serif;
+      background-color: #f8f9fa;
+      background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1.5px) brightness(0.9);
+  z-index: -1;
+}
+
+  .refusal {
+    background: #fff4f4;
+    border: 8px dashed #ff4d4d;
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+    padding: 40px;
+    margin: 80px auto;
+    width: 600px;
+    text-align: center;
+    border-radius: 30px;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  }
+
+  .refusal img {
+    width: 180px;
+    margin-bottom: 20px;
+  }
+
+  .refusal h2 {
+    color: red;
+    font-size: 26px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px white;
+  }
+
+  .refusal p {
+    font-size: 18px;
+    color: #333;
+  }
+</style>
+
+<div class="refusal">
+  <img src="https://vignette.wikia.nocookie.net/cookingmama/images/8/87/FIRE_EYES.gif/revision/latest/top-crop/width/360/height/450?cb=20180910205250" alt="Angry Mama">
+  <h2>No way! That's too much!!</h2>
+  <p>Mama can't handle ${quantity} ${itemName}s!! Try a smaller amount, okay?</p>
+</div>
+        `;
+      } else if (quantity >= 10) {
+        document.body.innerHTML = `
+<style>
+
+    body {
+      font-family: 'Copperplate', sans-serif;
+      background-color: #f8f9fa;
+      background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1.5px) brightness(0.9);
+  z-index: -1;
+}
+
+  .delayed {
+    background: #fef6e4;
+    border: 8px solid #ffcc70;
+    background-image: linear-gradient(135deg, #fff0d4, #e0f7ff);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    margin: 80px auto;
+    width: 600px;
+    text-align: center;
+    border-radius: 30px;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  }
+
+  .delayed img {
+    width: 200px;
+    margin-bottom: 20px;
+  }
+
+  .delayed h2 {
+    color: #ff8c00;
+    font-size: 28px;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px white, 2px 2px orange;
+  }
+
+  .delayed p {
+    font-size: 18px;
+    color: #555;
+  }
+</style>
+
+<div class="delayed">
+  <img src="https://static.wikia.nocookie.net/cookingmama/images/4/47/MAMA_HAS_A_HAPPY.gif/revision/latest?cb=20180910213033" alt="Cooking Mama Working">
+  <h2>Whew! That’s a lot of ${itemName}!</h2>
+  <p>We'll get your ${quantity} ${itemName}(s) ready... but it'll take a little time! 🕒</p>
+  <p>Please wait patiently, okay? 💕</p>
+</div>
+        `;
+      } else {
+        // default screen
+        document.body.innerHTML = `
+<style>
+    body {
+      font-family: 'Copperplate', sans-serif;
+      background-color: #f8f9fa;
+      background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('https://flamgraphics.weebly.com/uploads/2/7/8/3/27837765/cookingmama-cookstar-port02.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(1.5px) brightness(0.9);
+  z-index: -1;
+}
+
+  .order-confirmation {
+    background: #fff0f5;
+    border: 8px solid #ffb6c1;
+    background-image: linear-gradient(135deg, #ffeef3, #d6f0ff);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    margin: 80px auto;
+    width: 600px;
+    text-align: center;
+    border-radius: 30px;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  }
+
+  .order-confirmation img {
+    width: 200px;
+    margin-bottom: 20px;
+  }
+
+  .order-confirmation h2 {
+    color: #ff4081;
+    font-size: 28px;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px white, 2px 2px pink;
+  }
+
+  .order-confirmation p {
+    font-size: 18px;
+    color: #444;
+  }
+
+  .order-confirmation p:last-child {
+    font-style: italic;
+    color: #888;
+    margin-top: 20px;
+  }
+</style>
+
+<div class="order-confirmation">
+  <img src="https://i1.sndcdn.com/artworks-000405192456-be2pi9-t500x500.jpg" alt="Cooking Mama">
+  <h2>Thank you for ordering ${quantity} ${itemName}(s)!</h2>
+  <p>Your ${itemName} will be ready shortly. Will make it Even <b>Better Than Mama!</b></p>
+  <p>Reload the page to order again.</p>
+  <p>Taca, Gazelle Anne B.</p>
+</div>
+        `;
+      }
+    } else {
+      alert("Bobo ka ba. Tinanong quantity e.");
+    }
+  }
+</script>
+
+
+</body>
+</html>
