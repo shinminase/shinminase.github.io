@@ -88,8 +88,9 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 <!-- SEXUALITY WITH PIXEL FLAG & SMALLER FOOTNOTE -->
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">SEXUALITY</span>
 <div style="text-align: right; text-transform: lowercase; color: #f2e9e9;">
-<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;"><img style="height: 12px; width: auto; display: inline-block; vertical-align: middle;" src="https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/49030b53-2aa7-40c0-a2c6-cc5df1eb01c1_l" alt="bisexual flag"> BISEXUAL <span style="font-size: 10px; opacity: 0.85;">(MALE PREFerence)</span></div>
-<div style="font-size: 8px; opacity: 0.65; margin-top: 1px;">&nbsp;Lord who knows why</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;"><img style="height: 12px; width: auto; display: inline-block; vertical-align: middle;" src="https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/49030b53-2aa7-40c0-a2c6-cc5df1eb01c1_l" alt="bisexual flag"> BISEXUAL</div>
+<div style="font-size: 10px; opacity: 0.85; margin-top: 1px;">(MALE PREFERENCE)</div>
+<div style="font-size: 8px; opacity: 0.65; margin-top: 1px;">Lord who knows why</div>
 </div>
 </div>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">NATIONALITY</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">AMERICAN</span></div>
@@ -149,7 +150,7 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 <div style="background: linear-gradient(to top, transparent, #C3A093, #EBCCC1); padding: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; scrollbar-color: #5d4c49 transparent; scrollbar-width: thin;">
 <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;">
 <div style="flex: 1; min-width: 130px; background-color: #2a1a16; padding: 10px; border-radius: 4px;">
-<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Likes</div>
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px; display: flex; justify-content: space-between; align-items: baseline;">Likes <span style="font-size: 9px; opacity: 0.65; font-weight: normal; font-variant: normal; text-transform: lowercase;">&nbsp;scroll to read full</span></div>
 <div style="max-height: 100px; overflow-y: auto; padding-right: 4px; scrollbar-color: transparent transparent;">
 <ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
 <li>Sleep</li>
@@ -163,7 +164,7 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 </div>
 </div>
 <div style="flex: 1; min-width: 130px; background-color: #2a1a16; padding: 10px; border-radius: 4px;">
-<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Dislikes</div>
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px; display: flex; justify-content: space-between; align-items: baseline;">Dislikes <span style="font-size: 9px; opacity: 0.65; font-weight: normal; font-variant: normal; text-transform: lowercase;">scroll to read full</span></div>
 <div style="max-height: 100px; overflow-y: auto; padding-right: 4px; scrollbar-color: transparent transparent;">
 <ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
 <li>Crowded places</li>
@@ -186,6 +187,19 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 <li>Sleeping</li>
 <li>Stargazing &amp; cloud watching</li>
 <li>People-watching during his breaks</li>
+</ul>
+</div>
+<!-- APPEARANCE SECTION -->
+<div style="background-color: #2a1a16; padding: 10px; border-radius: 4px; color: #f2e9e9; margin-top: 12px;">
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Appearance</div>
+<ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
+<li>Pale white skin</li>
+<li>Slightly skinny build</li>
+<li>Wavy ginger hair in a middle part</li>
+<li>Downturned dull blue eyes, dark eye bags</li>
+<li>Small slit scar on the center of his throat</li>
+<li>Light stubble</li>
+<li>Wears round glasses to help with his farsightedness</li>
 </ul>
 </div>
 </div>
