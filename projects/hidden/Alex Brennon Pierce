@@ -137,7 +137,7 @@ You may delete this entire comment to avoid negative space, aka EVERYTHING THAT 
 <div style="font-style: italic; font-weight: bold; font-size: 12px; color: #2e2222; white-space: nowrap;">moon music</div>
 <div style="font-size: 9px; color: #5c4747; white-space: nowrap;">COLDPLAY</div>
 </div>
-<!-- COMPACT VIDEO PLAYER --> <video style="cursor: url('https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/392a3bb2-4078-42ba-bcfb-661f5a9b22ad_l'), auto; width: 166px; height: 72px; border-radius: 6px; background-color: rgb(46, 34, 34); outline: none; object-fit: cover; flex-shrink: 0;" controls="controls"><source src="https://7633x14.nekoweb.org/fileholder/MoonMusic.mp4" type="video/mp4"> Your browser does not support the video tag.</video></div>
+<!-- COMPACT VIDEO PLAYER --> <video style="cursor: url('https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/392a3bb2-4078-42ba-bcfb-661f5a9b22ad_l'), auto; width: 166px; height: 72px; border-radius: 6px; background-color: rgb(46, 34, 34); outline: none; object-fit: cover; flex-shrink: 0;" controls="controls"><source src="https://7633x14.nekoweb.org/fileholder/MoonMusic.mp4" poster="https://i.imgur.com/azTTsXu.png" type="video/mp4"></video></div>
 </div>
 </div>
 </div>
