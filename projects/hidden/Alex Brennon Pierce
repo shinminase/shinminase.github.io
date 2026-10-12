@@ -1,0 +1,234 @@
+<!-- == ALEX PIERCE ==== 
+Main container & card backgrounds: #2e2222, #2a1a16 (Dark vintage browns/blacks)
+Accent & badge highlights: #ebccc1 (Soft parchment tint), #EA8E21 (Orange gradient highlight)
+Divider & scrollbar elements: #5d4c49 (Muted taupe/brown)
+Text & paper backgrounds: #f2e9e9 (Soft cream text), #f7f3ed (Notebook paper)
+Border/Shadow elements: rgba(0,0,0,0.1), rgba(0,0,0,0.15), rgba(0,0,0,0.25) and rgba(0,0,0,0.4)
+
+MADE WITH LOTS OF LOVE!
+================== -->
+<div style="width: 100%; max-width: 1000px; margin: 0 auto; background-color: #2e2222; background-image: linear-gradient(rgba(46, 34, 34, 0.85), rgba(46, 34, 34, 0.35)), url('https://images.unsplash.com/photo-1463143296037-46790ff95a7e?q=80&amp;w=1170&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.1.0&amp;ixid=NHwxMjA3fDA%3D'); background-size: cover; background-position: center; background-attachment: fixed; padding: 15px; font-family: Arial, sans-serif; box-sizing: border-box; color: #f2e9e9; --accent: #2e2222; --accent-secondary: #5c4747; --accent-tertiary: #2A1A16; cursor: url('https://i.imgur.com/yL9PWcZ.png'), auto;"><!-- TOP ROW: CHARACTER NAME BLOCK & TOP RIGHT BADGES -->
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+<!-- LEFT BANNER BLOCK WITH CRISP SOLID EBCCC1 TINT & RIGHT-SIDE TRANSPARENCY FADE -->
+<div style="flex: 1 1 280px; height: 50px; background-image: linear-gradient(to right, #ebccc1 0%, #ebccc1 60%, rgba(235, 204, 193, 0) 100%), url('https://i.imgur.com/RHsRH9d.gif'); background-blend-mode: overlay; background-size: cover, cover; background-position: center; border-radius: 0 15px 15px 0; overflow: hidden; box-shadow: 0 3px 5px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 0 15px;">
+<div style="width: 100%; overflow-x: auto; white-space: nowrap; scrollbar-width: thin; scrollbar-color: rgba(42, 26, 22, 0.5) transparent; padding-bottom: 3px; cursor: url('https://i.imgur.com/yL9PWcZ.png'), auto;">
+<div style="display: inline-block; font-size: 11px; color: #2e2222; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(255,255,255,0.4);">what a night, it lasted til morning / he got in his car without warning / as sleep deprivation pulls his face down / scream goodbye to the mortal playground</div>
+</div>
+</div>
+<!-- RIGHT CODE CREDIT BADGE -->
+<div style="background-color: #ebccc1; border-radius: 0 0 15px 15px; padding: 6px 12px; display: flex; align-items: center; align-self: flex-start; margin-top: -15px; box-shadow: 0 3px 5px rgba(0,0,0,0.1);"><a style="font-size: 9px; font-family: Arial, sans-serif; font-weight: bold; color: rgba(46, 34, 34, 0.75); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto;" href="/profile/serph" target="_blank" rel="noopener"> coded by: <img style="height: auto; width: auto; display: inline-block; vertical-align: middle; opacity: 0.85;" src="https://i.imgur.com/w0jQKM0.gif" alt="pixel book"> </a></div>
+<!-- MAIN BODY GRID LAYOUT -->
+<div style="display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap;">
+<!-- COLUMN 1: LEFT SIDE (AVATAR + SCROLLABLE BASICS + STATIC MUSIC PLAYER) -->
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 12px;">
+<!-- AVATAR BOX (ARCH SHAPE) -->
+<div style="background: linear-gradient(to top, transparent, #C3A093, #EBCCC1); padding: 12px 12px 0 12px;">
+<div style="background-color: #f7f3ed; padding: 5px; border-radius: 130px 130px 0 0; box-shadow: 0 0 8px rgba(0,0,0,0.15);">
+<div style="height: 320px; border-radius: 130px 130px 0 0; background-image: url('https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361-b871-1dc0a4c3952e/2488b499-4cf2-4eee-a597-30cdd5987912_l'); background-size: cover; background-position: center; box-shadow: inset 0 0 8px rgba(0,0,0,0.15); position: relative; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px;"><!-- ART CREDIT LINK OVERLAY INSIDE AVATAR --> <a style="font-family: Arial, sans-serif; font-size: 9px; font-weight: bold; color: rgba(242, 233, 233, 0.8); text-decoration: none; text-shadow: -1px -1px 0 rgba(46,34,34,0.8), 1px -1px 0 rgba(46,34,34,0.8), -1px 1px 0 rgba(46,34,34,0.8), 1px 1px 0 rgba(46,34,34,0.8), 0 1px 3px rgba(0,0,0,0.6); letter-spacing: 1px; z-index: 5; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto;" href="https://picrew.me/en/image_maker/2895147" target="_blank" rel="noopener">PICREW BY REELROLLSWEAT</a></div>
+</div>
+</div>
+<!-- BASICS BOX -->
+<div style="background-color: #2a1a16; padding: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-grow: 1; min-height: 400px; position: relative; margin-top: 25px;">
+<div style="background-color: #ebccc1; padding: 4px; display: flex; flex-direction: column; flex-grow: 1; position: relative;">
+  <!-- OVERLAPPING NAME CONTAINER -->
+<div style="text-align: center; font-family: 'Caveat', cursive, sans-serif; font-size: 25px; color: #2e2222; position: absolute; top: -38px; left: 0; right: 0; text-shadow: -2px -2px 0 #EBCCC1, 2px -2px 0 #EBCCC1, -2px 2px 0 #EBCCC1, 2px 2px 0 #EBCCC1, -2px 0 0 #EBCCC1, 2px 0 0 #EBCCC1, 0 -2px 0 #EBCCC1, 0 2px 0 #EBCCC1, 0 3px 6px rgba(0,0,0,0.25); z-index: 10;"><strong><span style="font-size: 32px;">A</span>LEX <span style="font-size: 32px;">P</span>IERCE</strong></div>
+<div style="background-color: #2e2222; background-image: linear-gradient(rgba(46, 34, 34, 0.75), rgba(46, 34, 34, 0.75)), url('https://i.imgur.com/R8e0rpA.png'); background-size: cover; background-position: center; color: #f2e9e9; padding: 22px 10px 0 10px; font-variant: small-caps; font-size: 14px; display: flex; flex-direction: column; flex-grow: 1; box-sizing: border-box;">
+<!-- TRAITS / FIELDS CONTAINER (SCROLLBAR ON LEFT) -->
+<div style="flex-grow: 1; height: 0; min-height: 200px; overflow-y: auto; direction: rtl; padding-left: 4px; scrollbar-color: #5d4c49 transparent; scrollbar-width: thin; margin-bottom: 8px;">
+<div style="direction: ltr;">
+<!-- NAMES GROUP -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">FULL NAME</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">ALEX BRENNON PIERCE</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">PEN NAME</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">A.B PIERCE</span></div>
+<!-- NICKNAMES -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; gap: 10px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">NICKNAMES</span>
+<div style="text-align: right;">
+<ul style="margin: 0; padding-right: 15px; padding-left: 0; text-transform: lowercase; color: #f2e9e9; direction: rtl; list-style-position: outside;">
+<li>spacecase</li>
+<li>pluto</li>
+</ul>
+<div style="font-size: 9px; opacity: 0.8; text-transform: lowercase; margin-top: 2px;">(both given by his brother)</div>
+</div>
+</div>
+<div style="border-top: 1px solid #5d4c49; margin: 6px 0;">&nbsp;</div>
+<!-- DETAILS GROUP -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">AGE</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">26</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">GENDER</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">CISGENDER MALE</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">PRONOUNS</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">HE/HIM</span></div>
+<!-- SEXUALITY WITH PIXEL FLAG & SMALLER FOOTNOTE -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">SEXUALITY</span>
+<div style="text-align: right; text-transform: lowercase; color: #f2e9e9;">
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;"><img style="height: 12px; width: auto; display: inline-block; vertical-align: middle;" src="https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/49030b53-2aa7-40c0-a2c6-cc5df1eb01c1_l" alt="bisexual flag"> BISEXUAL <span style="font-size: 10px; opacity: 0.85;">(MALE PREFerence)</span></div>
+<div style="font-size: 8px; opacity: 0.65; margin-top: 1px;">&nbsp;Lord who knows why</div>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">NATIONALITY</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">AMERICAN</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">HEIGHT</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;">5'10"</span></div>
+<div style="border-top: 1px solid #5d4c49; margin: 6px 0;">&nbsp;</div>
+<!-- OCCUPATION -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; gap: 10px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">OCCUPATION</span>
+<ul style="margin: 0; padding-right: 15px; padding-left: 0; text-transform: lowercase; color: #f2e9e9; direction: rtl; list-style-position: outside;">
+<li>Library Aide</li>
+<li>Warehouse Worker</li>
+<li>Tech Office Janitor</li>
+<li>Aspiring Fulltime Author</li>
+</ul>
+</div>
+<div style="border-top: 1px solid #5d4c49; margin: 6px 0;">&nbsp;</div>
+<!-- PERSONALITY -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; gap: 10px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">PERSONALITY</span>
+<ul style="margin: 0; padding-right: 15px; padding-left: 0; text-transform: lowercase; color: #f2e9e9; direction: rtl; list-style-position: outside;">
+<li>introverted &amp; observant</li>
+<li>calm, gentle, &amp; very patient (rarely gets angry)</li>
+<li>polite, kind, &amp; respectful</li>
+<li>imaginative &amp; humble</li>
+</ul>
+</div>
+<div style="border-top: 1px solid #5d4c49; margin: 6px 0;">&nbsp;</div>
+<!-- TRAITS / FLAWS -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; gap: 10px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9; white-space: nowrap;">Flaws</span>
+<ul style="margin: 0; padding-right: 15px; padding-left: 0; text-transform: lowercase; color: #f2e9e9; direction: rtl; list-style-position: outside;">
+<li>Quick to make assumptions about people</li>
+<li>Overworks himself</li>
+<li>An overthinker</li>
+<li>Socially awkward</li>
+<li>A perfectionist</li>
+<li>Selectively honest</li>
+<li>Sometimes clueless</li>
+</ul>
+</div>
+<div style="border-top: 1px solid #5d4c49; margin: 6px 0;">&nbsp;</div>
+<!-- PHOBIA WITH TOOLTIP EXPLANATION -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;"><span style="font-weight: bold; text-transform: lowercase; color: #f2e9e9;">phobia</span> <span style="text-align: right; text-transform: lowercase; color: #f2e9e9;"><span style="cursor: help; border-bottom: 1px dotted #f2e9e9;" title="A fear of imperfection or making mistakes">Atelophobia</span></span></div>
+</div>
+</div>
+<!-- STATIC MUSIC PLAYER -->
+<div style="background-color: #ebccc1; border-radius: 15px 15px 0 0; padding: 6px 10px; color: #2e2222; background-image: linear-gradient(rgba(235, 204, 193, 0.75), rgba(235, 204, 193, 0.75)), url('https://i.imgur.com/CtlppWx.png'); background-size: cover; background-position: center; display: flex; justify-content: space-between; align-items: center; margin-top: auto; gap: 8px;">
+<div style="flex-shrink: 0;">
+<div style="font-style: italic; font-weight: bold; font-size: 12px; color: #2e2222; white-space: nowrap;">moon music</div>
+<div style="font-size: 9px; color: #5c4747; white-space: nowrap;">COLDPLAY</div>
+</div>
+<!-- COMPACT VIDEO PLAYER --> <video style="cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; width: 166px; height: 72px; border-radius: 6px; background-color: rgb(46, 34, 34); outline: none; object-fit: cover; flex-shrink: 0;" controls="controls"><source src="https://7633x14.nekoweb.org/fileholder/MoonMusic.mp4" type="video/mp4"> Your browser does not support the video tag.</video></div>
+</div>
+</div>
+</div>
+</div>
+<!-- COLUMN 2: CENTER (SCROLLABLE LIKES/DISLIKES & HOBBIES + QUOTE BAR + RECEIPT-STYLE BACKGROUND STORY & TRIVIA) -->
+<div style="flex: 2 1 300px; display: flex; flex-direction: column; gap: 12px;">
+<!-- OUTER CONTAINER WITH THIN SCROLLBAR -->
+<div style="background: linear-gradient(to top, transparent, #C3A093, #EBCCC1); padding: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; scrollbar-color: #5d4c49 transparent; scrollbar-width: thin;">
+<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;">
+<div style="flex: 1; min-width: 130px; background-color: #2a1a16; padding: 10px; border-radius: 4px;">
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Likes</div>
+<div style="max-height: 100px; overflow-y: auto; padding-right: 4px; scrollbar-color: transparent transparent;">
+<ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
+<li>Sleep</li>
+<li>Books</li>
+<li>Coffee</li>
+<li>Calm music</li>
+<li>Outerspace</li>
+<li>Stars &amp; the moon</li>
+<li>Quiet &amp; peaceful atmospheres</li>
+</ul>
+</div>
+</div>
+<div style="flex: 1; min-width: 130px; background-color: #2a1a16; padding: 10px; border-radius: 4px;">
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Dislikes</div>
+<div style="max-height: 100px; overflow-y: auto; padding-right: 4px; scrollbar-color: transparent transparent;">
+<ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
+<li>Crowded places</li>
+<li>Being messy and disorganized</li>
+<li>Arguments and fights</li>
+<li>Snakes</li>
+<li>Venus fly traps</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- HOBBIES SECTION LIST BELOW LIKES & DISLIKES -->
+<div style="background-color: #2a1a16; padding: 10px; border-radius: 4px; color: #f2e9e9;">
+<div style="font-variant: small-caps; font-weight: bold; color: #f2e9e9; margin-bottom: 6px; border-bottom: dotted 2px #5c4747; padding-bottom: 3px; font-size: 13px;">Hobbies</div>
+<ul style="margin: 0; padding-left: 15px; font-size: 11px; color: #e0d6d6; line-height: 1.5;">
+<li>Reading &amp; writing</li>
+<li>Daydreaming (passes the time)</li>
+<li>Listening to Coldplay</li>
+<li>Going on walks</li>
+<li>Sleeping</li>
+<li>Stargazing &amp; cloud watching</li>
+<li>People-watching during his breaks</li>
+</ul>
+</div>
+</div>
+<!-- TAPE-STYLE QUOTE BAR -->
+<div style="background-image: url('https://i.imgur.com/j3KuZLc.png'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; padding: 12px 25px; text-align: center; font-family: 'Caveat', cursive, sans-serif; font-size: 18px; font-weight: bold; color: #2e2222; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); display: flex; align-items: center; justify-content: center;">&ldquo;Well... at least I'm not dead.&rdquo;</div>
+<!-- LIBRARY RECEIPT-STYLE BACKGROUND STORY FULL-HEIGHT SCROLLABLE CONTAINER -->
+<div style="background-image: linear-gradient(rgba(247, 243, 237, 0.93), rgba(247, 243, 237, 0.93)), url('https://i.imgur.com/z3o4KyI.png'); background-size: cover; background-position: center; padding: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.1); font-size: 12px; flex-grow: 1; display: flex; flex-direction: column; box-sizing: border-box;">
+<div style="flex-grow: 1; height: 0; min-height: 340px; overflow-y: auto; padding-right: 6px; scrollbar-color: var(--accent) transparent; display: flex; flex-direction: column; font-family: 'Courier New', Courier, monospace; color: #222222; box-sizing: border-box;"><!-- LIBRARY RECEIPT HEADER -->
+<div style="text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px; margin-bottom: 2px; text-transform: uppercase;">background story</div>
+<div style="text-align: center; font-size: 10px; color: #555; margin-bottom: 4px;">BRANCH #404 // PATRON ID: AP-026</div>
+<div style="text-align: center; font-size: 10px; color: #555; margin-bottom: 10px;">DUE DATE: UNLIMITED RENEWAL</div>
+<div style="border-bottom: dashed 2px #555; margin-bottom: 10px;">&nbsp;</div>
+<!-- SECTION SUB-HEADER: BACKGROUND STORY --><!-- RECEIPT BODY CONTENT -->
+<div style="font-size: 11px; line-height: 1.5; margin-bottom: 15px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br><br>Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</div>
+<div style="font-size: 11px; line-height: 1.5; margin-bottom: 15px;">Mauris massa. Vestibulum lacinia arcu eget nulla.</div>
+<div style="border-bottom: dashed 2px #555; margin-bottom: 10px;">&nbsp;</div>
+<!-- SECTION SUB-HEADER: TRIVIA -->
+<div style="font-weight: bold; font-size: 12px; letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px dotted rgb(136, 136, 136); padding-bottom: 2px; text-align: center;">TRIVIA</div>
+<!-- TRIVIA BULLETED LIST CONTENT -->
+<ul style="margin: 0 0 15px 0; padding-left: 18px; font-size: 11px; line-height: 1.5;">
+<li>A</li>
+<li>B</li>
+<li>C</li>
+<li>D</li>
+<li>E</li>
+<li>F</li>
+<li>G</li>
+</ul>
+<!-- RECEIPT TOTALS / FOOTER SECTION -->
+<div style="border-bottom: dashed 2px #555; margin-bottom: 10px;">&nbsp;</div>
+<div style="font-size: 10px; display: flex; justify-content: space-between; margin-bottom: 3px;">ITEMS CHECKED OUT: 1&nbsp;</div>
+<div style="font-size: 10px; display: flex; justify-content: space-between; margin-bottom: 3px;">OVERDUE FINES: $0.00</div>
+<div style="font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 12px; border-top: solid 1px #555; padding-top: 4px;">&nbsp;</div>
+<div style="text-align: center; font-size: 10px; color: #444; margin-top: auto; padding-top: 10px;">THANK YOU FOR VISITING<br>PLEASE COME AGAIN</div>
+</div>
+</div>
+</div>
+<!-- COLUMN 3: RIGHT SIDE (MOODBOARD IMAGES WITH SQUARE TABS) -->
+<div style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 12px;">
+<div style="background-color: #ebccc1; padding: 5px; box-shadow: 0 0 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; display: flex;">
+<div style="width: 100%; aspect-ratio: 1 / 1; position: relative; background-image: url('https://i.imgur.com/lwgWOBL.jpeg'); background-size: cover; background-position: center;"><!-- TAB 1 DETAILS --><details style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 1;">
+<summary style="position: absolute; bottom: -42px; left: calc(50% - 75px); list-style: none; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; font-weight: bold; color: #2e2222; background: #EBCCC1; padding: 2px 8px; border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">1</summary>
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/GwKgXjd.png'); background-size: cover; background-position: center;">&nbsp;</div>
+</details><!-- TAB 2 DETAILS --><details style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 2;">
+<summary style="position: absolute; bottom: -42px; left: calc(50% - 38px); list-style: none; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; font-weight: bold; color: #2e2222; background: #EBCCC1; padding: 2px 8px; border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">2</summary>
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/NJbo2Hy.png'); background-size: cover; background-position: center;">&nbsp;</div>
+</details><!-- TAB 3 DETAILS --><details style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 3;">
+<summary style="position: absolute; bottom: -42px; left: calc(50% - 1px); list-style: none; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; font-weight: bold; color: #2e2222; background: #EBCCC1; padding: 2px 8px; border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">3</summary>
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/7K0Fnpl.png'); background-size: cover; background-position: center;">&nbsp;</div>
+</details><!-- TAB 4 DETAILS --><details style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 4;">
+<summary style="position: absolute; bottom: -42px; left: calc(50% + 36px); list-style: none; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; font-weight: bold; color: #2e2222; background: #EBCCC1; padding: 2px 8px; border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">4</summary>
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/sjivjjV.png'); background-size: cover; background-position: center;">&nbsp;</div>
+</details><!-- TAB 5 DETAILS --><details style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 5;">
+<summary style="position: absolute; bottom: -42px; left: calc(50% + 73px); list-style: none; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; font-weight: bold; color: #2e2222; background: #EBCCC1; padding: 2px 8px; border-radius: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10;">5</summary>
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/KlRHOt5.png'); background-size: cover; background-position: center;">&nbsp;</div>
+</details></div>
+</div>
+<!-- CREATOR'S NOTE BOX -->
+<div style="background-color: #ebccc1; padding: 5px; box-shadow: 0 0 8px rgba(0,0,0,0.1); margin-top: 25px; position: relative; height: 420px;">
+<div style="position: absolute; top: 5px; bottom: 5px; left: 5px; right: 5px; background-color: #f7f3ed; background-image: linear-gradient(to bottom, transparent 23px, #d6c5b8 23px, #d6c5b8 24px); background-size: 100% 24px; background-position: 0 4px; color: #4a3b32; font-size: 12px; font-family: Arial, sans-serif; font-weight: 500; line-height: 24px; padding: 10px 12px; box-sizing: border-box; text-align: left; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">
+<div style="font-family: 'Caveat', cursive, sans-serif; font-size: 16px; font-weight: bold; background-image: linear-gradient(to right, #EA8E21 0%, #EA8E21 20%, transparent 100%); display: block; width: 100%; padding: 2px 6px; box-sizing: border-box;">Creator's Note</div>
+<div style="margin-top: 4px;">Alex is the main protagonist of my fantasy novel <strong>"Unwritten"</strong>, which is currently in the works. Feel free to ask any questions about him or give constructive criticism.</div>
+<div style="margin-top: 8px;">Super cute page doll sprites were made by <a style="color: #4a3b32; font-weight: bold; text-decoration: underline; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto;" href="/profile/patchesthebear" target="_blank" rel="noopener">patchesthebear</a> :D Please go check them out.</div>
+<div style="margin-top: 8px;"><a style="font-family: 'Caveat', cursive, sans-serif; font-size: 16px; font-weight: bold; color: #4a3b32; text-decoration: underline; cursor: url('https://i.imgur.com/Z4Yxjxp.png'), auto; background-image: linear-gradient(to right, #EA8E21 0%, #EA8E21 20%, transparent 100%); display: block; width: 100%; padding: 2px 6px; box-sizing: border-box;" href="https://www.pinterest.com/ballistic_biscuits/alex-brennon-pierce/" target="_blank" rel="noopener">Alex's Pinterest Board</a></div>
+</div>
+</div>
+<!-- VOICECLAIM HEADER + BOOK YOUTUBE VIDEO PLAYER -->
+<div style="text-align: center; font-family: 'Caveat', cursive, sans-serif; font-size: 24px; color: #ebccc1; margin-bottom: -12px; text-shadow: -2px -2px 0 #2e2222, 2px -2px 0 #2e2222, -2px 2px 0 #2e2222, 2px 2px 0 #2e2222, -2px 0 0 #2e2222, 2px 0 0 #2e2222, 0 -2px 0 #2e2222, 0 2px 0 #2e2222, 0 3px 6px rgba(0,0,0,0.4); position: relative; z-index: 10;"><strong><span style="font-size: 30px;">V</span>OICECLAIM</strong></div>
+<div style="background-color: #ebccc1; padding: 5px; box-shadow: 0 0 8px rgba(0,0,0,0.1); height: 140px; display: flex; mask-image: url('https://i.imgur.com/TUukaIa.png'); mask-size: contain; mask-repeat: no-repeat; mask-position: center; border: 3px solid #2e2222; position: relative;">
+<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;"><iframe style="width: 100%; height: 100%; border: 0; min-height: 120px;" title="YouTube video player" src="https://www.youtube.com/embed/6eQ65xxSa6w?si=mlc6MoGybf5G9EOR" allow="accelerometer; clipboard-write; encrypted-media; igger; picture-in-picture" allowfullscreen="allowfullscreen"></iframe> <!-- EBCCC1 Tint Layer that preserves video click-to-play functionality -->
+<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(235, 204, 193, 0.35); pointer-events: none;">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
