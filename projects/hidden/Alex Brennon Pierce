@@ -33,11 +33,9 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 
 * Coded with love! He was super fun to work on, thank you for your patience!
 
+You may delete this entire comment to avoid negative space, aka EVERYTHING THAT STARTS BEFORE DIV STYLE. 
 ============================================================ 
 -->
-
-<!-- ==== CODE LAYOUT ==== -->
-
 <div style="width: 100%; max-width: 1000px; margin: 0 auto; background-color: #2e2222; background-image: linear-gradient(rgba(46, 34, 34, 0.85), rgba(46, 34, 34, 0.35)), url('https://images.unsplash.com/photo-1463143296037-46790ff95a7e?q=80&amp;w=1170&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.1.0&amp;ixid=NHwxMjA3fDA%3D'); background-size: cover; background-position: center; background-attachment: fixed; padding: 15px; font-family: Arial, sans-serif; box-sizing: border-box; color: #f2e9e9; --accent: #2e2222; --accent-secondary: #5c4747; --accent-tertiary: #2A1A16; cursor: url('https://cdn.characterhub.com/r/1280w/users/fd9e396d-4c73-4274-90d9-a0085c7a70c7/d9958b98-bcc7-47d7-bbdb-d24b6d8e54b1_l'), auto;"><!-- TOP ROW: CHARACTER NAME BLOCK & TOP RIGHT BADGES -->
 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
 <!-- LEFT BANNER BLOCK WITH EBCCC1 TINT -->
@@ -270,7 +268,7 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 <!-- VOICECLAIM HEADER + BOOK YOUTUBE VIDEO PLAYER -->
 <div style="text-align: center; font-family: 'Caveat', cursive, sans-serif; font-size: 24px; color: #ebccc1; margin-bottom: -12px; text-shadow: -2px -2px 0 #2e2222, 2px -2px 0 #2e2222, -2px 2px 0 #2e2222, 2px 2px 0 #2e2222, -2px 0 0 #2e2222, 2px 0 0 #2e2222, 0 -2px 0 #2e2222, 0 2px 0 #2e2222, 0 3px 6px rgba(0,0,0,0.4); position: relative; z-index: 10;"><strong><span style="font-size: 30px;">V</span>OICECLAIM</strong></div>
 <div style="background-color: #ebccc1; padding: 5px; box-shadow: 0 0 8px rgba(0,0,0,0.1); height: 140px; display: flex; mask-image: url('https://i.imgur.com/TUukaIa.png'); mask-size: contain; mask-repeat: no-repeat; mask-position: center; border: 3px solid #2e2222; position: relative;">
-<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;"><iframe style="width: 100%; height: 100%; border: 0; min-height: 120px;" title="YouTube video player" src="https://www.youtube.com/embed/6eQ65xxSa6w?si=mlc6MoGybf5G9EOR" allow="accelerometer; clipboard-write; encrypted-media; igger; picture-in-picture" allowfullscreen="allowfullscreen"></iframe> <!-- EBCCC1 Tint Layer that preserves video click-to-play functionality -->
+<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;"><iframe style="width: 100%; height: 100%; border: 0; min-height: 120px;" title="YouTube video player" src="https://www.youtube.com/embed/6eQ65xxSa6w?si=mlc6MoGybf5G9EOR" allow="accelerometer; clipboard-write; picture-in-picture" allowfullscreen="allowfullscreen"></iframe> <!-- EBCCC1 Tint Layer that preserves video click-to-play functionality -->
 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(235, 204, 193, 0.35); pointer-events: none;">&nbsp;</div>
 </div>
 </div>
@@ -278,4 +276,3 @@ Main Avatar Image: https://cdn.characterhub.com/r/1280w/users/ff3b255d-76c1-4361
 </div>
 </div>
 </div>
-<!-- ==== CODE LAYOUT END ==== -->
