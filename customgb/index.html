@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>serph/runo's guestbook</title>
-  <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
   <style>
-    /* Windows XP Wallpaper Background */
+
     body {
-      background: #4a88eb url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
+      background: #4a88eb url('https://i.imgur.com/wQpyvWN.png') no-repeat center center fixed;
       background-size: cover;
       color: #000;
       font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 20px 20px 60px 20px; 
     }
 
     .guestbook-wrapper {
@@ -21,7 +20,7 @@
       margin: 0 auto;
     }
 
-    /* Page Header Aesthetics */
+
     .gb-header {
       text-align: center;
       margin-bottom: 20px;
@@ -67,19 +66,23 @@
       margin-right: 4px;
     }
 
-    /* Inline Avatar next to Name Label */
+
+    .entry-name-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
     .entry-name-avatar {
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       border-radius: 3px;
       object-fit: cover;
       background: #fff;
-      vertical-align: middle;
-      margin-right: 6px;
       border: 1px solid #7f9db9;
+      flex-shrink: 0;
     }
 
-    /* Owner Reply Container styled like an XP Dialog box */
+
     .owner-reply {
       margin-top: 15px;
       padding: 10px 12px;
@@ -209,8 +212,12 @@
       vertical-align: middle;
       display: inline-block;
     }
+    
+
     .entry-message-body img:not(.custom-emoji) { 
-      max-width: 100%; 
+      max-width: 50%; 
+      max-height: 50%;
+      width: auto;
       height: auto; 
       margin: 6px 0; 
       display: block; 
@@ -228,7 +235,7 @@
       min-width: unset !important;
     }
 
-    /* Modal Styling */
+
     .custom-modal {
       display: none;
       position: fixed;
@@ -239,10 +246,10 @@
       z-index: 1000;
     }
 	
-    /* Fix XP.css field alignment */
+
     .entry-field {
       display: flex !important;
-      align-items: center !important;
+      align-items: flex-start !important;
       margin-bottom: 6px !important;
     }
     .entry-label {
@@ -254,12 +261,177 @@
     .entry-value {
       flex: 1 !important;
     }
+
+    /* --- Windows XP Taskbar  --- */
+    .xp-taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: linear-gradient(to bottom, #245edb 0%, #3c7fb9 5%, #1f47b9 50%, #102e8d 100%);
+      border-top: 1px solid #0a246a;
+      display: flex;
+      align-items: center;
+      z-index: 9999;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 11px;
+      user-select: none;
+    }
+    .xp-start-btn {
+      height: 100%;
+      background: linear-gradient(to bottom, #389638 0%, #5cb85c 40%, #2e7d32 50%, #1b5e20 100%);
+      border: none;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 13px;
+      padding: 0 16px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+      box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
+    }
+    .xp-start-btn:hover {
+      background: linear-gradient(to bottom, #42a542 0%, #66bb6a 40%, #388e3c 50%, #2e7d32 100%);
+    }
+    .xp-taskbar-tasks {
+      flex: 1;
+      display: flex;
+      padding: 0 6px;
+      gap: 4px;
+    }
+    .xp-task-item {
+      background: linear-gradient(to bottom, #3c80f6 0%, #2a63d9 50%, #1e4bb8 100%);
+      border: 1px solid #102e8d;
+      border-radius: 3px;
+      color: #fff;
+      padding: 2px 8px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .xp-task-item.active {
+      background: linear-gradient(to bottom, #102e8d 0%, #1e4bb8 50%, #2a63d9 100%);
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+    }
+    .xp-tray {
+      height: 100%;
+      background: linear-gradient(to bottom, #1282c9 0%, #108de3 100%);
+      border-left: 1px solid #094488;
+      padding: 0 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    /* Start Menu Popup */
+    .xp-start-menu {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      width: 240px;
+      background: #fff;
+      border: 2px solid #0055ea;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+      z-index: 10000;
+    }
+    .xp-start-header {
+      background: linear-gradient(to right, #0a246a 0%, #a6caf0 100%);
+      color: #fff;
+      padding: 8px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .xp-start-body {
+      padding: 6px 0;
+    }
+    .xp-start-item {
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #000;
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .xp-start-item:hover {
+      background: #316ac5;
+      color: #fff;
+    }
+
+    /* Pagination Controls */
+    .pagination-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .pagination-controls button {
+      background: #ece9d8;
+      border: 2px outset #ffffff;
+      padding: 4px 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .pagination-controls button:active {
+      border-style: inset;
+    }
+    .pagination-controls button:disabled {
+      color: #888;
+      cursor: default;
+      border-style: solid;
+      border-color: #ccc;
+    }
+    .page-indicator {
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* About System Modal Video Styling */
+    .about-video-container {
+      margin-top: 8px;
+      border: 1px solid #7f9db9;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .about-video-container video {
+      width: 100%;
+      height: auto;
+      max-height: 280px;
+      display: block;
+    }
   </style>
 </head>
 <body>
 
+<div style="max-width: 800px; margin: 0 auto 15px auto;">
+  <iframe src="https://shinminase.github.io/projects/ultraguest/" width="100%" height="450" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+</div>
+
 <div class="guestbook-wrapper">
-  
   <div class="gb-header">
     <h1 class="gb-title" id="gb-title">serph/runo's guestbook</h1>
     <div class="gb-subtitle">to send a photo: attach an image link!</div>
@@ -310,7 +482,7 @@
             <button type="button" onclick="insertTag('[size=small]', '[/size]')">Small</button>
             <button type="button" onclick="insertTag('[size=large]', '[/size]')">Large</button>
             <button type="button" onclick="openImageModal()">🖼️ Image</button>
-            <button type="button" onclick="toggleEmojiDropdown()">😀 Emojis ▼</button>
+            <button type="button" onclick="toggleEmojiDropdown()">Emoticons ▼</button>
             <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">👀️ Preview</button>
 
             <!-- CUSTOM EMOJI DROPDOWN GRID -->
@@ -357,6 +529,9 @@
   <!-- Messages List Container -->
   <div id="entries-container">Loading entries...</div>
 
+  <!-- Pagination Buttons Container -->
+  <div id="pagination-container"></div>
+
 </div>
 
 <!-- Custom Image Modal -->
@@ -379,7 +554,7 @@
   </div>
 </div>
 
-<!-- Custom Message Preview Modal -->
+
 <div id="preview-modal" class="custom-modal">
   <div class="window" style="width: 480px; max-width: 90vw;">
     <div class="title-bar">
@@ -390,10 +565,8 @@
     </div>
     <div class="window-body">
       <div class="entry-field">
-        <span class="entry-label">
-          <img id="preview-avatar-name" src="" class="entry-name-avatar" style="display:none;">Name :
-        </span>
-        <span class="entry-value" id="preview-name"></span>
+        <span class="entry-label">Name :</span>
+        <span class="entry-value" id="preview-name-container"></span>
       </div>
       <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value" id="preview-date"></span></div>
       <div class="entry-field" id="preview-github-row"><span class="entry-label">github :</span><span class="entry-value" id="preview-github"></span></div>
@@ -412,6 +585,33 @@
 
       <div style="margin-top: 15px; text-align: right;">
         <button type="button" onclick="closePreviewModal()">Close Preview</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom About System Modal -->
+<div id="about-modal" class="custom-modal">
+  <div class="window" style="width: 480px; max-width: 90vw;">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> about_system.exe
+      </div>
+      <div class="title-bar-controls"><button aria-label="Close" onclick="closeAboutModal()"></button></div>
+    </div>
+    <div class="window-body">
+      <div style="font-weight: bold; margin-bottom: 6px; font-size: 2em; color: #0055ea; text-align: center;">
+        <a href="https://github.com/shinminase">shinminase on github</a>
+      </div>
+
+      <div class="about-video-container">
+        <video id="about-video-player" controls preload="metadata">
+          <source src="https://file.garden/ZlwiKgzAvyz0wLRz/moviegallery/nostalgic" type="video/mp4">
+        </video>
+      </div>
+
+      <div style="margin-top: 15px; text-align: right;">
+        <button type="button" onclick="closeAboutModal()">Close</button>
       </div>
     </div>
   </div>
@@ -437,6 +637,44 @@
   </div>
 </div>
 
+<!-- Windows XP Start Menu Popup -->
+<div id="xp-start-menu" class="xp-start-menu">
+  <div class="xp-start-header">
+    <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" width="20" height="20" style="border-radius:2px;">
+    <span>serph / runo</span>
+  </div>
+  <div class="xp-start-body">
+    <div class="xp-start-item" onclick="window.scrollTo({top:0, behavior:'smooth'}); toggleStartMenu();">
+      <span>Back to Top</span>
+    </div>
+    <div class="xp-start-item" onclick="document.getElementById('gb-form-window').scrollIntoView({behavior:'smooth'}); toggleStartMenu();">
+      <span>Sign Guestbook</span>
+    </div>
+    <div class="xp-start-item" onclick="openAboutModal(); toggleStartMenu();">
+      <span>About System</span>
+    </div>
+  </div>
+</div>
+
+<!-- Windows XP Taskbar -->
+<div class="xp-taskbar">
+  <button class="xp-start-btn" onclick="toggleStartMenu()">
+    <img src="https://www.rw-designer.com/icon-image/18835-256x256x4.png" width="16" height="16"> start
+  </button>
+  <div class="xp-taskbar-tasks">
+    <div class="xp-task-item active">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" width="14" height="14"> guestbook.exe
+    </div>
+  </div>
+  <div class="xp-tray" id="xp-clock">
+    12:00 PM
+  </div>
+</div>
+
+<!-- Audio Elements for Click and Keyboard ASMR Sounds -->
+<audio id="click-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/xpclick" preload="auto"></audio>
+<audio id="type-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/type" preload="auto"></audio>
+
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -446,7 +684,56 @@
   const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
 
   let activeReplyId = null;
-  const DEFAULT_AVATAR = 'https://abs.twimg.com/emoji/v1/72x72/1f4e8.png';
+  let currentPage = 1;
+  const pageSize = 20;
+
+
+  function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    document.getElementById('xp-clock').textContent = `${hours}:${minutes} ${ampm}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+
+  window.toggleStartMenu = function() {
+    const menu = document.getElementById('xp-start-menu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.xp-start-menu') && !e.target.closest('.xp-start-btn')) {
+      document.getElementById('xp-start-menu').style.display = 'none';
+    }
+  });
+
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('button, a')) {
+      const sound = document.getElementById('click-sound');
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+      }
+    }
+  });
+
+
+  const msgTextarea = document.getElementById('gb-message');
+  if (msgTextarea) {
+    msgTextarea.addEventListener('keydown', (e) => {
+      if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace') {
+        const typeSound = document.getElementById('type-sound');
+        if (typeSound) {
+          typeSound.currentTime = 0;
+          typeSound.play().catch(() => {});
+        }
+      }
+    });
+  }
 
   const EMOJI_MAP = {
     ':smile:': '<img src="https://i.imgur.com/kgN9eRw.gif" class="custom-emoji" alt="smile">',
@@ -526,19 +813,20 @@
     const message = document.getElementById('gb-message').value || '(Empty message)';
 
     const titleIcon = document.getElementById('preview-avatar-title');
-    const nameAvatar = document.getElementById('preview-avatar-name');
-
     if (avatar) {
       titleIcon.src = avatar;
       titleIcon.style.display = 'inline-block';
-      nameAvatar.src = avatar;
-      nameAvatar.style.display = 'inline-block';
     } else {
       titleIcon.style.display = 'none';
-      nameAvatar.style.display = 'none';
     }
 
-    document.getElementById('preview-name').textContent = name;
+    const previewNameContainer = document.getElementById('preview-name-container');
+    if (avatar) {
+      previewNameContainer.innerHTML = `<div class="entry-name-container"><img src="${avatar}" class="entry-name-avatar"><span>${name}</span></div>`;
+    } else {
+      previewNameContainer.textContent = name;
+    }
+
     document.getElementById('preview-date').textContent = new Date().toLocaleDateString('en-US', {
       month: 'long', day: '2-digit', year: 'numeric'
     });
@@ -564,6 +852,16 @@
   };
   window.closePreviewModal = () => {
     document.getElementById('preview-modal').style.display = 'none';
+  };
+
+
+  window.openAboutModal = () => {
+    document.getElementById('about-modal').style.display = 'flex';
+  };
+  window.closeAboutModal = () => {
+    const video = document.getElementById('about-video-player');
+    if (video) video.pause();
+    document.getElementById('about-modal').style.display = 'none';
   };
 
   window.openReplyModal = (id, currentHtml) => {
@@ -601,9 +899,33 @@
     return safe.replace(/\n/g, '<br>');
   }
 
+  window.changePage = function(direction) {
+    currentPage += direction;
+    loadEntries();
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  }
+
   async function loadEntries() {
     const container = document.getElementById('entries-container');
-    const { data, error } = await supabase.from('guestbook').select('*').order('created_at', { ascending: false });
+    const paginationContainer = document.getElementById('pagination-container');
+
+    const { count, error: countError } = await supabase.from('guestbook').select('*', { count: 'exact', head: true });
+    if (countError) {
+      container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading count: ${countError.message}</p>`;
+      return;
+    }
+
+    const totalPages = Math.ceil((count || 0) / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const from = (currentPage - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error } = await supabase.from('guestbook')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
     if (error) {
       container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
@@ -612,6 +934,7 @@
 
     if (data.length === 0) {
       container.innerHTML = '<p style="color: #fff; text-shadow:1px 1px 2px #000;">No messages yet. Be the first to sign!</p>';
+      paginationContainer.innerHTML = '';
       return;
     }
 
@@ -623,7 +946,10 @@
       
       const hasAvatar = entry.email && entry.email.trim() !== '';
       const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
-      const nameAvatarHtml = hasAvatar ? `<img src="${entry.email}" class="entry-name-avatar">` : '';
+      
+      const nameHtml = hasAvatar 
+        ? `<div class="entry-name-container"><img src="${entry.email}" class="entry-name-avatar"><span>${entry.name}</span></div>` 
+        : entry.name;
 
       const formattedDate = new Date(entry.created_at).toLocaleDateString('en-US', {
         month: 'long', day: '2-digit', year: 'numeric'
@@ -640,10 +966,8 @@
         </div>
         <div class="window-body">
           <div class="entry-field">
-            <span class="entry-label">
-              ${nameAvatarHtml}Name :
-            </span>
-            <span class="entry-value">${entry.name}</span>
+            <span class="entry-label">Name :</span>
+            <span class="entry-value">${nameHtml}</span>
           </div>
           <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value">${formattedDate}</span></div>
           ${entry.user_url ? `<div class="entry-field"><span class="entry-label">github :</span><span class="entry-value">${entry.user_url}</span></div>` : ''}
@@ -669,6 +993,15 @@
       `;
       container.appendChild(el);
     });
+
+
+    paginationContainer.innerHTML = `
+      <div class="pagination-controls">
+        <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt; Prev</button>
+        <span class="page-indicator">Page ${currentPage} of ${totalPages}</span>
+        <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next &gt;&gt;</button>
+      </div>
+    `;
   }
 
   document.getElementById('gb-form').addEventListener('submit', async (e) => {
@@ -694,6 +1027,7 @@
       document.getElementById('gb-github').value = '';
       document.getElementById('gb-fav-song').value = '';
       document.getElementById('gb-avatar').value = '';
+      currentPage = 1;
       loadEntries();
     }
   });
