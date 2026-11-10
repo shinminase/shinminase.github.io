@@ -123,8 +123,7 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  // Replace YOUR_SUPABASE_PROJECT_URL with the URL from your Supabase Connect dialog
-  const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+  const SUPABASE_URL = 'https://twvtjoehfbzusmfaisum.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -210,8 +209,7 @@
   // Admin HTML reply mechanism
   window.openAdminReply = async function(id) {
     const password = prompt("Enter Admin Password:");
-    // Simple frontend gatekeeper password check
-    if (password !== "letmein123") { // Change "letmein123" to whatever secret you want!
+    if (password !== "letmein123") { // You can change "letmein123" to any password you want!
       if (password) alert("Incorrect password!");
       return;
     }
