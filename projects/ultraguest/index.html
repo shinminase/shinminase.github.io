@@ -1,743 +1,563 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>serph/runo's guestbook</title>
-  <!-- Import Authentic Windows XP Stylesheet -->
-  <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
-  <style>
-    /* Windows XP Wallpaper Background */
-    body {
-      background: #4a88eb url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #000;
-      font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
+    <head>
+        <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/98.css" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>why are u here</title>
+        <style>
+            @font-face {
+                font-family: handwritten;
+                src: url(https://files.catbox.moe/n565jq.ttf);
+            }
 
-    .guestbook-wrapper {
-      max-width: 580px;
-      margin: 0 auto;
-    }
+            body {
+                font-family: "Tahoma", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+                animation: cursor 0.3s linear infinite;
+            }
 
-    /* Page Header Aesthetics */
-    .gb-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .gb-title {
-      font-size: 2em;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-      margin: 0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .gb-subtitle {
-      font-size: 0.85em;
-      color: #ffffff;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-      margin: 4px 0 10px 0;
-    }
-    .gb-links a {
-      color: #ffffff;
-      font-weight: bold;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-      margin: 0 5px;
-      text-decoration: underline;
-    }
+            .content-wrapper {
+                display: flex;
+                align-items: flex-start;
+            }
 
-    .window {
-      margin-bottom: 25px;
-    }
-    .window-body {
-      background: #fbf9e8;
-      font-size: 0.9em;
-    }
+            .custom-container {
+                width: 380px;
+                height: 440px;
+                background-image: url("container.png");
+                background-size: fit;
+                background-repeat: no-repeat;
+                position: relative;
+            }
 
-    .user-avatar-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 2px;
-      object-fit: cover;
-      background: #fff;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
+            .cbox {
+                position: absolute;
+                top: 65px;
+                left: 2px;
+                width: 438px;
+                height: 380px;
+            }
 
-    /* Inline Avatar next to Name Label */
-    .entry-name-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 3px;
-      object-fit: cover;
-      background: #fff;
-      vertical-align: middle;
-      margin-right: 6px;
-      border: 1px solid #7f9db9;
-    }
+            /* music player style */
+            .music-player {
+                margin-left: 20px;
+                width: 400px;
+                border: 1px solid #003366;
+                background-color: #bfbfbf;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            }
 
-    /* Owner Reply Container styled like an XP Dialog box */
-    .owner-reply {
-      margin-top: 15px;
-      padding: 10px 12px;
-      border-top: 2px dotted #999999;
-      background: #ece9d8;
-      border-left: 2px solid #ffffff;
-      border-top-color: #dfdfdf;
-      border-right: 2px solid #7f9db9;
-      border-bottom: 2px solid #7f9db9;
-      font-weight: normal;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .owner-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 3px;
-      object-fit: cover;
-      border: 1px solid #7f9db9;
-      background: #fff;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .reply-content {
-      flex: 1;
-      word-break: break-word;
-    }
-    .reply-prefix {
-      font-weight: bold;
-      color: #0055ea;
-      margin-right: 5px;
-    }
+            .title-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #0078d7;
+                color: #fff;
+                padding: 5px 10px;
+            }
 
-    /* --- OVERRIDES TO FIX XP.CSS FORM LAYOUT ISSUES --- */
-    #gb-form {
-      display: block !important;
-    }
-    .form-group {
-      margin-bottom: 8px;
-    }
-    .form-group label {
-      display: block !important;
-      font-weight: bold;
-      margin-bottom: 2px;
-    }
-    .form-group input[type="text"] {
-      display: block !important;
-      width: 100% !important;
-      box-sizing: border-box !important;
-      margin-top: 0 !important;
-    }
-    #gb-message {
-      display: block !important;
-      width: 100% !important;
-      height: 110px !important;
-      box-sizing: border-box !important;
-      resize: vertical;
-    }
+            .title-bar .title {
+                font-weight: bold;
+            }
 
-    .toolbar {
-      position: relative;
-      margin-top: 6px;
-      margin-bottom: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3px;
-      background: #ece9d8;
-      padding: 4px;
-      border: 1px solid #999;
-    }
-    .toolbar button {
-      background: #ece9d8;
-      color: #000;
-      border: 2px outset #ffffff;
-      padding: 2px 6px;
-      cursor: pointer;
-      font-size: 0.8em;
-      min-width: unset !important;
-    }
-    .toolbar button:active { border-style: inset; }
+            .title-bar .controls button {
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1em;
+                cursor: pointer;
+                padding: 0 5px;
+            }
 
-    /* Side-by-side Emoji Grid Dropdown */
-    #emoji-dropdown {
-      display: none;
-      position: absolute;
-      top: 32px;
-      left: 0;
-      background: #ece9d8;
-      border: 2px solid #0055ea;
-      padding: 6px;
-      width: 260px;
-      max-height: 200px;
-      overflow-y: auto;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      z-index: 100;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-      align-items: center;
-      justify-items: center;
-    }
-    #emoji-dropdown img {
-      max-width: 40px;
-      max-height: 40px;
-      width: auto;
-      height: auto;
-      cursor: pointer;
-      padding: 2px;
-      border: 1px solid transparent;
-      background: transparent;
-    }
-    #emoji-dropdown img:hover { 
-      border-color: #0055ea; 
-      background: #ffffff; 
-    }
-    
-    .entry-message-body {
-      margin-top: 8px;
-      white-space: pre-wrap;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-    .entry-message-body img.custom-emoji {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      vertical-align: middle;
-      display: inline-block;
-    }
-    .entry-message-body img:not(.custom-emoji) { 
-      max-width: 100%; 
-      height: auto; 
-      margin: 6px 0; 
-      display: block; 
-    }
+            .content {
+                padding: 10px;
+            }
 
-    .admin-actions { margin-top: 10px; display: none; gap: 8px; }
-    body.is-admin .admin-actions { display: flex; }
-    .admin-btn {
-      background: #ece9d8;
-      border: 1px solid #7f9db9;
-      color: #000;
-      font-size: 0.75em;
-      cursor: pointer;
-      padding: 2px 6px;
-      min-width: unset !important;
-    }
+            .player {
+                background-color: #2a2a2a;
+                color: #fff;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
 
-    /* Modal Styling */
-    .custom-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-	
-    /* Fix XP.css field alignment */
-    .entry-field {
-      display: flex !important;
-      align-items: center !important;
-      margin-bottom: 6px !important;
-    }
-    .entry-label {
-      font-weight: bold;
-      min-width: 95px !important;
-      display: flex !important;
-      align-items: center !important;
-    }
-    .entry-value {
-      flex: 1 !important;
-    }
-  </style>
-</head>
-<div style="max-width: 800px; margin: 0 auto 15px auto;">
-  <iframe src="https://shinminase.github.io/projects/ultraguest/" width="100%" height="450" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-</div>
-<body>
+            .player .song-info {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                transition: opacity 0.5s ease;
+            }
 
-<div class="guestbook-wrapper">
-  <div class="gb-header">
-    <h1 class="gb-title" id="gb-title">serph/runo's guestbook</h1>
-    <div class="gb-subtitle">to send a photo: attach an image link!</div>
-    <div class="gb-links">
-      <a href="#gb-form-window">Sign Guestbook</a>
-    </div>
-  </div>
+            .song-info.fade-out {
+                opacity: 0;
+            }
 
-  <!-- Sign Guestbook Form Window -->
-  <div class="window" id="gb-form-window">
-    <div class="title-bar">
-      <div class="title-bar-text">
-        <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> sign_guestbook.exe
-      </div>
-      <div class="title-bar-controls">
-        <button aria-label="Close"></button>
-      </div>
-    </div>
-    <div class="window-body">
-      <form id="gb-form">
-        <div class="form-group">
-          <label>Name:</label>
-          <input type="text" id="gb-name" required placeholder="user">
-        </div>
+            .player-controls {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
 
-        <div class="form-group">
-          <label>github*:</label>
-          <input type="text" id="gb-github" placeholder="username">
-        </div>
+            .player-controls button {
+                background-color: #555;
+                border: none;
+                color: #fff;
+                padding: 5px 10px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
 
-        <div class="form-group">
-          <label>fav song?*:</label>
-          <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
-        </div>
+            .player-controls input[type="range"] {
+                margin-right: 5px;
+                cursor: pointer;
+            }
 
-        <div class="form-group">
-          <label>Avatar Image Link* (Optional*):</label>
-          <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
-        </div>
-        
-        <div class="form-group">
-          <label>Message*:</label>
-          <div class="toolbar">
-            <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
-            <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
-            <button type="button" onclick="insertTag('[font=cursive]', '[/font]')">Cursive</button>
-            <button type="button" onclick="insertTag('[font=serif]', '[/font]')">Serif</button>
-            <button type="button" onclick="insertTag('[size=small]', '[/size]')">Small</button>
-            <button type="button" onclick="insertTag('[size=large]', '[/size]')">Large</button>
-            <button type="button" onclick="openImageModal()">🖼️ Image</button>
-            <button type="button" onclick="toggleEmojiDropdown()">😀 Emojis ▼</button>
-            <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">👀️ Preview</button>
+            .volume-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-left: auto;
+            }
 
-            <!-- CUSTOM EMOJI DROPDOWN GRID -->
-            <div id="emoji-dropdown">
-              <img src="https://i.imgur.com/kgN9eRw.gif" title=":smile:" onclick="insertEmoji(':smile:')">
-              <img src="https://i.imgur.com/Q0qrnRY.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
-              <img src="https://i.imgur.com/8g7oCSO.gif" title=":tu:" onclick="insertEmoji(':tu:')">
-              <img src="https://i.imgur.com/ezOJzqk.gif" title=":td:" onclick="insertEmoji(':td:')">
-              <img src="https://i.imgur.com/gykO8pt.gif" title=":wink:" onclick="insertEmoji(':wink:')">
-              <img src="https://i.imgur.com/edmxwZe.gif" title=":p:" onclick="insertEmoji(':p:')">
-              <img src="https://i.imgur.com/GP4hl2V.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
-              <img src="https://i.imgur.com/IkgYJjY.gif" title=":typing:" onclick="insertEmoji(':typing:')">
-              <img src="https://i.imgur.com/IBuB1bv.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
-              <img src="https://i.imgur.com/7hQBQ0Q.gif" title=":shock:" onclick="insertEmoji(':shock:')">
-              <img src="https://i.imgur.com/BnDYM0B.gif" title=":grin:" onclick="insertEmoji(':grin:')">
-              <img src="https://i.imgur.com/hSIapyC.gif" title=":blush:" onclick="insertEmoji(':blush:')">
-              <img src="https://i.imgur.com/6fBtjwT.gif" title=":worry:" onclick="insertEmoji(':worry:')">
-              <img src="https://i.imgur.com/FupBJzG.gif" title=":nono:" onclick="insertEmoji(':nono:')">
-              <img src="https://i.imgur.com/tlFQjXU.gif" title=":sad:" onclick="insertEmoji(':sad:')">
-              <img src="https://i.imgur.com/lCOsZcX.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
-              <img src="https://i.imgur.com/Pizvphm.gif" title=":mad:" onclick="insertEmoji(':mad:')">
-              <img src="https://i.imgur.com/c1kGCJV.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
-              <img src="https://i.imgur.com/1s97Og4.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
-              <img src="https://i.imgur.com/acFsfs0.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
-              <img src="https://i.imgur.com/s9zLUNy.gif" title=":x:" onclick="insertEmoji(':x:')">
-              <img src="https://i.imgur.com/muNdenK.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
-              <img src="https://i.imgur.com/ri6sbEl.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
-              <img src="https://i.imgur.com/VnjtWvX.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" title=":gluv:" onclick="insertEmoji(':gluv:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" title=":taptap:" onclick="insertEmoji(':taptap:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
+            .playlist {
+                max-height: 230px;
+                overflow-y: auto;
+                border: 1px solid #2a2a2a;
+                background-color: #bfbfbf;
+            }
+
+            .song {
+                padding: 10px;
+                border-bottom: 1px solid #929292;
+                cursor: pointer;
+                transition:
+                    background-color 0.5s ease,
+                    color 0.5s ease;
+            }
+
+            .song span {
+                color: black;
+            }
+            .song {
+                color: #06329e;
+            }
+
+            .song:hover,
+            .song.active {
+                background-color: rgba(46, 113, 255, 0.8);
+                color: #000;
+                font-weight: bold;
+            }
+
+            .song.active span,
+            .song:hover span {
+                color: #fff;
+                font-weight: normal;
+            }
+
+            @keyframes cursor {
+                0% {
+                    cursor: url("https://files.catbox.moe/7xm71l.png"), auto;
+                }
+                100% {
+                    cursor: url("https://files.catbox.moe/id4qoc.png"), auto;
+                }
+            }
+
+            .music-player.minimized .content {
+                display: none;
+            }
+
+            .message {
+                padding: 10px;
+                background-color: #bfbfbf;
+                text-align: center;
+                color: #333;
+                display: none;
+            }
+
+            .music-player.minimized .message {
+                display: block;
+            }
+
+            /* prevent style override for 98 */
+            .music-player button {
+                background-color: #555;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+            }
+
+            .music-player button:hover {
+                background-color: #777;
+            }
+
+            .music-player .title-bar {
+                background-color: #0078d7;
+            }
+
+            .music-player .title-bar .title-bar-controls button {
+                color: black;
+                background-color: #c0c0c0;
+                margin-right: 1.5px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar-thumb {
+                background-color: #999;
+                border-radius: 10px;
+            }
+
+            .music-player .playlist::-webkit-scrollbar-track {
+                background-color: #bfbfbf;
+            }
+
+            /* message gridbox */
+            .gridbox {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                border: 1px solid black;
+            }
+
+            /* specific to images inside .gridbox */
+            .gridbox img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .text-section {
+                padding: 10px;
+                text-align: left;
+            }
+
+            /* emojis */
+            .text-section img {
+                width: auto;
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper">
+            <div class="custom-container">
+                <div class="cbox">
+                    <iframe
+                        src="https://www3.cbox.ws/box/?boxid=3538381&boxtag=Ik5LXr"
+                        width="375"
+                        height="333"
+                        allowtransparency="yes"
+                        allow="autoplay"
+                        frameborder="0"
+                        marginheight="0"
+                        marginwidth="0"
+                        scrolling="auto"
+                    ></iframe>
+                </div>
             </div>
-          </div>
-          <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
+
+            <div class="music-player">
+                <div class="title-bar">
+                    <div class="title-bar-text">visitor's top hits (click tabs for info)</div>
+                    <div class="title-bar-controls">
+                        <button aria-label="Minimize" onclick="minimize()"></button>
+                        <button aria-label="Maximize" onclick="maximize()"></button>
+                        <button aria-label="Close" onclick="openRender()"></button>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="player">
+                        <div class="song-info">loading playlist...</div>
+                        <div class="player-controls">
+                            <button onclick="prevSong()">&#9664;</button>
+                            <button onclick="playPause()">&#9654;</button>
+                            <button onclick="nextSong()">&#9654;&#9654;</button>
+                            <input type="range" id="progress" value="0" max="100" />
+                            <div class="volume-container">
+                                <input
+                                    type="range"
+                                    id="volume"
+                                    value="100"
+                                    max="100"
+                                />
+                            </div>
+                        </div>
+                        <div id="time">0:00 / 0:00</div>
+                    </div>
+                    <div class="playlist"></div>
+                </div>
+                <div class="message">
+                    <div class="gridbox" style="margin-bottom: 5px">
+                        <img src="https://file.garden/ZlwiKgzAvyz0wLRz/ryker.png"/>
+                        <div class="text-section">
+                            <p>
+                                be civil. that is all i ask
+                                <img src="https://i.imgur.com/ALAAFn1.gif" />
+                            </p>
+                            <p>
+                                if you want to recommend a song, use the
+                                <a href="https://www.ultraguest.com/sign/1717388758" target="blank" style="color: #06329e">guestbook</a> not the cbox.<br />
+                            </p>
+                            <p>
+                                sorry, i turned off private messages for the meantime! 
+                            </p>
+                            <hr>
+                            <p>
+                                layout coded by me & uses
+                                <a href="https://botoxparty.github.io/XP.css/" target="blank" style="color: #06329e">XP/98 css</a> for scrollbar/tabs.
+                            </p>
+                            <p>all songs are background-checked and manually added by me on github.</p>
+                        </div>
+                    </div>
+                </div>
+                <audio id="audio-player"></audio>
+            </div>
         </div>
+    <script>
+const songs = [
+    { title: 'Carry On Wayward Son', artist: 'Kansas', url: 'songs/COWS.mp3' },
+    { title: 'Oleander', artist: 'Mother Mother', url: 'songs/Oleander.mp3' },
+    { title: 'song of worship (prod. VELVET)', artist: 'aril is', url: 'songs/song of worship.mp3' },
+    { title: 'The Catalyst', artist: 'Linkin Park', url: 'songs/The Catalyst.mp3' },
+    { title: 'Twist the Knife', artist: 'Chromatics', url: 'songs/Twist the Knife.mp3' },
+    { title: 'Take Me To Church', artist: 'Hozier', url: 'songs/Take Me To Church.mp3' },
+    { title: 'theres a halo around the moon', artist: 'Black Dresses', url: 'songs/TAHAM.mp3' },
+    { title: 'Insomnia', artist: 'Niil', url: 'songs/Insomnia.mp3' },
+    { title: 'Starman', artist: 'David Bowie', url: 'songs/Starman.mp3' },
+    { title: 'Angel Breaking', artist: 'Needy Streamer Overload', url: 'songs/Angel Breaking.mp3' },
+    { title: 'Sgt. Pepper’s Lonely Hearts Club Band', artist: 'The Beatles', url: 'songs/SGT. Pepper.mp3' },
+    { title: 'Nabokov', artist: 'Fontaines DC', url: 'songs/Nabokov.mp3' },
+    { title: 'Good Luck, Babe!', artist: 'Chappell Roan', url: 'songs/Good Luck Babe.mp3' },
+    { title: 'YOUR HEAD’S ON FIRE', artist: 'Louie Zong', url: 'songs/YOUR HEADS ON FIRE.mp3' },
+    { title: '20 Ways To Kill Someone', artist: 'Phosgore', url: 'songs/20 Ways to Kill Someone.mp3' },
+    { title:'Anal Grenade Insertion', artist: 'GUTFED', url: 'songs/Anal Grenade Insertion.mp3'},
+    { title:'Forced Battle', artist: 'SMT III: Nocturne', url: 'songs/Forced Battle.mp3'},
+    { title:'Dive', artist: 'Nirvana', url: 'songs/Dive.mp3'},
+    { title:'Mascara', artist: 'Deftones', url: 'songs/Mascara.mp3'},
+    { title:'Completely, Sweetly', artist: 'The Dead South', url: 'songs/Completely Sweetly.mp3'},
+    { title:'Only A Lad', artist: 'Oingo Boingo', url: 'songs/Only A Lad.mp3'},
+    { title:'War?', artist: 'System of a Down', url: 'songs/War.mp3'},
+    { title:'オトノケ (Otonoke)', artist: 'Creepy Nuts', url: 'songs/Otonoke.mp3'},
+    { title:'Concrete Over Water', artist: 'Jockstrap', url: 'songs/Concrete Over Water.mp3'},
+    { title:'I’m Done Being In Love', artist: 'Gezebelle Gaburgably', url: 'songs/Im Done Being In Love.mp3'},
+    { title:'バケモノ信者 (Monster Believer)', artist: 'Maiki-P', url: 'songs/Monster Believer.mp3'},
+    { title:'RABENVATER', artist: 'TIEFBASSKOMMANDO', url: 'songs/RABENVATER.mp3'},
+    { title:'VERMILION', artist: 'ALKALOID', url: 'songs/VERMILION.mp3'},
+    { title:'Black Out See Saw', artist: 'ALKALOID', url: 'songs/Black Out See Saw.mp3'},
+    { title:'Back to the Cave', artist: 'Colonel Suns', url: 'songs/Back to the Cave.mp3'},
+    { title:'everytime you kiss me', artist: 'Yuki Kajiura', url: 'songs/everytime you kissed me.mp3'},
+    { title:'Meant to Be Yours', artist: 'Heathers the Musical', url: 'songs/Meant to Be Yours.mp3'},
+    { title:'El Primer Beso', artist: 'Los Tucanes De Tijuana', url: 'songs/El Primer Beso.mp3'},
+    { title:'Tongues & Teeth', artist: 'The Crane Wives', url: 'songs/Tongues & Teeth.mp3'},
+    { title:'桑ノ花 (Mulberry)', artist: 'kebyo', url: 'songs/Mulberry.mp3'},
+    { title:'Headlock', artist: 'Imogen Heap', url: 'songs/Headlock.mp3'},
+    { title:'Creep', artist: 'Radiohead', url: 'songs/Creep.mp3'},
+    { title:'tablet', artist: 'TOOBOE', url: 'songs/tablet.mp3'},
+    { title:'Dancing in the Factory', artist: 'AND ONE', url: 'songs/Dancing in the Factory.mp3'},
+    { title:'구원자 (Savior)', artist: 'Lee Hi', url: 'songs/Savior.mp3'},
+    { title:'miss melancholy', artist: 'Evan Fong', url: 'songs/miss melancholy.mp3'},
+    { title:'Eyes Without A Face', artist: 'Billy Idol', url: 'songs/Eyes Without A Face.mp3'},
+    { title:'Hey Barbara', artist: 'IV OF SPADES', url: 'songs/Hey Barbara.mp3'},
 
-        <button type="submit" style="margin-top: 10px;">Submit Message</button>
-      </form>
-    </div>
-  </div>
+];
 
-  <!-- Messages List Container -->
-  <div id="entries-container">Loading entries...</div>
+const playlistElement = document.querySelector('.playlist');
+const songInfoElement = document.querySelector('.song-info');
+const timeElement = document.getElementById('time');
+const progressElement = document.getElementById('progress');
+const volumeElement = document.getElementById('volume');
+const audioPlayer = document.getElementById('audio-player');
+const playPauseButton = document.querySelector('.player-controls button:nth-child(2)');
+const musicPlayerElement = document.querySelector('.music-player');
+let currentSongIndex = 0;
+let isPlaying = false;
 
-</div>
-
-<!-- Custom Image Modal -->
-<div id="image-modal" class="custom-modal">
-  <div class="window" style="width: 320px;">
-    <div class="title-bar">
-      <div class="title-bar-text">Insert Image Link</div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closeImageModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="form-group">
-        <label>Paste Image URL:</label>
-        <input type="text" id="modal-img-url" placeholder="https://example.com/image.png">
-      </div>
-      <div style="margin-top: 10px; display: flex; gap: 6px;">
-        <button type="button" onclick="confirmImageEmbed()">Add</button>
-        <button type="button" onclick="closeImageModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Custom Message Preview Modal -->
-<div id="preview-modal" class="custom-modal">
-  <div class="window" style="width: 480px; max-width: 90vw;">
-    <div class="title-bar">
-      <div class="title-bar-text">
-        <img id="preview-avatar-title" src="" class="user-avatar-icon" style="display:none;"> message_preview.exe
-      </div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closePreviewModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="entry-field">
-        <span class="entry-label">
-          <img id="preview-avatar-name" src="" class="entry-name-avatar" style="display:none;">Name :
-        </span>
-        <span class="entry-value" id="preview-name"></span>
-      </div>
-      <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value" id="preview-date"></span></div>
-      <div class="entry-field" id="preview-github-row"><span class="entry-label">github :</span><span class="entry-value" id="preview-github"></span></div>
-      <div class="entry-field" id="preview-song-row"><span class="entry-label">fav song? :</span><span class="entry-value" id="preview-song"></span></div>
-      
-      <div class="entry-field" style="margin-top:10px;">
-        <span class="entry-label">Message:</span>
-        <div class="entry-value entry-message-body" id="preview-body"></div>
-      </div>
-
-      <!-- Owner Reply Preview inside modal -->
-      <div class="owner-reply">
-        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="owner-avatar">
-        <div class="reply-content"><span class="reply-prefix">R:</span> hey buddy... i see your previews..... Just kidding. Just joshing around..... <br>This is just my reply preview</div>
-      </div>
-
-      <div style="margin-top: 15px; text-align: right;">
-        <button type="button" onclick="closePreviewModal()">Close Preview</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Custom Owner Reply Modal -->
-<div id="reply-modal" class="custom-modal">
-  <div class="window" style="width: 380px;">
-    <div class="title-bar">
-      <div class="title-bar-text">Owner Reply (HTML Supported)</div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closeReplyModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="form-group">
-        <label>Type custom reply:</label>
-        <textarea id="modal-reply-html" rows="4" style="width:100%;" placeholder="s2 is so good!"></textarea>
-      </div>
-      <div style="margin-top: 10px; display: flex; gap: 6px;">
-        <button type="button" onclick="confirmReplySubmit()">Save Reply</button>
-        <button type="button" onclick="closeReplyModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const SUPABASE_URL = 'https://twvtjoehfbzusmfaisum.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
-
-  let activeReplyId = null;
-  const DEFAULT_AVATAR = 'https://abs.twimg.com/emoji/v1/72x72/1f4e8.png';
-
-  const EMOJI_MAP = {
-    ':smile:': '<img src="https://i.imgur.com/kgN9eRw.gif" class="custom-emoji" alt="smile">',
-    ':laugh:': '<img src="https://i.imgur.com/Q0qrnRY.gif" class="custom-emoji" alt="laugh">',
-    ':tu:': '<img src="https://i.imgur.com/8g7oCSO.gif" class="custom-emoji" alt="tu">',
-    ':td:': '<img src="https://i.imgur.com/ezOJzqk.gif" class="custom-emoji" alt="td">',
-    ':wink:': '<img src="https://i.imgur.com/gykO8pt.gif" class="custom-emoji" alt="wink">',
-    ':p:': '<img src="https://i.imgur.com/edmxwZe.gif" class="custom-emoji" alt="p">',
-    ':bownita:': '<img src="https://i.imgur.com/GP4hl2V.gif" class="custom-emoji" alt="bownita">',
-    ':typing:': '<img src="https://i.imgur.com/IkgYJjY.gif" class="custom-emoji" alt="typing">',
-    ':puzzled:': '<img src="https://i.imgur.com/IBuB1bv.gif" class="custom-emoji" alt="puzzled">',
-    ':shock:': '<img src="https://i.imgur.com/7hQBQ0Q.gif" class="custom-emoji" alt="shock">',
-    ':grin:': '<img src="https://i.imgur.com/BnDYM0B.gif" class="custom-emoji" alt="grin">',
-    ':blush:': '<img src="https://i.imgur.com/hSIapyC.gif" class="custom-emoji" alt="blush">',
-    ':worry:': '<img src="https://i.imgur.com/6fBtjwT.gif" class="custom-emoji" alt="worry">',
-    ':nono:': '<img src="https://i.imgur.com/FupBJzG.gif" class="custom-emoji" alt="nono">',
-    ':sad:': '<img src="https://i.imgur.com/tlFQjXU.gif" class="custom-emoji" alt="sad">',
-    ':awesomesauce:': '<img src="https://i.imgur.com/lCOsZcX.gif" class="custom-emoji" alt="awesomesauce">',
-    ':mad:': '<img src="https://i.imgur.com/Pizvphm.gif" class="custom-emoji" alt="mad">',
-    ':cheers:': '<img src="https://i.imgur.com/c1kGCJV.gif" class="custom-emoji" alt="cheers">',
-    ':groovy:': '<img src="https://i.imgur.com/1s97Og4.gif" class="custom-emoji" alt="groovy">',
-    ':bleh:': '<img src="https://i.imgur.com/acFsfs0.gif" class="custom-emoji" alt="bleh">',
-    ':x:': '<img src="https://i.imgur.com/s9zLUNy.gif" class="custom-emoji" alt="x">',
-    ':kneel:': '<img src="https://i.imgur.com/muNdenK.gif" class="custom-emoji" alt="kneel">',
-    ':snorkmimi:': '<img src="https://i.imgur.com/ri6sbEl.gif" class="custom-emoji" alt="snorkmimi">',
-    ':x_x:': '<img src="https://i.imgur.com/VnjtWvX.gif" class="custom-emoji" alt="x_x">',
-    ':wave:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" class="custom-emoji" alt="wave">',
-    ':gluv:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" class="custom-emoji" alt="gluv">',
-    ':taptap:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" class="custom-emoji" alt="taptap">',
-    ':msnflush:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" class="custom-emoji" alt="msnflush">',
-    ':ohoho:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" class="custom-emoji" alt="ohoho">'
-  };
-
-  window.toggleEmojiDropdown = function() {
-    const dd = document.getElementById('emoji-dropdown');
-    dd.style.display = dd.style.display === 'grid' ? 'none' : 'grid';
-  };
-
-  window.addEventListener('click', (e) => {
-    if (!e.target.closest('.toolbar')) {
-      document.getElementById('emoji-dropdown').style.display = 'none';
-    }
-  });
-
-  window.insertTag = function(startTag, endTag) {
-    const textarea = document.getElementById('gb-message');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    textarea.value = textarea.value.substring(0, start) + startTag + selectedText + endTag + textarea.value.substring(end);
-    textarea.focus();
-  };
-
-  window.insertEmoji = function(code) {
-    const msgInput = document.getElementById('gb-message');
-    msgInput.value += ` ${code} `;
-    document.getElementById('emoji-dropdown').style.display = 'none';
-    msgInput.focus();
-  };
-
-  window.openImageModal = () => document.getElementById('image-modal').style.display = 'flex';
-  window.closeImageModal = () => {
-    document.getElementById('image-modal').style.display = 'none';
-    document.getElementById('modal-img-url').value = '';
-  };
-  window.confirmImageEmbed = () => {
-    const url = document.getElementById('modal-img-url').value.trim();
-    if (url) window.insertTag(`[img]${url}[/img]`, '');
-    closeImageModal();
-  };
-
-  window.openPreviewModal = () => {
-    const name = document.getElementById('gb-name').value || 'Anonymous';
-    const github = document.getElementById('gb-github').value;
-    const favSong = document.getElementById('gb-fav-song').value;
-    const avatar = document.getElementById('gb-avatar').value.trim();
-    const message = document.getElementById('gb-message').value || '(Empty message)';
-
-    const titleIcon = document.getElementById('preview-avatar-title');
-    const nameAvatar = document.getElementById('preview-avatar-name');
-
-    if (avatar) {
-      titleIcon.src = avatar;
-      titleIcon.style.display = 'inline-block';
-      nameAvatar.src = avatar;
-      nameAvatar.style.display = 'inline-block';
-    } else {
-      titleIcon.style.display = 'none';
-      nameAvatar.style.display = 'none';
-    }
-
-    document.getElementById('preview-name').textContent = name;
-    document.getElementById('preview-date').textContent = new Date().toLocaleDateString('en-US', {
-      month: 'long', day: '2-digit', year: 'numeric'
+function loadSongs() {
+    songs.forEach((song, index) => {
+        const songElement = document.createElement('div');
+        songElement.classList.add('song');
+        songElement.innerHTML = `${song.title} <span>${song.artist}</span>`;
+        songElement.onclick = () => selectSong(index);
+        playlistElement.appendChild(songElement);
     });
 
-    const githubRow = document.getElementById('preview-github-row');
-    if (github) {
-      document.getElementById('preview-github').textContent = github;
-      githubRow.style.display = 'flex';
+    const savedSongIndex = localStorage.getItem('currentSongIndex');
+    if (savedSongIndex !== null) {
+        currentSongIndex = parseInt(savedSongIndex, 10);
+    }
+
+    const savedVolume = localStorage.getItem('volume');
+    if (savedVolume !== null) {
+        audioPlayer.volume = parseFloat(savedVolume);
+        volumeElement.value = audioPlayer.volume * 100;
     } else {
-      githubRow.style.display = 'none';
+        audioPlayer.volume = 0.5;
+        volumeElement.value = 50;
     }
 
-    const songRow = document.getElementById('preview-song-row');
-    if (favSong) {
-      document.getElementById('preview-song').textContent = favSong;
-      songRow.style.display = 'flex';
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
+    }
+
+    selectSong(currentSongIndex);
+    updateActiveSong();
+
+    // Autoplay the current song when the page loads
+    playSong();
+}
+
+
+function selectSong(index) {
+    currentSongIndex = index;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
+
+function updateSongInfo() {
+    const song = songs[currentSongIndex];
+
+
+    songInfoElement.classList.add('fade-out');
+
+
+    setTimeout(() => {
+
+        songInfoElement.textContent = `${song.title} - ${song.artist}`;
+
+
+        songInfoElement.classList.remove('fade-out');
+        void songInfoElement.offsetWidth; // Triggers reflow
+
+
+        songInfoElement.classList.add('fade-in');
+    }, 500); 
+}
+
+function playPause() {
+    if (isPlaying) {
+        audioPlayer.pause();
     } else {
-      songRow.style.display = 'none';
+        audioPlayer.play();
+    }
+    isPlaying = !isPlaying;
+    updatePlayPauseButton();
+}
+
+function playSong() {
+    updateSongInfo();
+    const song = songs[currentSongIndex];
+    audioPlayer.src = song.url;
+
+    const savedTime = localStorage.getItem('currentTime');
+    const savedSongIndexForTime = localStorage.getItem('currentSongIndexForTime');
+    if (savedTime !== null && savedSongIndexForTime == currentSongIndex) {
+        audioPlayer.currentTime = parseFloat(savedTime);
     }
 
-    document.getElementById('preview-body').innerHTML = parseMessageText(message);
-    document.getElementById('preview-modal').style.display = 'flex';
-  };
-  window.closePreviewModal = () => {
-    document.getElementById('preview-modal').style.display = 'none';
-  };
+    // Autoplay logic with delay to prevent autoplay blocking
+    setTimeout(() => {
+        audioPlayer.play().catch((error) => {
+            console.log("Autoplay was prevented. User interaction required.");
+        });
+    }, 500); // Optional: Adjust delay as necessary
 
-  window.openReplyModal = (id, currentHtml) => {
-    activeReplyId = id;
-    document.getElementById('modal-reply-html').value = currentHtml || '';
-    document.getElementById('reply-modal').style.display = 'flex';
-  };
-  window.closeReplyModal = () => {
-    document.getElementById('reply-modal').style.display = 'none';
-    document.getElementById('modal-reply-html').value = '';
-    activeReplyId = null;
-  };
-  window.confirmReplySubmit = async () => {
-    const htmlReply = document.getElementById('modal-reply-html').value;
-    if (activeReplyId) {
-      const { error } = await supabase.from('guestbook').update({ reply_html: htmlReply }).eq('id', activeReplyId);
-      if (error) alert("Error saving reply: " + error.message);
-      else loadEntries();
+    isPlaying = true;
+    updatePlayPauseButton();
+}
+
+
+function updatePlayPauseButton() {
+    if (isPlaying) {
+        playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+    } else {
+        playPauseButton.innerHTML = '&#9654;'; // Play icon
     }
-    closeReplyModal();
-  };
+}
 
-  function parseMessageText(text) {
-    let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
-      safe = safe.split(code).join(imgTag);
-    }
-    safe = safe.replace(/\[b\](.*?)\[\/b\]/gi, '<b>$1</b>');
-    safe = safe.replace(/\[i\](.*?)\[\/i\]/gi, '<i>$1</i>');
-    safe = safe.replace(/\[font=cursive\](.*?)\[\/font\]/gi, '<span style="font-family: cursive;">$1</span>');
-    safe = safe.replace(/\[font=serif\](.*?)\[\/font\]/gi, '<span style="font-family: serif;">$1</span>');
-    safe = safe.replace(/\[size=small\](.*?)\[\/size\]/gi, '<span style="font-size: 0.8em;">$1</span>');
-    safe = safe.replace(/\[size=large\](.*?)\[\/size\]/gi, '<span style="font-size: 1.25em;">$1</span>');
-    safe = safe.replace(/\[img\](https?:\/\/[^\s]+)\[\/img\]/gi, '<img src="$1" alt="image">');
-    return safe.replace(/\n/g, '<br>');
-  }
+function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
 
-  async function loadEntries() {
-    const container = document.getElementById('entries-container');
-    const { data, error } = await supabase.from('guestbook').select('*').order('created_at', { ascending: false });
+function prevSong() {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    localStorage.setItem('currentSongIndex', currentSongIndex);
+    localStorage.removeItem('currentTime');
+    localStorage.setItem('currentSongIndexForTime', currentSongIndex);
+    playSong();
+    updateActiveSong();
+}
 
-    if (error) {
-      container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
-      return;
-    }
-
-    if (data.length === 0) {
-      container.innerHTML = '<p style="color: #fff; text-shadow:1px 1px 2px #000;">No messages yet. Be the first to sign!</p>';
-      return;
-    }
-
-    container.innerHTML = '';
-    data.forEach(entry => {
-      const el = document.createElement('div');
-      el.className = 'window';
-      const existingReplyEscaped = entry.reply_html ? entry.reply_html.replace(/"/g, '&quot;') : '';
-      
-      const hasAvatar = entry.email && entry.email.trim() !== '';
-      const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
-      const nameAvatarHtml = hasAvatar ? `<img src="${entry.email}" class="entry-name-avatar">` : '';
-
-      const formattedDate = new Date(entry.created_at).toLocaleDateString('en-US', {
-        month: 'long', day: '2-digit', year: 'numeric'
-      });
-
-      el.innerHTML = `
-        <div class="title-bar">
-          <div class="title-bar-text">
-            ${titleBarImgHtml} you got mail.exe
-          </div>
-          <div class="title-bar-controls">
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div class="window-body">
-          <div class="entry-field">
-            <span class="entry-label">
-              ${nameAvatarHtml}Name :
-            </span>
-            <span class="entry-value">${entry.name}</span>
-          </div>
-          <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value">${formattedDate}</span></div>
-          ${entry.user_url ? `<div class="entry-field"><span class="entry-label">github :</span><span class="entry-value">${entry.user_url}</span></div>` : ''}
-          ${entry.fav_song ? `<div class="entry-field"><span class="entry-label">fav song? :</span><span class="entry-value">${entry.fav_song}</span></div>` : ''}
-          
-          <div class="entry-field" style="margin-top:10px;">
-            <span class="entry-label">Message:</span>
-            <div class="entry-value entry-message-body">${parseMessageText(entry.message)}</div>
-          </div>
-
-          ${entry.reply_html ? `
-            <div class="owner-reply">
-              <img src="${OWNER_AVATAR_URL}" class="owner-avatar">
-              <div class="reply-content"><span class="reply-prefix">R:</span>${entry.reply_html}</div>
-            </div>
-          ` : ''}
-
-          <div class="admin-actions">
-            <button class="admin-btn" onclick="openReplyModal('${entry.id}', '${existingReplyEscaped}')">Reply HTML</button>
-            <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
-          </div>
-        </div>
-      `;
-      container.appendChild(el);
+function updateActiveSong() {
+    document.querySelectorAll('.song').forEach((element, index) => {
+        element.classList.toggle('active', index === currentSongIndex);
     });
-  }
+}
 
-  document.getElementById('gb-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('gb-name').value;
-    const user_url = document.getElementById('gb-github').value;
-    const fav_song = document.getElementById('gb-fav-song').value;
-    const avatar = document.getElementById('gb-avatar').value;
-    const message = document.getElementById('gb-message').value;
+audioPlayer.ontimeupdate = () => {
+    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    progressElement.value = progress || 0;
+    timeElement.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
 
-    const { error } = await supabase.from('guestbook').insert([{ 
-      name: name, 
-      email: avatar || null, 
-      user_url: user_url || null, 
-      fav_song: fav_song || null,
-      message: message 
-    }]);
+    // Save the current time to localStorage
+    localStorage.setItem('currentTime', audioPlayer.currentTime);
+};
 
-    if (error) alert('Error sending message: ' + error.message);
-    else {
-      document.getElementById('gb-message').value = '';
-      document.getElementById('gb-name').value = '';
-      document.getElementById('gb-github').value = '';
-      document.getElementById('gb-fav-song').value = '';
-      document.getElementById('gb-avatar').value = '';
-      loadEntries();
+audioPlayer.onended = nextSong;
+
+progressElement.oninput = (e) => {
+    const seekTime = (e.target.value / 100) * audioPlayer.duration;
+    audioPlayer.currentTime = seekTime;
+    localStorage.setItem('currentTime', seekTime);
+};
+
+volumeElement.oninput = (e) => {
+    audioPlayer.volume = e.target.value / 100;
+    localStorage.setItem('volume', audioPlayer.volume);
+};
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function minimize() {
+    musicPlayerElement.classList.add('minimized');
+}
+
+function maximize() {
+    musicPlayerElement.classList.remove('minimized');
+}
+
+function close() {
+    musicPlayerElement.style.display = 'none';
+}
+
+loadSongs();
+
+        function openRender() {
+        var newTab = window.open("https://seven633x14.onrender.com/", "_blank");
+        newTab.focus();
     }
-  });
 
-  window.deleteEntry = async function(id) {
-    if (confirm("Are you sure you want to delete this message?")) {
-      const { error } = await supabase.from('guestbook').delete().eq('id', id);
-      if (error) alert("Error deleting: " + error.message);
-      else loadEntries();
-    }
-  };
-
-  function unlockAdmin() {
-    const inputPass = prompt("thou shalt not pass:");
-    if (inputPass === "Letmein7633x14!!") {
-      document.body.classList.add('is-admin');
-      alert("Admin Mode Unlocked!");
-    } else if (inputPass) alert("Incorrect password!");
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      e.preventDefault();
-      unlockAdmin();
-    }
-  });
-
-  let titleClicks = 0;
-  let clickTimer = null;
-  document.getElementById('gb-title').addEventListener('click', () => {
-    titleClicks++;
-    clearTimeout(clickTimer);
-    if (titleClicks >= 5) {
-      titleClicks = 0;
-      unlockAdmin();
-    } else {
-      clickTimer = setTimeout(() => { titleClicks = 0; }, 1500);
-    }
-  });
-
-  loadEntries();
-</script>
-
+    </script>
 </body>
 </html>
