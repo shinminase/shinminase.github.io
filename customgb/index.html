@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Digital Guestbook</title>
+  <style>
+    body {
+      background: #1c150c;
+      color: #f2e3c6;
+      font-family: monospace;
+      padding: 20px;
+    }
+    .guestbook-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #2b2013;
+      border: 2px solid #473622;
+      padding: 20px;
+    }
+    h2 { text-align: center; color: #e5a93b; }
+    label { display: block; margin-top: 10px; font-size: 0.9em; }
+    input[type="text"], input[type="email"], textarea {
+      width: 100%;
+      background: #120e08;
+      border: 1px solid #473622;
+      color: #fff;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-top: 4px;
+      font-family: monospace;
+    }
+    .toolbar {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      background: #1a120b;
+      padding: 5px;
+      border: 1px solid #473622;
+    }
+    .toolbar img {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .toolbar img:hover { border-color: #e5a93b; }
+    .btn {
+      background: #3d6a2a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-family: monospace;
+      font-weight: bold;
+    }
+    .btn:hover { background: #4a8034; }
+    .entry {
+      background: #21190f;
+      border: 1px solid #3d2f1f;
+      padding: 12px;
+      margin-top: 15px;
+    }
+    .entry-header {
+      font-weight: bold;
+      color: #e5a93b;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #3d2f1f;
+      padding-bottom: 5px;
+      margin-bottom: 8px;
+    }
+    .entry-date { font-size: 0.8em; color: #999; }
+    .owner-reply {
+      background: #172415;
+      border-left: 3px solid #57ab43;
+      margin-top: 10px;
+      padding: 10px;
+    }
+    .admin-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 0.75em;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 8px;
+    }
+    .admin-btn:hover { color: #e5a93b; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="guestbook-container">
+  <h2>Sign My Guestbook</h2>
+  
+  <form id="gb-form">
+    <label>Name:</label>
+    <input type="text" id="gb-name" required placeholder="Anonymous">
+    
+    <label>Email (Optional, only visible to you):</label>
+    <input type="email" id="gb-email" placeholder="Optional">
+    
+    <label>Message*:</label>
+    <!-- Custom Emoji Toolbar -->
+    <div class="toolbar">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/1f600.png" title=":smile:" onclick="insertEmoji(':smile:')">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/1f31f.png" title=":star:" onclick="insertEmoji(':star:')">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/2764.png" title=":heart:" onclick="insertEmoji(':heart:')">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/1f47e.png" title=":alien:" onclick="insertEmoji(':alien:')">
+    </div>
+    <textarea id="gb-message" rows="4" required placeholder="Say something nice..."></textarea>
+    
+    <button type="submit" class="btn">Send Message</button>
+  </form>
+
+  <hr style="border: 0; border-top: 1px solid #473622; margin: 25px 0;">
+
+  <div id="entries-container">Loading entries...</div>
+</div>
+
+<!-- Load Supabase JS Client via CDN -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  // Replace YOUR_SUPABASE_PROJECT_URL with the URL from your Supabase Connect dialog
+  const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+  const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Custom Emoji Mapping dictionary
+  const EMOJI_MAP = {
+    ':smile:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f600.png" width="18" height="18" style="vertical-align:middle;">',
+    ':star:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f31f.png" width="18" height="18" style="vertical-align:middle;">',
+    ':heart:': '<img src="https://abs.twimg.com/emoji/v1/72x72/2764.png" width="18" height="18" style="vertical-align:middle;">',
+    ':alien:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f47e.png" width="18" height="18" style="vertical-align:middle;">'
+  };
+
+  window.insertEmoji = function(code) {
+    const msgInput = document.getElementById('gb-message');
+    msgInput.value += ` ${code} `;
+    msgInput.focus();
+  };
+
+  function parseEmojis(text) {
+    // Prevent XSS by escaping visitor raw HTML
+    let safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
+      safeText = safeText.split(code).join(imgTag);
+    }
+    return safeText;
+  }
+
+  async function loadEntries() {
+    const container = document.getElementById('entries-container');
+    const { data, error } = await supabase
+      .from('guestbook')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      container.innerHTML = `<p style="color:red;">Error loading entries: ${error.message}</p>`;
+      return;
+    }
+
+    if (data.length === 0) {
+      container.innerHTML = '<p style="color: #888;">No messages yet. Be the first to sign!</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    data.forEach(entry => {
+      const el = document.createElement('div');
+      el.className = 'entry';
+      el.innerHTML = `
+        <div class="entry-header">
+          <span>${entry.name}</span>
+          <span class="entry-date">${new Date(entry.created_at).toLocaleString()}</span>
+        </div>
+        <div class="entry-body">${parseEmojis(entry.message)}</div>
+        ${entry.reply_html ? `<div class="owner-reply"><strong>Owner Reply:</strong><br>${entry.reply_html}</div>` : ''}
+        <button class="admin-btn" onclick="openAdminReply('${entry.id}')">[+ Manual HTML Reply]</button>
+      `;
+      container.appendChild(el);
+    });
+  }
+
+  // Handle Form Submission
+  document.getElementById('gb-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('gb-name').value;
+    const email = document.getElementById('gb-email').value;
+    const message = document.getElementById('gb-message').value;
+
+    const { error } = await supabase
+      .from('guestbook')
+      .insert([{ name, email, message }]);
+
+    if (error) {
+      alert('Error sending message: ' + error.message);
+    } else {
+      document.getElementById('gb-message').value = '';
+      document.getElementById('gb-name').value = '';
+      document.getElementById('gb-email').value = '';
+      loadEntries();
+    }
+  });
+
+  // Admin HTML reply mechanism
+  window.openAdminReply = async function(id) {
+    const password = prompt("Enter Admin Password:");
+    // Simple frontend gatekeeper password check
+    if (password !== "letmein123") { // Change "letmein123" to whatever secret you want!
+      if (password) alert("Incorrect password!");
+      return;
+    }
+
+    const htmlReply = prompt("Enter your custom HTML/CSS reply for this message:");
+    if (htmlReply !== null) {
+      const { error } = await supabase
+        .from('guestbook')
+        .update({ reply_html: htmlReply })
+        .eq('id', id);
+
+      if (error) {
+        alert("Error saving reply: " + error.message);
+      } else {
+        loadEntries();
+      }
+    }
+  };
+
+  // Initial load
+  loadEntries();
+</script>
+
+</body>
+</html>
