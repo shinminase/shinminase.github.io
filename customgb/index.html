@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>serph/runo's guestbook</title>
+  <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
   <style>
-
+    /* Windows XP Wallpaper Background */
     body {
       background: #4a88eb url('https://i.imgur.com/wQpyvWN.png') no-repeat center center fixed;
       background-size: cover;
       color: #000;
       font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 20px 20px 60px 20px; 
+      padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
     }
 
     .guestbook-wrapper {
@@ -20,7 +21,7 @@
       margin: 0 auto;
     }
 
-
+    /* Page Header Aesthetics */
     .gb-header {
       text-align: center;
       margin-bottom: 20px;
@@ -66,7 +67,7 @@
       margin-right: 4px;
     }
 
-
+    /* Inline Avatar next to Name */
     .entry-name-container {
       display: inline-flex;
       align-items: center;
@@ -82,7 +83,7 @@
       flex-shrink: 0;
     }
 
-
+    /* Owner Reply Container styled like an XP Dialog box */
     .owner-reply {
       margin-top: 15px;
       padding: 10px 12px;
@@ -213,7 +214,7 @@
       display: inline-block;
     }
     
-
+    /* Auto-shrink images posted inside message body to 50% */
     .entry-message-body img:not(.custom-emoji) { 
       max-width: 50%; 
       max-height: 50%;
@@ -235,7 +236,7 @@
       min-width: unset !important;
     }
 
-
+    /* Modal Styling */
     .custom-modal {
       display: none;
       position: fixed;
@@ -246,7 +247,7 @@
       z-index: 1000;
     }
 	
-
+    /* Fix XP.css field alignment */
     .entry-field {
       display: flex !important;
       align-items: flex-start !important;
@@ -262,7 +263,7 @@
       flex: 1 !important;
     }
 
-    /* --- Windows XP Taskbar  --- */
+    /* --- Windows XP Taskbar Styles --- */
     .xp-taskbar {
       position: fixed;
       bottom: 0;
@@ -554,7 +555,7 @@
   </div>
 </div>
 
-
+<!-- Custom Message Preview Modal -->
 <div id="preview-modal" class="custom-modal">
   <div class="window" style="width: 480px; max-width: 90vw;">
     <div class="title-bar">
@@ -687,7 +688,7 @@
   let currentPage = 1;
   const pageSize = 20;
 
-
+  // Live Taskbar Clock
   function updateClock() {
     const now = new Date();
     let hours = now.getHours();
@@ -699,7 +700,7 @@
   setInterval(updateClock, 1000);
   updateClock();
 
-
+  // Start Menu Toggle
   window.toggleStartMenu = function() {
     const menu = document.getElementById('xp-start-menu');
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -710,7 +711,7 @@
     }
   });
 
-
+  // Fixed Click Sound
   document.addEventListener('click', (e) => {
     if (e.target.closest('button, a')) {
       const sound = document.getElementById('click-sound');
@@ -721,7 +722,7 @@
     }
   });
 
-
+  // ASMR Keyboard Sound
   const msgTextarea = document.getElementById('gb-message');
   if (msgTextarea) {
     msgTextarea.addEventListener('keydown', (e) => {
@@ -854,7 +855,7 @@
     document.getElementById('preview-modal').style.display = 'none';
   };
 
-
+  // About System Modal handlers
   window.openAboutModal = () => {
     document.getElementById('about-modal').style.display = 'flex';
   };
@@ -994,7 +995,7 @@
       container.appendChild(el);
     });
 
-
+    // Render Pagination Controls
     paginationContainer.innerHTML = `
       <div class="pagination-controls">
         <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt; Prev</button>
