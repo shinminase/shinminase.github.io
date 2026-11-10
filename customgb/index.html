@@ -2,234 +2,738 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Digital Guestbook</title>
+  <title>serph/runo's guestbook</title>
+  <!-- Import Authentic Windows XP Stylesheet -->
+  <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
   <style>
+    /* Windows XP Wallpaper Background */
     body {
-      background: #1c150c;
-      color: #f2e3c6;
-      font-family: monospace;
+      background: #4a88eb url('https://upload.wikimedia.org/wikipedia/en/2/27/Bliss_%28Windows_XP%29.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
+      font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+      margin: 0;
       padding: 20px;
     }
-    .guestbook-container {
-      max-width: 600px;
+
+    .guestbook-wrapper {
+      max-width: 580px;
       margin: 0 auto;
-      background: #2b2013;
-      border: 2px solid #473622;
-      padding: 20px;
     }
-    h2 { text-align: center; color: #e5a93b; }
-    label { display: block; margin-top: 10px; font-size: 0.9em; }
-    input[type="text"], input[type="email"], textarea {
-      width: 100%;
-      background: #120e08;
-      border: 1px solid #473622;
-      color: #fff;
-      padding: 8px;
-      box-sizing: border-box;
-      margin-top: 4px;
-      font-family: monospace;
+
+    /* Page Header Aesthetics */
+    .gb-header {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    .toolbar {
-      margin-top: 6px;
-      display: flex;
-      gap: 6px;
-      background: #1a120b;
-      padding: 5px;
-      border: 1px solid #473622;
-    }
-    .toolbar img {
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-    .toolbar img:hover { border-color: #e5a93b; }
-    .btn {
-      background: #3d6a2a;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-family: monospace;
+    .gb-title {
+      font-size: 2em;
       font-weight: bold;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      margin: 0;
+      cursor: pointer;
+      user-select: none;
     }
-    .btn:hover { background: #4a8034; }
-    .entry {
-      background: #21190f;
-      border: 1px solid #3d2f1f;
-      padding: 12px;
+    .gb-subtitle {
+      font-size: 0.85em;
+      color: #ffffff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      margin: 4px 0 10px 0;
+    }
+    .gb-links a {
+      color: #ffffff;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+      margin: 0 5px;
+      text-decoration: underline;
+    }
+
+    .window {
+      margin-bottom: 25px;
+    }
+    .window-body {
+      background: #fbf9e8;
+      font-size: 0.9em;
+    }
+
+    .user-avatar-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      object-fit: cover;
+      background: #fff;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* Inline Avatar next to Name Label */
+    .entry-name-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 3px;
+      object-fit: cover;
+      background: #fff;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid #7f9db9;
+    }
+
+    /* Owner Reply Container styled like an XP Dialog box */
+    .owner-reply {
       margin-top: 15px;
-    }
-    .entry-header {
-      font-weight: bold;
-      color: #e5a93b;
+      padding: 10px 12px;
+      border-top: 2px dotted #999999;
+      background: #ece9d8;
+      border-left: 2px solid #ffffff;
+      border-top-color: #dfdfdf;
+      border-right: 2px solid #7f9db9;
+      border-bottom: 2px solid #7f9db9;
+      font-weight: normal;
       display: flex;
-      justify-content: space-between;
-      border-bottom: 1px dashed #3d2f1f;
-      padding-bottom: 5px;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .owner-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      object-fit: cover;
+      border: 1px solid #7f9db9;
+      background: #fff;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .reply-content {
+      flex: 1;
+      word-break: break-word;
+    }
+    .reply-prefix {
+      font-weight: bold;
+      color: #0055ea;
+      margin-right: 5px;
+    }
+
+    /* --- OVERRIDES TO FIX XP.CSS FORM LAYOUT ISSUES --- */
+    #gb-form {
+      display: block !important;
+    }
+    .form-group {
       margin-bottom: 8px;
     }
-    .entry-date { font-size: 0.8em; color: #999; }
-    .owner-reply {
-      background: #172415;
-      border-left: 3px solid #57ab43;
-      margin-top: 10px;
-      padding: 10px;
+    .form-group label {
+      display: block !important;
+      font-weight: bold;
+      margin-bottom: 2px;
     }
+    .form-group input[type="text"] {
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      margin-top: 0 !important;
+    }
+    #gb-message {
+      display: block !important;
+      width: 100% !important;
+      height: 110px !important;
+      box-sizing: border-box !important;
+      resize: vertical;
+    }
+
+    .toolbar {
+      position: relative;
+      margin-top: 6px;
+      margin-bottom: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      background: #ece9d8;
+      padding: 4px;
+      border: 1px solid #999;
+    }
+    .toolbar button {
+      background: #ece9d8;
+      color: #000;
+      border: 2px outset #ffffff;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-size: 0.8em;
+      min-width: unset !important;
+    }
+    .toolbar button:active { border-style: inset; }
+
+    /* Side-by-side Emoji Grid Dropdown */
+    #emoji-dropdown {
+      display: none;
+      position: absolute;
+      top: 32px;
+      left: 0;
+      background: #ece9d8;
+      border: 2px solid #0055ea;
+      padding: 6px;
+      width: 260px;
+      max-height: 200px;
+      overflow-y: auto;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      z-index: 100;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+      align-items: center;
+      justify-items: center;
+    }
+    #emoji-dropdown img {
+      max-width: 40px;
+      max-height: 40px;
+      width: auto;
+      height: auto;
+      cursor: pointer;
+      padding: 2px;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+    #emoji-dropdown img:hover { 
+      border-color: #0055ea; 
+      background: #ffffff; 
+    }
+    
+    .entry-message-body {
+      margin-top: 8px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .entry-message-body img.custom-emoji {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    .entry-message-body img:not(.custom-emoji) { 
+      max-width: 100%; 
+      height: auto; 
+      margin: 6px 0; 
+      display: block; 
+    }
+
+    .admin-actions { margin-top: 10px; display: none; gap: 8px; }
+    body.is-admin .admin-actions { display: flex; }
     .admin-btn {
-      background: none;
-      border: none;
-      color: #888;
+      background: #ece9d8;
+      border: 1px solid #7f9db9;
+      color: #000;
       font-size: 0.75em;
       cursor: pointer;
-      padding: 0;
-      margin-top: 8px;
+      padding: 2px 6px;
+      min-width: unset !important;
     }
-    .admin-btn:hover { color: #e5a93b; text-decoration: underline; }
+
+    /* Modal Styling */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+	
+    /* Fix XP.css field alignment */
+    .entry-field {
+      display: flex !important;
+      align-items: center !important;
+      margin-bottom: 6px !important;
+    }
+    .entry-label {
+      font-weight: bold;
+      min-width: 95px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+    .entry-value {
+      flex: 1 !important;
+    }
   </style>
 </head>
 <body>
 
-<div class="guestbook-container">
-  <h2>Sign My Guestbook</h2>
+<div class="guestbook-wrapper">
   
-  <form id="gb-form">
-    <label>Name:</label>
-    <input type="text" id="gb-name" required placeholder="Anonymous">
-    
-    <label>Email (Optional, only visible to you):</label>
-    <input type="email" id="gb-email" placeholder="Optional">
-    
-    <label>Message*:</label>
-    <!-- Custom Emoji Toolbar -->
-    <div class="toolbar">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/1f600.png" title=":smile:" onclick="insertEmoji(':smile:')">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/1f31f.png" title=":star:" onclick="insertEmoji(':star:')">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/2764.png" title=":heart:" onclick="insertEmoji(':heart:')">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/1f47e.png" title=":alien:" onclick="insertEmoji(':alien:')">
+  <div class="gb-header">
+    <h1 class="gb-title" id="gb-title">serph/runo's guestbook</h1>
+    <div class="gb-subtitle">to send a photo: attach an image link!</div>
+    <div class="gb-links">
+      <a href="#gb-form-window">Sign Guestbook</a>
     </div>
-    <textarea id="gb-message" rows="4" required placeholder="Say something nice..."></textarea>
-    
-    <button type="submit" class="btn">Send Message</button>
-  </form>
+  </div>
 
-  <hr style="border: 0; border-top: 1px solid #473622; margin: 25px 0;">
+  <!-- Sign Guestbook Form Window -->
+  <div class="window" id="gb-form-window">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> sign_guestbook.exe
+      </div>
+      <div class="title-bar-controls">
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <form id="gb-form">
+        <div class="form-group">
+          <label>Name:</label>
+          <input type="text" id="gb-name" required placeholder="user">
+        </div>
 
+        <div class="form-group">
+          <label>github*:</label>
+          <input type="text" id="gb-github" placeholder="username">
+        </div>
+
+        <div class="form-group">
+          <label>fav song?*:</label>
+          <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
+        </div>
+
+        <div class="form-group">
+          <label>Avatar Image Link* (Optional*):</label>
+          <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
+        </div>
+        
+        <div class="form-group">
+          <label>Message*:</label>
+          <div class="toolbar">
+            <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
+            <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
+            <button type="button" onclick="insertTag('[font=cursive]', '[/font]')">Cursive</button>
+            <button type="button" onclick="insertTag('[font=serif]', '[/font]')">Serif</button>
+            <button type="button" onclick="insertTag('[size=small]', '[/size]')">Small</button>
+            <button type="button" onclick="insertTag('[size=large]', '[/size]')">Large</button>
+            <button type="button" onclick="openImageModal()">🖼️ Image</button>
+            <button type="button" onclick="toggleEmojiDropdown()">😀 Emojis ▼</button>
+            <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">👀️ Preview</button>
+
+            <!-- CUSTOM EMOJI DROPDOWN GRID -->
+            <div id="emoji-dropdown">
+              <img src="https://i.imgur.com/kgN9eRw.gif" title=":smile:" onclick="insertEmoji(':smile:')">
+              <img src="https://i.imgur.com/Q0qrnRY.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
+              <img src="https://i.imgur.com/8g7oCSO.gif" title=":tu:" onclick="insertEmoji(':tu:')">
+              <img src="https://i.imgur.com/ezOJzqk.gif" title=":td:" onclick="insertEmoji(':td:')">
+              <img src="https://i.imgur.com/gykO8pt.gif" title=":wink:" onclick="insertEmoji(':wink:')">
+              <img src="https://i.imgur.com/edmxwZe.gif" title=":p:" onclick="insertEmoji(':p:')">
+              <img src="https://i.imgur.com/GP4hl2V.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
+              <img src="https://i.imgur.com/IkgYJjY.gif" title=":typing:" onclick="insertEmoji(':typing:')">
+              <img src="https://i.imgur.com/IBuB1bv.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
+              <img src="https://i.imgur.com/7hQBQ0Q.gif" title=":shock:" onclick="insertEmoji(':shock:')">
+              <img src="https://i.imgur.com/BnDYM0B.gif" title=":grin:" onclick="insertEmoji(':grin:')">
+              <img src="https://i.imgur.com/hSIapyC.gif" title=":blush:" onclick="insertEmoji(':blush:')">
+              <img src="https://i.imgur.com/6fBtjwT.gif" title=":worry:" onclick="insertEmoji(':worry:')">
+              <img src="https://i.imgur.com/FupBJzG.gif" title=":nono:" onclick="insertEmoji(':nono:')">
+              <img src="https://i.imgur.com/tlFQjXU.gif" title=":sad:" onclick="insertEmoji(':sad:')">
+              <img src="https://i.imgur.com/lCOsZcX.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
+              <img src="https://i.imgur.com/Pizvphm.gif" title=":mad:" onclick="insertEmoji(':mad:')">
+              <img src="https://i.imgur.com/c1kGCJV.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
+              <img src="https://i.imgur.com/1s97Og4.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
+              <img src="https://i.imgur.com/acFsfs0.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
+              <img src="https://i.imgur.com/s9zLUNy.gif" title=":x:" onclick="insertEmoji(':x:')">
+              <img src="https://i.imgur.com/muNdenK.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
+              <img src="https://i.imgur.com/ri6sbEl.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
+              <img src="https://i.imgur.com/VnjtWvX.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
+              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
+              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" title=":gluv:" onclick="insertEmoji(':gluv:')">
+              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" title=":taptap:" onclick="insertEmoji(':taptap:')">
+              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
+              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
+            </div>
+          </div>
+          <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
+        </div>
+
+        <button type="submit" style="margin-top: 10px;">Submit Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Messages List Container -->
   <div id="entries-container">Loading entries...</div>
+
 </div>
 
-<!-- Load Supabase JS Client via CDN -->
+<!-- Custom Image Modal -->
+<div id="image-modal" class="custom-modal">
+  <div class="window" style="width: 320px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Insert Image Link</div>
+      <div class="title-bar-controls"><button aria-label="Close" onclick="closeImageModal()"></button></div>
+    </div>
+    <div class="window-body">
+      <div class="form-group">
+        <label>Paste Image URL:</label>
+        <input type="text" id="modal-img-url" placeholder="https://example.com/image.png">
+      </div>
+      <div style="margin-top: 10px; display: flex; gap: 6px;">
+        <button type="button" onclick="confirmImageEmbed()">Add</button>
+        <button type="button" onclick="closeImageModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Message Preview Modal -->
+<div id="preview-modal" class="custom-modal">
+  <div class="window" style="width: 480px; max-width: 90vw;">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img id="preview-avatar-title" src="" class="user-avatar-icon" style="display:none;"> message_preview.exe
+      </div>
+      <div class="title-bar-controls"><button aria-label="Close" onclick="closePreviewModal()"></button></div>
+    </div>
+    <div class="window-body">
+      <div class="entry-field">
+        <span class="entry-label">
+          <img id="preview-avatar-name" src="" class="entry-name-avatar" style="display:none;">Name :
+        </span>
+        <span class="entry-value" id="preview-name"></span>
+      </div>
+      <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value" id="preview-date"></span></div>
+      <div class="entry-field" id="preview-github-row"><span class="entry-label">github :</span><span class="entry-value" id="preview-github"></span></div>
+      <div class="entry-field" id="preview-song-row"><span class="entry-label">fav song? :</span><span class="entry-value" id="preview-song"></span></div>
+      
+      <div class="entry-field" style="margin-top:10px;">
+        <span class="entry-label">Message:</span>
+        <div class="entry-value entry-message-body" id="preview-body"></div>
+      </div>
+
+      <!-- Owner Reply Preview inside modal -->
+      <div class="owner-reply">
+        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="owner-avatar">
+        <div class="reply-content"><span class="reply-prefix">R:</span> hey buddy... i see your previews..... Just kidding. Just joshing around..... <br>This is just my reply preview</div>
+      </div>
+
+      <div style="margin-top: 15px; text-align: right;">
+        <button type="button" onclick="closePreviewModal()">Close Preview</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Owner Reply Modal -->
+<div id="reply-modal" class="custom-modal">
+  <div class="window" style="width: 380px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Owner Reply (HTML Supported)</div>
+      <div class="title-bar-controls"><button aria-label="Close" onclick="closeReplyModal()"></button></div>
+    </div>
+    <div class="window-body">
+      <div class="form-group">
+        <label>Type custom reply:</label>
+        <textarea id="modal-reply-html" rows="4" style="width:100%;" placeholder="s2 is so good!"></textarea>
+      </div>
+      <div style="margin-top: 10px; display: flex; gap: 6px;">
+        <button type="button" onclick="confirmReplySubmit()">Save Reply</button>
+        <button type="button" onclick="closeReplyModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
   const SUPABASE_URL = 'https://twvtjoehfbzusmfaisum.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
-
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
 
-  // Custom Emoji Mapping dictionary
+  let activeReplyId = null;
+  const DEFAULT_AVATAR = 'https://abs.twimg.com/emoji/v1/72x72/1f4e8.png';
+
   const EMOJI_MAP = {
-    ':smile:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f600.png" width="18" height="18" style="vertical-align:middle;">',
-    ':star:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f31f.png" width="18" height="18" style="vertical-align:middle;">',
-    ':heart:': '<img src="https://abs.twimg.com/emoji/v1/72x72/2764.png" width="18" height="18" style="vertical-align:middle;">',
-    ':alien:': '<img src="https://abs.twimg.com/emoji/v1/72x72/1f47e.png" width="18" height="18" style="vertical-align:middle;">'
+    ':smile:': '<img src="https://i.imgur.com/kgN9eRw.gif" class="custom-emoji" alt="smile">',
+    ':laugh:': '<img src="https://i.imgur.com/Q0qrnRY.gif" class="custom-emoji" alt="laugh">',
+    ':tu:': '<img src="https://i.imgur.com/8g7oCSO.gif" class="custom-emoji" alt="tu">',
+    ':td:': '<img src="https://i.imgur.com/ezOJzqk.gif" class="custom-emoji" alt="td">',
+    ':wink:': '<img src="https://i.imgur.com/gykO8pt.gif" class="custom-emoji" alt="wink">',
+    ':p:': '<img src="https://i.imgur.com/edmxwZe.gif" class="custom-emoji" alt="p">',
+    ':bownita:': '<img src="https://i.imgur.com/GP4hl2V.gif" class="custom-emoji" alt="bownita">',
+    ':typing:': '<img src="https://i.imgur.com/IkgYJjY.gif" class="custom-emoji" alt="typing">',
+    ':puzzled:': '<img src="https://i.imgur.com/IBuB1bv.gif" class="custom-emoji" alt="puzzled">',
+    ':shock:': '<img src="https://i.imgur.com/7hQBQ0Q.gif" class="custom-emoji" alt="shock">',
+    ':grin:': '<img src="https://i.imgur.com/BnDYM0B.gif" class="custom-emoji" alt="grin">',
+    ':blush:': '<img src="https://i.imgur.com/hSIapyC.gif" class="custom-emoji" alt="blush">',
+    ':worry:': '<img src="https://i.imgur.com/6fBtjwT.gif" class="custom-emoji" alt="worry">',
+    ':nono:': '<img src="https://i.imgur.com/FupBJzG.gif" class="custom-emoji" alt="nono">',
+    ':sad:': '<img src="https://i.imgur.com/tlFQjXU.gif" class="custom-emoji" alt="sad">',
+    ':awesomesauce:': '<img src="https://i.imgur.com/lCOsZcX.gif" class="custom-emoji" alt="awesomesauce">',
+    ':mad:': '<img src="https://i.imgur.com/Pizvphm.gif" class="custom-emoji" alt="mad">',
+    ':cheers:': '<img src="https://i.imgur.com/c1kGCJV.gif" class="custom-emoji" alt="cheers">',
+    ':groovy:': '<img src="https://i.imgur.com/1s97Og4.gif" class="custom-emoji" alt="groovy">',
+    ':bleh:': '<img src="https://i.imgur.com/acFsfs0.gif" class="custom-emoji" alt="bleh">',
+    ':x:': '<img src="https://i.imgur.com/s9zLUNy.gif" class="custom-emoji" alt="x">',
+    ':kneel:': '<img src="https://i.imgur.com/muNdenK.gif" class="custom-emoji" alt="kneel">',
+    ':snorkmimi:': '<img src="https://i.imgur.com/ri6sbEl.gif" class="custom-emoji" alt="snorkmimi">',
+    ':x_x:': '<img src="https://i.imgur.com/VnjtWvX.gif" class="custom-emoji" alt="x_x">',
+    ':wave:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" class="custom-emoji" alt="wave">',
+    ':gluv:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" class="custom-emoji" alt="gluv">',
+    ':taptap:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" class="custom-emoji" alt="taptap">',
+    ':msnflush:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" class="custom-emoji" alt="msnflush">',
+    ':ohoho:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" class="custom-emoji" alt="ohoho">'
+  };
+
+  window.toggleEmojiDropdown = function() {
+    const dd = document.getElementById('emoji-dropdown');
+    dd.style.display = dd.style.display === 'grid' ? 'none' : 'grid';
+  };
+
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.toolbar')) {
+      document.getElementById('emoji-dropdown').style.display = 'none';
+    }
+  });
+
+  window.insertTag = function(startTag, endTag) {
+    const textarea = document.getElementById('gb-message');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    textarea.value = textarea.value.substring(0, start) + startTag + selectedText + endTag + textarea.value.substring(end);
+    textarea.focus();
   };
 
   window.insertEmoji = function(code) {
     const msgInput = document.getElementById('gb-message');
     msgInput.value += ` ${code} `;
+    document.getElementById('emoji-dropdown').style.display = 'none';
     msgInput.focus();
   };
 
-  function parseEmojis(text) {
-    // Prevent XSS by escaping visitor raw HTML
-    let safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
-      safeText = safeText.split(code).join(imgTag);
+  window.openImageModal = () => document.getElementById('image-modal').style.display = 'flex';
+  window.closeImageModal = () => {
+    document.getElementById('image-modal').style.display = 'none';
+    document.getElementById('modal-img-url').value = '';
+  };
+  window.confirmImageEmbed = () => {
+    const url = document.getElementById('modal-img-url').value.trim();
+    if (url) window.insertTag(`[img]${url}[/img]`, '');
+    closeImageModal();
+  };
+
+  window.openPreviewModal = () => {
+    const name = document.getElementById('gb-name').value || 'Anonymous';
+    const github = document.getElementById('gb-github').value;
+    const favSong = document.getElementById('gb-fav-song').value;
+    const avatar = document.getElementById('gb-avatar').value.trim();
+    const message = document.getElementById('gb-message').value || '(Empty message)';
+
+    const titleIcon = document.getElementById('preview-avatar-title');
+    const nameAvatar = document.getElementById('preview-avatar-name');
+
+    if (avatar) {
+      titleIcon.src = avatar;
+      titleIcon.style.display = 'inline-block';
+      nameAvatar.src = avatar;
+      nameAvatar.style.display = 'inline-block';
+    } else {
+      titleIcon.style.display = 'none';
+      nameAvatar.style.display = 'none';
     }
-    return safeText;
+
+    document.getElementById('preview-name').textContent = name;
+    document.getElementById('preview-date').textContent = new Date().toLocaleDateString('en-US', {
+      month: 'long', day: '2-digit', year: 'numeric'
+    });
+
+    const githubRow = document.getElementById('preview-github-row');
+    if (github) {
+      document.getElementById('preview-github').textContent = github;
+      githubRow.style.display = 'flex';
+    } else {
+      githubRow.style.display = 'none';
+    }
+
+    const songRow = document.getElementById('preview-song-row');
+    if (favSong) {
+      document.getElementById('preview-song').textContent = favSong;
+      songRow.style.display = 'flex';
+    } else {
+      songRow.style.display = 'none';
+    }
+
+    document.getElementById('preview-body').innerHTML = parseMessageText(message);
+    document.getElementById('preview-modal').style.display = 'flex';
+  };
+  window.closePreviewModal = () => {
+    document.getElementById('preview-modal').style.display = 'none';
+  };
+
+  window.openReplyModal = (id, currentHtml) => {
+    activeReplyId = id;
+    document.getElementById('modal-reply-html').value = currentHtml || '';
+    document.getElementById('reply-modal').style.display = 'flex';
+  };
+  window.closeReplyModal = () => {
+    document.getElementById('reply-modal').style.display = 'none';
+    document.getElementById('modal-reply-html').value = '';
+    activeReplyId = null;
+  };
+  window.confirmReplySubmit = async () => {
+    const htmlReply = document.getElementById('modal-reply-html').value;
+    if (activeReplyId) {
+      const { error } = await supabase.from('guestbook').update({ reply_html: htmlReply }).eq('id', activeReplyId);
+      if (error) alert("Error saving reply: " + error.message);
+      else loadEntries();
+    }
+    closeReplyModal();
+  };
+
+  function parseMessageText(text) {
+    let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
+      safe = safe.split(code).join(imgTag);
+    }
+    safe = safe.replace(/\[b\](.*?)\[\/b\]/gi, '<b>$1</b>');
+    safe = safe.replace(/\[i\](.*?)\[\/i\]/gi, '<i>$1</i>');
+    safe = safe.replace(/\[font=cursive\](.*?)\[\/font\]/gi, '<span style="font-family: cursive;">$1</span>');
+    safe = safe.replace(/\[font=serif\](.*?)\[\/font\]/gi, '<span style="font-family: serif;">$1</span>');
+    safe = safe.replace(/\[size=small\](.*?)\[\/size\]/gi, '<span style="font-size: 0.8em;">$1</span>');
+    safe = safe.replace(/\[size=large\](.*?)\[\/size\]/gi, '<span style="font-size: 1.25em;">$1</span>');
+    safe = safe.replace(/\[img\](https?:\/\/[^\s]+)\[\/img\]/gi, '<img src="$1" alt="image">');
+    return safe.replace(/\n/g, '<br>');
   }
 
   async function loadEntries() {
     const container = document.getElementById('entries-container');
-    const { data, error } = await supabase
-      .from('guestbook')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('guestbook').select('*').order('created_at', { ascending: false });
 
     if (error) {
-      container.innerHTML = `<p style="color:red;">Error loading entries: ${error.message}</p>`;
+      container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
       return;
     }
 
     if (data.length === 0) {
-      container.innerHTML = '<p style="color: #888;">No messages yet. Be the first to sign!</p>';
+      container.innerHTML = '<p style="color: #fff; text-shadow:1px 1px 2px #000;">No messages yet. Be the first to sign!</p>';
       return;
     }
 
     container.innerHTML = '';
     data.forEach(entry => {
       const el = document.createElement('div');
-      el.className = 'entry';
+      el.className = 'window';
+      const existingReplyEscaped = entry.reply_html ? entry.reply_html.replace(/"/g, '&quot;') : '';
+      
+      const hasAvatar = entry.email && entry.email.trim() !== '';
+      const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
+      const nameAvatarHtml = hasAvatar ? `<img src="${entry.email}" class="entry-name-avatar">` : '';
+
+      const formattedDate = new Date(entry.created_at).toLocaleDateString('en-US', {
+        month: 'long', day: '2-digit', year: 'numeric'
+      });
+
       el.innerHTML = `
-        <div class="entry-header">
-          <span>${entry.name}</span>
-          <span class="entry-date">${new Date(entry.created_at).toLocaleString()}</span>
+        <div class="title-bar">
+          <div class="title-bar-text">
+            ${titleBarImgHtml} you got mail.exe
+          </div>
+          <div class="title-bar-controls">
+            <button aria-label="Close"></button>
+          </div>
         </div>
-        <div class="entry-body">${parseEmojis(entry.message)}</div>
-        ${entry.reply_html ? `<div class="owner-reply"><strong>Owner Reply:</strong><br>${entry.reply_html}</div>` : ''}
-        <button class="admin-btn" onclick="openAdminReply('${entry.id}')">[+ Manual HTML Reply]</button>
+        <div class="window-body">
+          <div class="entry-field">
+            <span class="entry-label">
+              ${nameAvatarHtml}Name :
+            </span>
+            <span class="entry-value">${entry.name}</span>
+          </div>
+          <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value">${formattedDate}</span></div>
+          ${entry.user_url ? `<div class="entry-field"><span class="entry-label">github :</span><span class="entry-value">${entry.user_url}</span></div>` : ''}
+          ${entry.fav_song ? `<div class="entry-field"><span class="entry-label">fav song? :</span><span class="entry-value">${entry.fav_song}</span></div>` : ''}
+          
+          <div class="entry-field" style="margin-top:10px;">
+            <span class="entry-label">Message:</span>
+            <div class="entry-value entry-message-body">${parseMessageText(entry.message)}</div>
+          </div>
+
+          ${entry.reply_html ? `
+            <div class="owner-reply">
+              <img src="${OWNER_AVATAR_URL}" class="owner-avatar">
+              <div class="reply-content"><span class="reply-prefix">R:</span>${entry.reply_html}</div>
+            </div>
+          ` : ''}
+
+          <div class="admin-actions">
+            <button class="admin-btn" onclick="openReplyModal('${entry.id}', '${existingReplyEscaped}')">Reply HTML</button>
+            <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
+          </div>
+        </div>
       `;
       container.appendChild(el);
     });
   }
 
-  // Handle Form Submission
   document.getElementById('gb-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('gb-name').value;
-    const email = document.getElementById('gb-email').value;
+    const user_url = document.getElementById('gb-github').value;
+    const fav_song = document.getElementById('gb-fav-song').value;
+    const avatar = document.getElementById('gb-avatar').value;
     const message = document.getElementById('gb-message').value;
 
-    const { error } = await supabase
-      .from('guestbook')
-      .insert([{ name, email, message }]);
+    const { error } = await supabase.from('guestbook').insert([{ 
+      name: name, 
+      email: avatar || null, 
+      user_url: user_url || null, 
+      fav_song: fav_song || null,
+      message: message 
+    }]);
 
-    if (error) {
-      alert('Error sending message: ' + error.message);
-    } else {
+    if (error) alert('Error sending message: ' + error.message);
+    else {
       document.getElementById('gb-message').value = '';
       document.getElementById('gb-name').value = '';
-      document.getElementById('gb-email').value = '';
+      document.getElementById('gb-github').value = '';
+      document.getElementById('gb-fav-song').value = '';
+      document.getElementById('gb-avatar').value = '';
       loadEntries();
     }
   });
 
-  // Admin HTML reply mechanism
-  window.openAdminReply = async function(id) {
-    const password = prompt("Enter Admin Password:");
-    if (password !== "letmein123") { // You can change "letmein123" to any password you want!
-      if (password) alert("Incorrect password!");
-      return;
-    }
-
-    const htmlReply = prompt("Enter your custom HTML/CSS reply for this message:");
-    if (htmlReply !== null) {
-      const { error } = await supabase
-        .from('guestbook')
-        .update({ reply_html: htmlReply })
-        .eq('id', id);
-
-      if (error) {
-        alert("Error saving reply: " + error.message);
-      } else {
-        loadEntries();
-      }
+  window.deleteEntry = async function(id) {
+    if (confirm("Are you sure you want to delete this message?")) {
+      const { error } = await supabase.from('guestbook').delete().eq('id', id);
+      if (error) alert("Error deleting: " + error.message);
+      else loadEntries();
     }
   };
 
-  // Initial load
+  function unlockAdmin() {
+    const inputPass = prompt("thou shalt not pass:");
+    if (inputPass === "Letmein7633x14!!") {
+      document.body.classList.add('is-admin');
+      alert("Admin Mode Unlocked!");
+    } else if (inputPass) alert("Incorrect password!");
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+      e.preventDefault();
+      unlockAdmin();
+    }
+  });
+
+  let titleClicks = 0;
+  let clickTimer = null;
+  document.getElementById('gb-title').addEventListener('click', () => {
+    titleClicks++;
+    clearTimeout(clickTimer);
+    if (titleClicks >= 5) {
+      titleClicks = 0;
+      unlockAdmin();
+    } else {
+      clickTimer = setTimeout(() => { titleClicks = 0; }, 1500);
+    }
+  });
+
   loadEntries();
 </script>
 
