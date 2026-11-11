@@ -1,11 +1,10 @@
-/* Windows XP Wallpaper Background */
 body {
   background: #4a88eb url('assets/bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #000;
   font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
+  padding: 20px 20px 60px 20px; 
 }
 
 .guestbook-wrapper {
@@ -13,7 +12,6 @@ body {
   margin: 0 auto;
 }
 
-/* Page Header Aesthetics */
 .gb-header {
   text-align: center;
   margin-bottom: 20px;
@@ -527,4 +525,10 @@ body.is-admin .admin-only-item {
   cursor: nwse-resize;
   background: linear-gradient(135deg, transparent 50%, #808080 50%, #808080 60%, transparent 60%, transparent 70%, #ffffff 70%);
   z-index: 10;
+}
+
+/* Bug fix */
+#reply-modal .window-body {
+  max-height: 80vh;
+  overflow-y: auto;
 }
