@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>serph/runo's guestbook</title>
-  <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
-  <!-- Link your custom separated CSS file -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,7 +17,7 @@
     <h1 class="gb-title">
       <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
     </h1>
-    <div class="gb-subtitle">to send a photo: attach an image link!</div>
+    <div class="gb-subtitle">messages are draggable and resizable | to send a photo: attach an image link!</div>
     <div class="gb-links">
       <a href="#gb-form-window">Sign Guestbook</a>
     </div>
@@ -63,7 +61,7 @@
           <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
           <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
           
-          <!-- Custom Color Picker Trigger -->
+          <!--  Color Picker -->
           <div style="display:inline-block; position:relative;">
             <button type="button" onclick="openColorPicker()">Color 🎨</button>
             <input type="color" id="native-color-picker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="insertCustomColor(this.value)">
@@ -171,7 +169,7 @@
   </div>
 </div>
 
-<!-- Custom Message Preview Modal -->
+<!-- Message Preview Modal -->
 <div id="preview-modal" class="custom-modal">
   <div class="window" style="width: 480px; max-width: 90vw;">
     <div class="title-bar">
@@ -207,7 +205,7 @@
   </div>
 </div>
 
-<!-- Custom About System Modal -->
+<!-- About System Modal -->
 <div id="about-modal" class="custom-modal">
   <div class="window" style="width: 480px; max-width: 90vw;">
     <div class="title-bar">
