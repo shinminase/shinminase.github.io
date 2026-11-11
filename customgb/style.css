@@ -501,3 +501,13 @@ body.is-admin .admin-actions { display: flex; }
   animation: xpWindowPopup 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   transform-origin: center center;
 }
+
+/* Hide Log Off option by default */
+.admin-only-item {
+  display: none !important;
+}
+
+/* Show Log Off option when body has .is-admin */
+body.is-admin .admin-only-item {
+  display: flex !important;
+}
