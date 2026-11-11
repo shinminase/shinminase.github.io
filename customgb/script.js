@@ -425,8 +425,8 @@ async function loadEntries() {
       el.classList.add('window-popup-anim');
     }
 
-    const existingReplyEscaped = entry.reply_html ? entry.reply_html.replace(/"/g, '&quot;') : '';
-    
+const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_html) : '';
+
     const hasAvatar = entry.email && entry.email.trim() !== '';
     const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
     
@@ -469,8 +469,7 @@ async function loadEntries() {
         ` : ''}
 
         <div class="admin-actions">
-          <button class="admin-btn" onclick="openReplyModal('${entry.id}', '${existingReplyEscaped}')">Reply HTML</button>
-          <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
+<button class="admin-btn" onclick="openReplyModal('${entry.id}', decodeURIComponent('${existingReplyEscaped}'))">Reply HTML</button>          <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
         </div>
       </div>
       <!-- Windows XP Resize Handle -->
