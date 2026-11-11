@@ -270,7 +270,6 @@ window.closeAdminAuthModal = () => {
   if (passInput) passInput.value = '';
 };
 
-// Updated Supabase Auth Login Execution
 window.submitAdminAuth = async () => {
   const emailInput = document.getElementById('admin-email-input');
   const passInput = document.getElementById('admin-pass-input');
@@ -296,7 +295,6 @@ window.submitAdminAuth = async () => {
   }
 };
 
-// Listen for Enter key inside password input
 const adminPassInput = document.getElementById('admin-pass-input');
 if (adminPassInput) {
   adminPassInput.addEventListener('keydown', (e) => {
@@ -332,7 +330,6 @@ window.closeReplyModal = () => {
   activeReplyId = null;
 };
 
-// Live update handler for Reply textarea
 const replyTextarea = document.getElementById('modal-reply-html');
 if (replyTextarea) {
   replyTextarea.addEventListener('input', (e) => {
@@ -422,7 +419,7 @@ async function loadEntries() {
   container.innerHTML = '';
   data.forEach((entry, index) => {
     const el = document.createElement('div');
-    el.className = 'window';
+    el.className = 'window resizable-window';
 
     if (currentPage === 1 && index === 0 && isNewSubmission) {
       el.classList.add('window-popup-anim');
@@ -476,6 +473,8 @@ async function loadEntries() {
           <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
         </div>
       </div>
+      <!-- Windows XP Resize Handle -->
+      <div class="window-resizer"></div>
     `;
     container.appendChild(el);
   });
@@ -626,13 +625,49 @@ window.insertSize = function(sizeVal) {
   if (dd) dd.style.display = 'none';
 };
 
+// ==========================================
+// DRAGGING & RESIZING WINDOWS XP MECHANICS
+// ==========================================
 (function() {
   let activeDragWindow = null;
+  let activeResizeWindow = null;
   let startX = 0, startY = 0;
   let initialLeft = 0, initialTop = 0;
+  let initialWidth = 0, initialHeight = 0;
   let highestZIndex = 50;
 
   document.addEventListener('mousedown', (e) => {
+    // Check for Resize Handle
+    const resizer = e.target.closest('.window-resizer');
+    if (resizer) {
+      const windowEl = resizer.closest('.window');
+      if (!windowEl) return;
+
+      activeResizeWindow = windowEl;
+      highestZIndex++;
+      activeResizeWindow.style.zIndex = highestZIndex;
+
+      // Lock current layout into explicit pixels if not already positioned
+      if (activeResizeWindow.style.position !== 'absolute') {
+        const rect = activeResizeWindow.getBoundingClientRect();
+        activeResizeWindow.style.position = 'absolute';
+        activeResizeWindow.style.left = rect.left + window.scrollX + 'px';
+        activeResizeWindow.style.top = rect.top + window.scrollY + 'px';
+        activeResizeWindow.style.width = rect.width + 'px';
+        activeResizeWindow.style.height = rect.height + 'px';
+        activeResizeWindow.style.transform = 'none';
+      }
+
+      startX = e.clientX;
+      startY = e.clientY;
+      initialWidth = activeResizeWindow.offsetWidth;
+      initialHeight = activeResizeWindow.offsetHeight;
+
+      e.preventDefault();
+      return;
+    }
+
+    // Check for Title Bar Dragging
     const titleBar = e.target.closest('#entries-container .title-bar');
     if (!titleBar) return;
     if (e.target.closest('button')) return;
@@ -649,6 +684,7 @@ window.insertSize = function(sizeVal) {
       activeDragWindow.style.position = 'absolute';
       activeDragWindow.style.left = rect.left + window.scrollX + 'px';
       activeDragWindow.style.top = rect.top + window.scrollY + 'px';
+      activeDragWindow.style.width = rect.width + 'px'; // preserve width
       activeDragWindow.style.transform = 'none';
     }
 
@@ -662,17 +698,27 @@ window.insertSize = function(sizeVal) {
   });
 
   document.addEventListener('mousemove', (e) => {
-    if (!activeDragWindow) return;
+    if (activeResizeWindow) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
 
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+      activeResizeWindow.style.width = Math.max(240, initialWidth + dx) + 'px';
+      activeResizeWindow.style.height = Math.max(150, initialHeight + dy) + 'px';
+      return;
+    }
 
-    activeDragWindow.style.left = (initialLeft + dx) + 'px';
-    activeDragWindow.style.top = (initialTop + dy) + 'px';
+    if (activeDragWindow) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      activeDragWindow.style.left = (initialLeft + dx) + 'px';
+      activeDragWindow.style.top = (initialTop + dy) + 'px';
+    }
   });
 
   document.addEventListener('mouseup', () => {
     activeDragWindow = null;
+    activeResizeWindow = null;
   });
 
   document.addEventListener('click', (e) => {
@@ -688,6 +734,8 @@ window.insertSize = function(sizeVal) {
     windowEl.style.position = '';
     windowEl.style.left = '';
     windowEl.style.top = '';
+    windowEl.style.width = '';
+    windowEl.style.height = '';
     windowEl.style.transform = '';
     windowEl.style.zIndex = '';
   });
