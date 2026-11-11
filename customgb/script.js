@@ -602,3 +602,81 @@ window.insertSize = function(sizeVal) {
   const dd = document.getElementById('size-dropdown');
   if (dd) dd.style.display = 'none';
 };
+
+// ==========================================
+// FREELY DRAGGABLE WINDOWS (Taskbar-Crossing, Below Modals)
+// ==========================================
+(function() {
+  let activeDragWindow = null;
+  let startX = 0, startY = 0;
+  let initialLeft = 0, initialTop = 0;
+  let highestZIndex = 50; // Safely below modals (1000+) but above page content & taskbar (999)
+
+  document.addEventListener('mousedown', (e) => {
+    // Look for a title bar inside the entries container
+    const titleBar = e.target.closest('#entries-container .title-bar');
+    if (!titleBar) return;
+
+    // Don't drag if clicking buttons inside the title bar
+    if (e.target.closest('button')) return;
+
+    const windowEl = titleBar.closest('.window');
+    if (!windowEl) return;
+
+    activeDragWindow = windowEl;
+    
+    // Bring window to the front among other entries
+    highestZIndex++;
+    activeDragWindow.style.zIndex = highestZIndex;
+
+    // If it hasn't been positioned absolutely yet, convert its current layout rect into absolute positioning
+    if (activeDragWindow.style.position !== 'absolute') {
+      const rect = activeDragWindow.getBoundingClientRect();
+      activeDragWindow.style.position = 'absolute';
+      activeDragWindow.style.left = rect.left + window.scrollX + 'px';
+      activeDragWindow.style.top = rect.top + window.scrollY + 'px';
+      activeDragWindow.style.transform = 'none'; // clear any old transforms
+    }
+
+    startX = e.clientX;
+    startY = e.clientY;
+
+    initialLeft = parseFloat(activeDragWindow.style.left) || 0;
+    initialTop = parseFloat(activeDragWindow.style.top) || 0;
+
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!activeDragWindow) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    activeDragWindow.style.left = (initialLeft + dx) + 'px';
+    activeDragWindow.style.top = (initialTop + dy) + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    activeDragWindow = null;
+  });
+
+  // Reset position when clicking the window's close button
+  document.addEventListener('click', (e) => {
+    const closeBtn = e.target.closest('#entries-container .title-bar-controls button');
+    if (!closeBtn) return;
+
+    const windowEl = closeBtn.closest('.window');
+    if (!windowEl) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Revert back to original document layout flow
+    windowEl.style.position = '';
+    windowEl.style.left = '';
+    windowEl.style.top = '';
+    windowEl.style.transform = '';
+    windowEl.style.zIndex = '';
+  });
+})();
