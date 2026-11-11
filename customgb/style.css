@@ -511,3 +511,20 @@ body.is-admin .admin-actions { display: flex; }
 body.is-admin .admin-only-item {
   display: flex !important;
 }
+
+/* Windows XP Window Resizing Handle Styling */
+.window.resizable-window {
+  position: relative;
+  overflow: hidden; 
+}
+
+.window-resizer {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, #808080 50%, #808080 60%, transparent 60%, transparent 70%, #ffffff 70%);
+  z-index: 10;
+}
