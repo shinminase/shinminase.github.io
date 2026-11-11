@@ -692,3 +692,15 @@ window.insertSize = function(sizeVal) {
     windowEl.style.zIndex = '';
   });
 })();
+
+window.logoutAdmin = async () => {
+  if (confirm("Are you sure you want to log off from Admin mode?")) {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      alert("Error logging off: " + error.message);
+    } else {
+      document.body.classList.remove('is-admin');
+      alert("Logged off successfully.");
+    }
+  }
+};
