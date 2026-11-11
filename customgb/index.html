@@ -5,426 +5,8 @@
   <title>serph/runo's guestbook</title>
   <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
-  <style>
-    /* Windows XP Wallpaper Background */
-    body {
-      background: #4a88eb url('https://i.imgur.com/wQpyvWN.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #000;
-      font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
-    }
-
-    .guestbook-wrapper {
-      max-width: 580px;
-      margin: 0 auto;
-    }
-
-    /* Page Header Aesthetics */
-    .gb-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .gb-title {
-      font-size: 2em;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-      margin: 0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .gb-subtitle {
-      font-size: 0.85em;
-      color: #ffffff;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-      margin: 4px 0 10px 0;
-    }
-    .gb-links a {
-      color: #ffffff;
-      font-weight: bold;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-      margin: 0 5px;
-      text-decoration: underline;
-    }
-
-    .window {
-      margin-bottom: 25px;
-    }
-    .window-body {
-      background: #fbf9e8;
-      font-size: 0.9em;
-    }
-
-    .user-avatar-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 2px;
-      object-fit: cover;
-      background: #fff;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-
-    /* Inline Avatar next to Name */
-    .entry-name-container {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .entry-name-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 3px;
-      object-fit: cover;
-      background: #fff;
-      border: 1px solid #7f9db9;
-      flex-shrink: 0;
-    }
-
-    /* Owner Reply Container styled like an XP Dialog box */
-    .owner-reply {
-      margin-top: 15px;
-      padding: 10px 12px;
-      border-top: 2px dotted #999999;
-      background: #ece9d8;
-      border-left: 2px solid #ffffff;
-      border-top-color: #dfdfdf;
-      border-right: 2px solid #7f9db9;
-      border-bottom: 2px solid #7f9db9;
-      font-weight: normal;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .owner-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 3px;
-      object-fit: cover;
-      border: 1px solid #7f9db9;
-      background: #fff;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .reply-content {
-      flex: 1;
-      word-break: break-word;
-    }
-    .reply-prefix {
-      font-weight: bold;
-      color: #0055ea;
-      margin-right: 5px;
-    }
-
-    /* --- OVERRIDES TO FIX XP.CSS FORM LAYOUT ISSUES --- */
-    #gb-form {
-      display: block !important;
-    }
-    .form-group {
-      margin-bottom: 8px;
-    }
-    .form-group label {
-      display: block !important;
-      font-weight: bold;
-      margin-bottom: 2px;
-    }
-    .form-group input[type="text"] {
-      display: block !important;
-      width: 100% !important;
-      box-sizing: border-box !important;
-      margin-top: 0 !important;
-    }
-    #gb-message {
-      display: block !important;
-      width: 100% !important;
-      height: 110px !important;
-      box-sizing: border-box !important;
-      resize: vertical;
-    }
-
-    .toolbar {
-      position: relative;
-      margin-top: 6px;
-      margin-bottom: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3px;
-      background: #ece9d8;
-      padding: 4px;
-      border: 1px solid #999;
-    }
-    .toolbar button {
-      background: #ece9d8;
-      color: #000;
-      border: 2px outset #ffffff;
-      padding: 2px 6px;
-      cursor: pointer;
-      font-size: 0.8em;
-      min-width: unset !important;
-    }
-    .toolbar button:active { border-style: inset; }
-
-    /* Side-by-side Emoji Grid Dropdown */
-    #emoji-dropdown {
-      display: none;
-      position: absolute;
-      top: 32px;
-      left: 0;
-      background: #ece9d8;
-      border: 2px solid #0055ea;
-      padding: 6px;
-      width: 260px;
-      max-height: 200px;
-      overflow-y: auto;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      z-index: 100;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-      align-items: center;
-      justify-items: center;
-    }
-    #emoji-dropdown img {
-      max-width: 40px;
-      max-height: 40px;
-      width: auto;
-      height: auto;
-      cursor: pointer;
-      padding: 2px;
-      border: 1px solid transparent;
-      background: transparent;
-    }
-    #emoji-dropdown img:hover { 
-      border-color: #0055ea; 
-      background: #ffffff; 
-    }
-    
-    .entry-message-body {
-      margin-top: 8px;
-      white-space: pre-wrap;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-    .entry-message-body img.custom-emoji {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      vertical-align: middle;
-      display: inline-block;
-    }
-    
-    /* Auto-shrink images posted inside message body to 50% */
-    .entry-message-body img:not(.custom-emoji) { 
-      max-width: 50%; 
-      max-height: 50%;
-      width: auto;
-      height: auto; 
-      margin: 6px 0; 
-      display: block; 
-    }
-
-    .admin-actions { margin-top: 10px; display: none; gap: 8px; }
-    body.is-admin .admin-actions { display: flex; }
-    .admin-btn {
-      background: #ece9d8;
-      border: 1px solid #7f9db9;
-      color: #000;
-      font-size: 0.75em;
-      cursor: pointer;
-      padding: 2px 6px;
-      min-width: unset !important;
-    }
-
-    /* Modal Styling */
-    .custom-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-	
-    /* Fix XP.css field alignment */
-    .entry-field {
-      display: flex !important;
-      align-items: flex-start !important;
-      margin-bottom: 6px !important;
-    }
-    .entry-label {
-      font-weight: bold;
-      min-width: 95px !important;
-      display: flex !important;
-      align-items: center !important;
-    }
-    .entry-value {
-      flex: 1 !important;
-    }
-
-    /* --- Windows XP Taskbar Styles --- */
-    .xp-taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 30px;
-      background: linear-gradient(to bottom, #245edb 0%, #3c7fb9 5%, #1f47b9 50%, #102e8d 100%);
-      border-top: 1px solid #0a246a;
-      display: flex;
-      align-items: center;
-      z-index: 9999;
-      font-family: 'Tahoma', sans-serif;
-      font-size: 11px;
-      user-select: none;
-    }
-    .xp-start-btn {
-      height: 100%;
-      background: linear-gradient(to bottom, #389638 0%, #5cb85c 40%, #2e7d32 50%, #1b5e20 100%);
-      border: none;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-      font-style: italic;
-      font-size: 13px;
-      padding: 0 16px 0 10px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
-      box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
-    }
-    .xp-start-btn:hover {
-      background: linear-gradient(to bottom, #42a542 0%, #66bb6a 40%, #388e3c 50%, #2e7d32 100%);
-    }
-    .xp-taskbar-tasks {
-      flex: 1;
-      display: flex;
-      padding: 0 6px;
-      gap: 4px;
-    }
-    .xp-task-item {
-      background: linear-gradient(to bottom, #3c80f6 0%, #2a63d9 50%, #1e4bb8 100%);
-      border: 1px solid #102e8d;
-      border-radius: 3px;
-      color: #fff;
-      padding: 2px 8px;
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      max-width: 140px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      cursor: pointer;
-    }
-    .xp-task-item.active {
-      background: linear-gradient(to bottom, #102e8d 0%, #1e4bb8 50%, #2a63d9 100%);
-      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
-    }
-    .xp-tray {
-      height: 100%;
-      background: linear-gradient(to bottom, #1282c9 0%, #108de3 100%);
-      border-left: 1px solid #094488;
-      padding: 0 12px;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    /* Start Menu Popup */
-    .xp-start-menu {
-      display: none;
-      position: fixed;
-      bottom: 30px;
-      left: 0;
-      width: 240px;
-      background: #fff;
-      border: 2px solid #0055ea;
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
-      box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
-      z-index: 10000;
-    }
-    .xp-start-header {
-      background: linear-gradient(to right, #0a246a 0%, #a6caf0 100%);
-      color: #fff;
-      padding: 8px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .xp-start-body {
-      padding: 6px 0;
-    }
-    .xp-start-item {
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      color: #000;
-      text-decoration: none;
-      font-size: 11px;
-    }
-    .xp-start-item:hover {
-      background: #316ac5;
-      color: #fff;
-    }
-
-    /* Pagination Controls */
-    .pagination-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .pagination-controls button {
-      background: #ece9d8;
-      border: 2px outset #ffffff;
-      padding: 4px 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .pagination-controls button:active {
-      border-style: inset;
-    }
-    .pagination-controls button:disabled {
-      color: #888;
-      cursor: default;
-      border-style: solid;
-      border-color: #ccc;
-    }
-    .page-indicator {
-      color: #fff;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    }
-
-    /* About System Modal Video Styling */
-    .about-video-container {
-      margin-top: 8px;
-      border: 1px solid #7f9db9;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .about-video-container video {
-      width: 100%;
-      height: auto;
-      max-height: 280px;
-      display: block;
-    }
-  </style>
+  <!-- Link your custom separated CSS file -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -434,98 +16,132 @@
 
 <div class="guestbook-wrapper">
   <div class="gb-header">
-    <h1 class="gb-title" id="gb-title">serph/runo's guestbook</h1>
+    <h1 class="gb-title">
+      <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
+    </h1>
     <div class="gb-subtitle">to send a photo: attach an image link!</div>
     <div class="gb-links">
       <a href="#gb-form-window">Sign Guestbook</a>
     </div>
   </div>
 
-  <!-- Sign Guestbook Form Window -->
-  <div class="window" id="gb-form-window">
-    <div class="title-bar">
-      <div class="title-bar-text">
-        <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> sign_guestbook.exe
-      </div>
-      <div class="title-bar-controls">
-        <button aria-label="Close"></button>
-      </div>
+<!-- Sign Guestbook Form Window -->
+<div class="window" id="gb-form-window">
+  <div class="title-bar">
+    <div class="title-bar-text">
+      <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> sign_guestbook.exe
     </div>
-    <div class="window-body">
-      <form id="gb-form">
-        <div class="form-group">
-          <label>Name:</label>
-          <input type="text" id="gb-name" required placeholder="user">
-        </div>
-
-        <div class="form-group">
-          <label>github*:</label>
-          <input type="text" id="gb-github" placeholder="username">
-        </div>
-
-        <div class="form-group">
-          <label>fav song?*:</label>
-          <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
-        </div>
-
-        <div class="form-group">
-          <label>Avatar Image Link* (Optional*):</label>
-          <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
-        </div>
-        
-        <div class="form-group">
-          <label>Message*:</label>
-          <div class="toolbar">
-            <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
-            <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
-            <button type="button" onclick="insertTag('[font=cursive]', '[/font]')">Cursive</button>
-            <button type="button" onclick="insertTag('[font=serif]', '[/font]')">Serif</button>
-            <button type="button" onclick="insertTag('[size=small]', '[/size]')">Small</button>
-            <button type="button" onclick="insertTag('[size=large]', '[/size]')">Large</button>
-            <button type="button" onclick="openImageModal()">🖼️ Image</button>
-            <button type="button" onclick="toggleEmojiDropdown()">Emoticons ▼</button>
-            <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">👀️ Preview</button>
-
-            <!-- CUSTOM EMOJI DROPDOWN GRID -->
-            <div id="emoji-dropdown">
-              <img src="https://i.imgur.com/kgN9eRw.gif" title=":smile:" onclick="insertEmoji(':smile:')">
-              <img src="https://i.imgur.com/Q0qrnRY.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
-              <img src="https://i.imgur.com/8g7oCSO.gif" title=":tu:" onclick="insertEmoji(':tu:')">
-              <img src="https://i.imgur.com/ezOJzqk.gif" title=":td:" onclick="insertEmoji(':td:')">
-              <img src="https://i.imgur.com/gykO8pt.gif" title=":wink:" onclick="insertEmoji(':wink:')">
-              <img src="https://i.imgur.com/edmxwZe.gif" title=":p:" onclick="insertEmoji(':p:')">
-              <img src="https://i.imgur.com/GP4hl2V.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
-              <img src="https://i.imgur.com/IkgYJjY.gif" title=":typing:" onclick="insertEmoji(':typing:')">
-              <img src="https://i.imgur.com/IBuB1bv.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
-              <img src="https://i.imgur.com/7hQBQ0Q.gif" title=":shock:" onclick="insertEmoji(':shock:')">
-              <img src="https://i.imgur.com/BnDYM0B.gif" title=":grin:" onclick="insertEmoji(':grin:')">
-              <img src="https://i.imgur.com/hSIapyC.gif" title=":blush:" onclick="insertEmoji(':blush:')">
-              <img src="https://i.imgur.com/6fBtjwT.gif" title=":worry:" onclick="insertEmoji(':worry:')">
-              <img src="https://i.imgur.com/FupBJzG.gif" title=":nono:" onclick="insertEmoji(':nono:')">
-              <img src="https://i.imgur.com/tlFQjXU.gif" title=":sad:" onclick="insertEmoji(':sad:')">
-              <img src="https://i.imgur.com/lCOsZcX.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
-              <img src="https://i.imgur.com/Pizvphm.gif" title=":mad:" onclick="insertEmoji(':mad:')">
-              <img src="https://i.imgur.com/c1kGCJV.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
-              <img src="https://i.imgur.com/1s97Og4.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
-              <img src="https://i.imgur.com/acFsfs0.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
-              <img src="https://i.imgur.com/s9zLUNy.gif" title=":x:" onclick="insertEmoji(':x:')">
-              <img src="https://i.imgur.com/muNdenK.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
-              <img src="https://i.imgur.com/ri6sbEl.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
-              <img src="https://i.imgur.com/VnjtWvX.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" title=":gluv:" onclick="insertEmoji(':gluv:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" title=":taptap:" onclick="insertEmoji(':taptap:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
-              <img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
-            </div>
-          </div>
-          <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
-        </div>
-
-        <button type="submit" style="margin-top: 10px;">Submit Message</button>
-      </form>
+    <div class="title-bar-controls">
+      <button aria-label="Close"></button>
     </div>
   </div>
+  <div class="window-body">
+    <form id="gb-form">
+      <div class="form-group">
+        <label>Name:</label>
+        <input type="text" id="gb-name" required placeholder="user">
+      </div>
+
+      <div class="form-group">
+        <label>github*:</label>
+        <input type="text" id="gb-github" placeholder="username">
+      </div>
+
+      <div class="form-group">
+        <label>fav song?*:</label>
+        <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
+      </div>
+
+      <div class="form-group">
+        <label>Avatar Image Link* (Optional*):</label>
+        <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
+      </div>
+      
+      <div class="form-group">
+        <label>Message*:</label>
+        <div class="toolbar">
+          <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
+          <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
+          
+          <!-- Custom Color Picker Trigger -->
+          <div style="display:inline-block; position:relative;">
+            <button type="button" onclick="openColorPicker()">Color 🎨</button>
+            <input type="color" id="native-color-picker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="insertCustomColor(this.value)">
+          </div>
+
+          <!-- Font Dropdown -->
+          <div style="display:inline-block; position:relative;">
+            <button type="button" onclick="toggleFontDropdown()">Font ▼</button>
+            <div id="font-dropdown" class="toolbar-popup-dropdown">
+              <div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
+              <div class="font-option" style="font-family: 'Courier New';" onclick="insertFont('Courier New')">Courier New</div>
+              <div class="font-option" style="font-family: Georgia;" onclick="insertFont('Georgia')">Georgia</div>
+              <div class="font-option" style="font-family: Tahoma;" onclick="insertFont('Tahoma')">Tahoma</div>
+              <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertFont('Times New Roman')">Times New Roman</div>
+              <div class="font-option" style="font-family: Verdana;" onclick="insertFont('Verdana')">Verdana</div>
+              <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertFont('Comic Sans MS')">Comic Sans MS</div>
+              <div class="font-option" style="font-family: cursive;" onclick="insertFont('cursive')">Cursive</div>
+              <div class="font-option" style="font-family: serif;" onclick="insertFont('serif')">Serif</div>
+            </div>
+          </div>
+
+          <!-- Size Dropdown -->
+          <div style="display:inline-block; position:relative;">
+            <button type="button" onclick="toggleSizeDropdown()">Size ▼</button>
+            <div id="size-dropdown" class="toolbar-popup-dropdown">
+              <div class="size-option" onclick="insertSize('8px')">8px</div>
+              <div class="size-option" onclick="insertSize('10px')">10px</div>
+              <div class="size-option" onclick="insertSize('13px')">13px</div>
+              <div class="size-option" onclick="insertSize('16px')">16px</div>
+              <div class="size-option" onclick="insertSize('20px')">20px</div>
+              <div class="size-option" onclick="insertSize('24px')">24px</div>
+            </div>
+          </div>
+
+          <button type="button" onclick="openImageModal()">🖼️ Image</button>
+          <button type="button" onclick="toggleEmojiDropdown()">Emoticons ▼</button>
+          <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">👀️ Preview</button>
+
+          <!-- CUSTOM EMOJI DROPDOWN GRID -->
+          <div id="emoji-dropdown">
+            <img src="emoticons/smile.gif" title=":smile:" onclick="insertEmoji(':smile:')">
+            <img src="emoticons/laugh.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
+            <img src="emoticons/tu.gif" title=":tu:" onclick="insertEmoji(':tu:')">
+            <img src="emoticons/td.gif" title=":td:" onclick="insertEmoji(':td:')">
+            <img src="emoticons/wink.gif" title=":wink:" onclick="insertEmoji(':wink:')">
+            <img src="emoticons/p.gif" title=":p:" onclick="insertEmoji(':p:')">
+            <img src="emoticons/bownita.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
+            <img src="emoticons/ty.gif" title=":ty:" onclick="insertEmoji(':ty:')">
+            <img src="emoticons/puzzled.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
+            <img src="emoticons/shock.gif" title=":shock:" onclick="insertEmoji(':shock:')">
+            <img src="emoticons/grin.gif" title=":grin:" onclick="insertEmoji(':grin:')">
+            <img src="emoticons/blush.gif" title=":blush:" onclick="insertEmoji(':blush:')">
+            <img src="emoticons/worry.gif" title=":worry:" onclick="insertEmoji(':worry:')">
+            <img src="emoticons/nono.gif" title=":nono:" onclick="insertEmoji(':nono:')">
+            <img src="emoticons/sad.gif" title=":sad:" onclick="insertEmoji(':sad:')">
+            <img src="emoticons/awesomesauce.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
+            <img src="emoticons/mad.gif" title=":mad:" onclick="insertEmoji(':mad:')">
+            <img src="emoticons/cheers.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
+            <img src="emoticons/groovy.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
+            <img src="emoticons/bleh.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
+            <img src="emoticons/x.gif" title=":x:" onclick="insertEmoji(':x:')">
+            <img src="emoticons/kneel.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
+            <img src="emoticons/snorkmimi.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
+            <img src="emoticons/x_x.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
+            <img src="emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
+            <img src="emoticons/luv.gif" title=":luv:" onclick="insertEmoji(':luv:')">
+            <img src="emoticons/taptap.gif" title=":taptap:" onclick="insertEmoji(':taptap:')">
+            <img src="emoticons/msnflush.png" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
+            <img src="emoticons/ohoho.gif" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
+          </div>
+        </div>
+        <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
+      </div>
+
+      <button type="submit" style="margin-top: 10px;">Submit Message</button>
+    </form>
+  </div>
+</div>
 
   <!-- Messages List Container -->
   <div id="entries-container">Loading entries...</div>
@@ -581,7 +197,7 @@
       <!-- Owner Reply Preview inside modal -->
       <div class="owner-reply">
         <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="owner-avatar">
-        <div class="reply-content"><span class="reply-prefix">R:</span> hey buddy... i see your previews..... Just kidding. Just joshing around..... <br><br>Please keep your msgs respectful, and no spam/nsfw/weird stuff.<br><br>Unlike Atabook and other sites, this guestbook has no filter. Please do not abuse it!<br> This is a self-hosted & coded site.</div>
+        <div class="reply-content"><span class="reply-prefix">R:</span> hey buddy... i see your previews..... Just kidding. Just joshing around..... <br>This is just my reply preview</div>
       </div>
 
       <div style="margin-top: 15px; text-align: right;">
@@ -613,6 +229,35 @@
 
       <div style="margin-top: 15px; text-align: right;">
         <button type="button" onclick="closeAboutModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Windows XP Log On Admin Modal -->
+<div id="admin-auth-modal" class="custom-modal">
+  <div class="window" style="width: 380px; max-width: 90vw;">
+    <div class="title-bar">
+      <div class="title-bar-text">Log On to Windows</div>
+      <div class="title-bar-controls">
+        <button aria-label="Close" onclick="closeAdminAuthModal()"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="xp-login-avatar">
+        <div>
+          <div style="font-weight: bold; font-size: 1.1em;">serph / runo</div>
+          <div style="font-size: 0.8em; color: #555;">Administrator</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="admin-pass-input">Type your password:</label>
+        <input type="password" id="admin-pass-input" placeholder="••••••••">
+      </div>
+      <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 6px;">
+        <button type="button" onclick="submitAdminAuth()">OK</button>
+        <button type="button" onclick="closeAdminAuthModal()">Cancel</button>
       </div>
     </div>
   </div>
@@ -650,7 +295,7 @@
 
 <!-- Windows XP Start Menu Popup -->
 <div id="xp-start-menu" class="xp-start-menu">
-  <div class="xp-start-header">
+  <div class="xp-start-header" id="xp-start-header">
     <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" width="20" height="20" style="border-radius:2px;">
     <span>serph / runo</span>
   </div>
@@ -686,427 +331,8 @@
 <audio id="click-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/xpclick" preload="auto"></audio>
 <audio id="type-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/key" preload="auto"></audio>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const SUPABASE_URL = 'https://twvtjoehfbzusmfaisum.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
-
-  let activeReplyId = null;
-  let currentPage = 1;
-  const pageSize = 20;
-
-  // Live Taskbar Clock
-  function updateClock() {
-    const now = new Date();
-    let hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    document.getElementById('xp-clock').textContent = `${hours}:${minutes} ${ampm}`;
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  // Start Menu Toggle
-  window.toggleStartMenu = function() {
-    const menu = document.getElementById('xp-start-menu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-  }
-  window.addEventListener('click', (e) => {
-    if (!e.target.closest('.xp-start-menu') && !e.target.closest('.xp-start-btn')) {
-      document.getElementById('xp-start-menu').style.display = 'none';
-    }
-  });
-
-  // Fixed Click Sound
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('button, a')) {
-      const sound = document.getElementById('click-sound');
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-      }
-    }
-  });
-
-  // ASMR Keyboard Sound
-  const msgTextarea = document.getElementById('gb-message');
-  if (msgTextarea) {
-    msgTextarea.addEventListener('keydown', (e) => {
-      if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace') {
-        const typeSound = document.getElementById('type-sound');
-        if (typeSound) {
-          typeSound.currentTime = 0;
-          typeSound.play().catch(() => {});
-        }
-      }
-    });
-  }
-
-  const EMOJI_MAP = {
-    ':smile:': '<img src="https://i.imgur.com/kgN9eRw.gif" class="custom-emoji" alt="smile">',
-    ':laugh:': '<img src="https://i.imgur.com/Q0qrnRY.gif" class="custom-emoji" alt="laugh">',
-    ':tu:': '<img src="https://i.imgur.com/8g7oCSO.gif" class="custom-emoji" alt="tu">',
-    ':td:': '<img src="https://i.imgur.com/ezOJzqk.gif" class="custom-emoji" alt="td">',
-    ':wink:': '<img src="https://i.imgur.com/gykO8pt.gif" class="custom-emoji" alt="wink">',
-    ':p:': '<img src="https://i.imgur.com/edmxwZe.gif" class="custom-emoji" alt="p">',
-    ':bownita:': '<img src="https://i.imgur.com/GP4hl2V.gif" class="custom-emoji" alt="bownita">',
-    ':typing:': '<img src="https://i.imgur.com/IkgYJjY.gif" class="custom-emoji" alt="typing">',
-    ':puzzled:': '<img src="https://i.imgur.com/IBuB1bv.gif" class="custom-emoji" alt="puzzled">',
-    ':shock:': '<img src="https://i.imgur.com/7hQBQ0Q.gif" class="custom-emoji" alt="shock">',
-    ':grin:': '<img src="https://i.imgur.com/BnDYM0B.gif" class="custom-emoji" alt="grin">',
-    ':blush:': '<img src="https://i.imgur.com/hSIapyC.gif" class="custom-emoji" alt="blush">',
-    ':worry:': '<img src="https://i.imgur.com/6fBtjwT.gif" class="custom-emoji" alt="worry">',
-    ':nono:': '<img src="https://i.imgur.com/FupBJzG.gif" class="custom-emoji" alt="nono">',
-    ':sad:': '<img src="https://i.imgur.com/tlFQjXU.gif" class="custom-emoji" alt="sad">',
-    ':awesomesauce:': '<img src="https://i.imgur.com/lCOsZcX.gif" class="custom-emoji" alt="awesomesauce">',
-    ':mad:': '<img src="https://i.imgur.com/Pizvphm.gif" class="custom-emoji" alt="mad">',
-    ':cheers:': '<img src="https://i.imgur.com/c1kGCJV.gif" class="custom-emoji" alt="cheers">',
-    ':groovy:': '<img src="https://i.imgur.com/1s97Og4.gif" class="custom-emoji" alt="groovy">',
-    ':bleh:': '<img src="https://i.imgur.com/acFsfs0.gif" class="custom-emoji" alt="bleh">',
-    ':x:': '<img src="https://i.imgur.com/s9zLUNy.gif" class="custom-emoji" alt="x">',
-    ':kneel:': '<img src="https://i.imgur.com/muNdenK.gif" class="custom-emoji" alt="kneel">',
-    ':snorkmimi:': '<img src="https://i.imgur.com/ri6sbEl.gif" class="custom-emoji" alt="snorkmimi">',
-    ':x_x:': '<img src="https://i.imgur.com/VnjtWvX.gif" class="custom-emoji" alt="x_x">',
-    ':wave:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/wave.gif" class="custom-emoji" alt="wave">',
-    ':gluv:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/love" class="custom-emoji" alt="gluv">',
-    ':taptap:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/pointing" class="custom-emoji" alt="taptap">',
-    ':msnflush:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/msn-flush" class="custom-emoji" alt="msnflush">',
-    ':ohoho:': '<img src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/ohoho" class="custom-emoji" alt="ohoho">'
-  };
-
-  window.toggleEmojiDropdown = function() {
-    const dd = document.getElementById('emoji-dropdown');
-    dd.style.display = dd.style.display === 'grid' ? 'none' : 'grid';
-  };
-
-  window.addEventListener('click', (e) => {
-    if (!e.target.closest('.toolbar')) {
-      document.getElementById('emoji-dropdown').style.display = 'none';
-    }
-  });
-
-  window.insertTag = function(startTag, endTag) {
-    const textarea = document.getElementById('gb-message');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    textarea.value = textarea.value.substring(0, start) + startTag + selectedText + endTag + textarea.value.substring(end);
-    textarea.focus();
-  };
-
-  window.insertEmoji = function(code) {
-    const msgInput = document.getElementById('gb-message');
-    msgInput.value += ` ${code} `;
-    document.getElementById('emoji-dropdown').style.display = 'none';
-    msgInput.focus();
-  };
-
-  window.openImageModal = () => document.getElementById('image-modal').style.display = 'flex';
-  window.closeImageModal = () => {
-    document.getElementById('image-modal').style.display = 'none';
-    document.getElementById('modal-img-url').value = '';
-  };
-  window.confirmImageEmbed = () => {
-    const url = document.getElementById('modal-img-url').value.trim();
-    if (url) window.insertTag(`[img]${url}[/img]`, '');
-    closeImageModal();
-  };
-
-  window.openPreviewModal = () => {
-    const name = document.getElementById('gb-name').value || 'Anonymous';
-    const github = document.getElementById('gb-github').value;
-    const favSong = document.getElementById('gb-fav-song').value;
-    const avatar = document.getElementById('gb-avatar').value.trim();
-    const message = document.getElementById('gb-message').value || '(Empty message)';
-
-    const titleIcon = document.getElementById('preview-avatar-title');
-    if (avatar) {
-      titleIcon.src = avatar;
-      titleIcon.style.display = 'inline-block';
-    } else {
-      titleIcon.style.display = 'none';
-    }
-
-    const previewNameContainer = document.getElementById('preview-name-container');
-    if (avatar) {
-      previewNameContainer.innerHTML = `<div class="entry-name-container"><img src="${avatar}" class="entry-name-avatar"><span>${name}</span></div>`;
-    } else {
-      previewNameContainer.textContent = name;
-    }
-
-    document.getElementById('preview-date').textContent = new Date().toLocaleDateString('en-US', {
-      month: 'long', day: '2-digit', year: 'numeric'
-    });
-
-    const githubRow = document.getElementById('preview-github-row');
-    if (github) {
-      document.getElementById('preview-github').textContent = github;
-      githubRow.style.display = 'flex';
-    } else {
-      githubRow.style.display = 'none';
-    }
-
-    const songRow = document.getElementById('preview-song-row');
-    if (favSong) {
-      document.getElementById('preview-song').textContent = favSong;
-      songRow.style.display = 'flex';
-    } else {
-      songRow.style.display = 'none';
-    }
-
-    document.getElementById('preview-body').innerHTML = parseMessageText(message);
-    document.getElementById('preview-modal').style.display = 'flex';
-  };
-  window.closePreviewModal = () => {
-    document.getElementById('preview-modal').style.display = 'none';
-  };
-
-  // About System Modal handlers
-  window.openAboutModal = () => {
-    document.getElementById('about-modal').style.display = 'flex';
-  };
-  window.closeAboutModal = () => {
-    const video = document.getElementById('about-video-player');
-    if (video) video.pause();
-    document.getElementById('about-modal').style.display = 'none';
-  };
-
-  window.openReplyModal = (id, currentHtml) => {
-    activeReplyId = id;
-    const textarea = document.getElementById('modal-reply-html');
-    textarea.value = currentHtml || '';
-    updateReplyPreview(textarea.value);
-    document.getElementById('reply-modal').style.display = 'flex';
-  };
-
-  window.closeReplyModal = () => {
-    document.getElementById('reply-modal').style.display = 'none';
-    document.getElementById('modal-reply-html').value = '';
-    document.getElementById('reply-preview-output').innerHTML = '(Type something above to preview...)';
-    activeReplyId = null;
-  };
-
-  // Live update handler for Reply textarea
-  const replyTextarea = document.getElementById('modal-reply-html');
-  if (replyTextarea) {
-    replyTextarea.addEventListener('input', (e) => {
-      updateReplyPreview(e.target.value);
-    });
-  }
-
-  function updateReplyPreview(val) {
-    const output = document.getElementById('reply-preview-output');
-    if (!val.trim()) {
-      output.innerHTML = '(Type something above to preview...)';
-      output.style.color = '#444';
-      output.style.fontStyle = 'italic';
-    } else {
-      output.innerHTML = val;
-      output.style.color = '#000';
-      output.style.fontStyle = 'normal';
-    }
-  }
-
-  window.confirmReplySubmit = async () => {
-    const htmlReply = document.getElementById('modal-reply-html').value;
-    if (activeReplyId) {
-      const { error } = await supabase.from('guestbook').update({ reply_html: htmlReply }).eq('id', activeReplyId);
-      if (error) alert("Error saving reply: " + error.message);
-      else loadEntries();
-    }
-    closeReplyModal();
-  };
-
-  function parseMessageText(text) {
-    let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
-      safe = safe.split(code).join(imgTag);
-    }
-    safe = safe.replace(/\[b\](.*?)\[\/b\]/gi, '<b>$1</b>');
-    safe = safe.replace(/\[i\](.*?)\[\/i\]/gi, '<i>$1</i>');
-    safe = safe.replace(/\[font=cursive\](.*?)\[\/font\]/gi, '<span style="font-family: cursive;">$1</span>');
-    safe = safe.replace(/\[font=serif\](.*?)\[\/font\]/gi, '<span style="font-family: serif;">$1</span>');
-    safe = safe.replace(/\[size=small\](.*?)\[\/size\]/gi, '<span style="font-size: 0.8em;">$1</span>');
-    safe = safe.replace(/\[size=large\](.*?)\[\/size\]/gi, '<span style="font-size: 1.25em;">$1</span>');
-    safe = safe.replace(/\[img\](https?:\/\/[^\s]+)\[\/img\]/gi, '<img src="$1" alt="image">');
-    return safe.replace(/\n/g, '<br>');
-  }
-
-  window.changePage = function(direction) {
-    currentPage += direction;
-    loadEntries();
-    window.scrollTo({ top: 400, behavior: 'smooth' });
-  }
-
-  async function loadEntries() {
-    const container = document.getElementById('entries-container');
-    const paginationContainer = document.getElementById('pagination-container');
-
-    const { count, error: countError } = await supabase.from('guestbook').select('*', { count: 'exact', head: true });
-    if (countError) {
-      container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading count: ${countError.message}</p>`;
-      return;
-    }
-
-    const totalPages = Math.ceil((count || 0) / pageSize) || 1;
-    if (currentPage > totalPages) currentPage = totalPages;
-    if (currentPage < 1) currentPage = 1;
-
-    const from = (currentPage - 1) * pageSize;
-    const to = from + pageSize - 1;
-
-    const { data, error } = await supabase.from('guestbook')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .range(from, to);
-
-    if (error) {
-      container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
-      return;
-    }
-
-    if (data.length === 0) {
-      container.innerHTML = '<p style="color: #fff; text-shadow:1px 1px 2px #000;">No messages yet. Be the first to sign!</p>';
-      paginationContainer.innerHTML = '';
-      return;
-    }
-
-    container.innerHTML = '';
-    data.forEach(entry => {
-      const el = document.createElement('div');
-      el.className = 'window';
-      const existingReplyEscaped = entry.reply_html ? entry.reply_html.replace(/"/g, '&quot;') : '';
-      
-      const hasAvatar = entry.email && entry.email.trim() !== '';
-      const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
-      
-      const nameHtml = hasAvatar 
-        ? `<div class="entry-name-container"><img src="${entry.email}" class="entry-name-avatar"><span>${entry.name}</span></div>` 
-        : entry.name;
-
-      const formattedDate = new Date(entry.created_at).toLocaleDateString('en-US', {
-        month: 'long', day: '2-digit', year: 'numeric'
-      });
-
-      el.innerHTML = `
-        <div class="title-bar">
-          <div class="title-bar-text">
-            ${titleBarImgHtml} you got mail.exe
-          </div>
-          <div class="title-bar-controls">
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div class="window-body">
-          <div class="entry-field">
-            <span class="entry-label">Name :</span>
-            <span class="entry-value">${nameHtml}</span>
-          </div>
-          <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value">${formattedDate}</span></div>
-          ${entry.user_url ? `<div class="entry-field"><span class="entry-label">github :</span><span class="entry-value">${entry.user_url}</span></div>` : ''}
-          ${entry.fav_song ? `<div class="entry-field"><span class="entry-label">fav song? :</span><span class="entry-value">${entry.fav_song}</span></div>` : ''}
-          
-          <div class="entry-field" style="margin-top:10px;">
-            <span class="entry-label">Message:</span>
-            <div class="entry-value entry-message-body">${parseMessageText(entry.message)}</div>
-          </div>
-
-          ${entry.reply_html ? `
-            <div class="owner-reply">
-              <img src="${OWNER_AVATAR_URL}" class="owner-avatar">
-              <div class="reply-content"><span class="reply-prefix">R:</span>${entry.reply_html}</div>
-            </div>
-          ` : ''}
-
-          <div class="admin-actions">
-            <button class="admin-btn" onclick="openReplyModal('${entry.id}', '${existingReplyEscaped}')">Reply HTML</button>
-            <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
-          </div>
-        </div>
-      `;
-      container.appendChild(el);
-    });
-
-    // Render Pagination Controls
-    paginationContainer.innerHTML = `
-      <div class="pagination-controls">
-        <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt; Prev</button>
-        <span class="page-indicator">Page ${currentPage} of ${totalPages}</span>
-        <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next &gt;&gt;</button>
-      </div>
-    `;
-  }
-
-  document.getElementById('gb-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('gb-name').value;
-    const user_url = document.getElementById('gb-github').value;
-    const fav_song = document.getElementById('gb-fav-song').value;
-    const avatar = document.getElementById('gb-avatar').value;
-    const message = document.getElementById('gb-message').value;
-
-    const { error } = await supabase.from('guestbook').insert([{ 
-      name: name, 
-      email: avatar || null, 
-      user_url: user_url || null, 
-      fav_song: fav_song || null,
-      message: message 
-    }]);
-
-    if (error) alert('Error sending message: ' + error.message);
-    else {
-      document.getElementById('gb-message').value = '';
-      document.getElementById('gb-name').value = '';
-      document.getElementById('gb-github').value = '';
-      document.getElementById('gb-fav-song').value = '';
-      document.getElementById('gb-avatar').value = '';
-      currentPage = 1;
-      loadEntries();
-    }
-  });
-
-  window.deleteEntry = async function(id) {
-    if (confirm("Are you sure you want to delete this message?")) {
-      const { error } = await supabase.from('guestbook').delete().eq('id', id);
-      if (error) alert("Error deleting: " + error.message);
-      else loadEntries();
-    }
-  };
-
-  function unlockAdmin() {
-    const inputPass = prompt("thou shalt not pass:");
-    if (inputPass === "Letmein7633x14!!") {
-      document.body.classList.add('is-admin');
-      alert("Admin Mode Unlocked!");
-    } else if (inputPass) alert("Incorrect password!");
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      e.preventDefault();
-      unlockAdmin();
-    }
-  });
-
-  let titleClicks = 0;
-  let clickTimer = null;
-  document.getElementById('gb-title').addEventListener('click', () => {
-    titleClicks++;
-    clearTimeout(clickTimer);
-    if (titleClicks >= 5) {
-      titleClicks = 0;
-      unlockAdmin();
-    } else {
-      clickTimer = setTimeout(() => { titleClicks = 0; }, 1500);
-    }
-  });
-
-  loadEntries();
-</script>
+<!-- Link your custom separated JS file with type="module" -->
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
