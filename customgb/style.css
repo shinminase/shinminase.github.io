@@ -1,0 +1,483 @@
+/* Windows XP Wallpaper Background */
+body {
+  background: #4a88eb url('assets/bg.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #000;
+  font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
+}
+
+.guestbook-wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* Page Header Aesthetics */
+.gb-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.gb-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0;
+  user-select: none;
+}
+.gb-title a {
+  color: #ffffff;
+  text-decoration: none;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.gb-title a:hover {
+  text-decoration: underline;
+}
+
+.gb-subtitle {
+  font-size: 0.85em;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  margin: 4px 0 10px 0;
+}
+.gb-links a {
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+  margin: 0 5px;
+  text-decoration: underline;
+}
+
+.window {
+  margin-bottom: 25px;
+}
+.window-body {
+  background: #fbf9e8;
+  font-size: 0.9em;
+}
+
+.user-avatar-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  object-fit: cover;
+  background: #fff;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+/* Inline Avatar next to Name */
+.entry-name-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.entry-name-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: cover;
+  background: #fff;
+  border: 1px solid #7f9db9;
+  flex-shrink: 0;
+}
+
+/* Owner Reply Container styled like an XP Dialog box */
+.owner-reply {
+  margin-top: 15px;
+  padding: 10px 12px;
+  border-top: 2px dotted #999999;
+  background: #ece9d8;
+  border-left: 2px solid #ffffff;
+  border-top-color: #dfdfdf;
+  border-right: 2px solid #7f9db9;
+  border-bottom: 2px solid #7f9db9;
+  font-weight: normal;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.owner-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  object-fit: cover;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.reply-content {
+  flex: 1;
+  word-break: break-word;
+}
+.reply-prefix {
+  font-weight: bold;
+  color: #0055ea;
+  margin-right: 5px;
+}
+
+/* --- OVERRIDES TO FIX XP.CSS FORM LAYOUT ISSUES --- */
+#gb-form {
+  display: block !important;
+}
+.form-group {
+  margin-bottom: 8px;
+}
+.form-group label {
+  display: block !important;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 0 !important;
+}
+#gb-message {
+  display: block !important;
+  width: 100% !important;
+  height: 110px !important;
+  box-sizing: border-box !important;
+  resize: vertical;
+}
+
+.toolbar {
+  position: relative;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  background: #ece9d8;
+  padding: 4px;
+  border: 1px solid #999;
+}
+.toolbar button {
+  background: #ece9d8;
+  color: #000;
+  border: 2px outset #ffffff;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 0.8em;
+  min-width: unset !important;
+}
+.toolbar button:active { border-style: inset; }
+
+/* Side-by-side Emoji Grid Dropdown */
+#emoji-dropdown {
+  display: none;
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: #ece9d8;
+  border: 2px solid #0055ea;
+  padding: 6px;
+  width: 260px;
+  max-height: 200px;
+  overflow-y: auto;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  z-index: 100;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+  align-items: center;
+  justify-items: center;
+}
+#emoji-dropdown img {
+  max-width: 40px;
+  max-height: 40px;
+  width: auto;
+  height: auto;
+  cursor: pointer;
+  padding: 2px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+#emoji-dropdown img:hover { 
+  border-color: #0055ea; 
+  background: #ffffff; 
+}
+
+.entry-message-body {
+  margin-top: 8px;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.entry-message-body img.custom-emoji {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+/* Auto-shrink images posted inside message body to 50% */
+.entry-message-body img:not(.custom-emoji) { 
+  max-width: 50%; 
+  max-height: 50%;
+  width: auto;
+  height: auto; 
+  margin: 6px 0; 
+  display: block; 
+}
+
+.admin-actions { margin-top: 10px; display: none; gap: 8px; }
+body.is-admin .admin-actions { display: flex; }
+.admin-btn {
+  background: #ece9d8;
+  border: 1px solid #7f9db9;
+  color: #000;
+  font-size: 0.75em;
+  cursor: pointer;
+  padding: 2px 6px;
+  min-width: unset !important;
+}
+
+/* Modal Styling */
+.custom-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Windows XP Admin Log On Avatar */
+.xp-login-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  border: 2px solid #0055ea;
+  object-fit: cover;
+  background: #fff;
+}
+
+/* Fix XP.css field alignment */
+.entry-field {
+  display: flex !important;
+  align-items: flex-start !important;
+  margin-bottom: 6px !important;
+}
+.entry-label {
+  font-weight: bold;
+  min-width: 95px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.entry-value {
+  flex: 1 !important;
+}
+
+/* --- Windows XP Taskbar Styles --- */
+.xp-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: linear-gradient(to bottom, #245edb 0%, #3c7fb9 5%, #1f47b9 50%, #102e8d 100%);
+  border-top: 1px solid #0a246a;
+  display: flex;
+  align-items: center;
+  z-index: 9999;
+  font-family: 'Tahoma', sans-serif;
+  font-size: 11px;
+  user-select: none;
+}
+.xp-start-btn {
+  height: 100%;
+  background: linear-gradient(to bottom, #389638 0%, #5cb85c 40%, #2e7d32 50%, #1b5e20 100%);
+  border: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 13px;
+  padding: 0 16px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+  box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4);
+}
+.xp-start-btn:hover {
+  background: linear-gradient(to bottom, #42a542 0%, #66bb6a 40%, #388e3c 50%, #2e7d32 100%);
+}
+.xp-taskbar-tasks {
+  flex: 1;
+  display: flex;
+  padding: 0 6px;
+  gap: 4px;
+}
+.xp-task-item {
+  background: linear-gradient(to bottom, #3c80f6 0%, #2a63d9 50%, #1e4bb8 100%);
+  border: 1px solid #102e8d;
+  border-radius: 3px;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.xp-task-item.active {
+  background: linear-gradient(to bottom, #102e8d 0%, #1e4bb8 50%, #2a63d9 100%);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+}
+.xp-tray {
+  height: 100%;
+  background: linear-gradient(to bottom, #1282c9 0%, #108de3 100%);
+  border-left: 1px solid #094488;
+  padding: 0 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+/* Start Menu Popup */
+.xp-start-menu {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 240px;
+  background: #fff;
+  border: 2px solid #0055ea;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+  z-index: 10000;
+}
+.xp-start-header {
+  background: linear-gradient(to right, #0a246a 0%, #a6caf0 100%);
+  color: #fff;
+  padding: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.xp-start-body {
+  padding: 6px 0;
+}
+.xp-start-item {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #000;
+  text-decoration: none;
+  font-size: 11px;
+}
+.xp-start-item:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+.pagination-controls button {
+  background: #ece9d8;
+  border: 2px outset #ffffff;
+  padding: 4px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.pagination-controls button:active {
+  border-style: inset;
+}
+.pagination-controls button:disabled {
+  color: #888;
+  cursor: default;
+  border-style: solid;
+  border-color: #ccc;
+}
+.page-indicator {
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* About System Modal Video Styling */
+.about-video-container {
+  margin-top: 8px;
+  border: 1px solid #7f9db9;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.about-video-container video {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  display: block;
+}
+
+/* Windows XP Retro Dropdown Menus */
+.toolbar-popup-dropdown {
+  display: none;
+  position: absolute;
+  top: 26px;
+  left: 0;
+  background: #ffffff;
+  border: 2px solid #7f9db9;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  z-index: 200;
+  padding: 3px;
+}
+
+/* Color Swatches Grid */
+#color-dropdown {
+  width: 70px;
+  display: none;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  padding: 4px;
+  background: #ece9d8;
+}
+.color-swatch {
+  width: 26px;
+  height: 18px;
+  border: 1px solid #7f9db9;
+  cursor: pointer;
+}
+.color-swatch:hover {
+  border-color: #0055ea;
+  outline: 1px solid #0055ea;
+}
+
+/* Font and Size Options List */
+.font-option, .size-option {
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: #000;
+}
+.font-option:hover, .size-option:hover {
+  background: #316ac5;
+  color: #fff;
+}
