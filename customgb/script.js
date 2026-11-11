@@ -143,11 +143,17 @@ window.confirmImageEmbed = () => {
 };
 
 window.openPreviewModal = () => {
+  const rawMessage = document.getElementById('gb-message')?.value || '';
+  if (!rawMessage.trim()) {
+    alert('What are you gonna preview with a blank message?');
+    return;
+  }
+
   const name = document.getElementById('gb-name')?.value.trim() || 'Anonymous';
   const github = document.getElementById('gb-github')?.value;
   const favSong = document.getElementById('gb-fav-song')?.value;
   const avatar = document.getElementById('gb-avatar')?.value.trim();
-  const message = document.getElementById('gb-message')?.value || '(Empty message)';
+  const message = rawMessage;
 
   const titleIcon = document.getElementById('preview-avatar-title');
   if (titleIcon) {
@@ -462,6 +468,13 @@ if (gbForm) {
   gbForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+
+    const rawMessage = document.getElementById('gb-message')?.value || '';
+    if (!rawMessage.trim()) {
+      alert('Wow, a blank message. ');
+      return;
+    }
+
     // Default to 'Anonymous' if name is left blank
     const rawName = document.getElementById('gb-name')?.value;
     const name = (rawName && rawName.trim() !== '') ? rawName.trim() : 'Anonymous';
@@ -469,7 +482,7 @@ if (gbForm) {
     const user_url = document.getElementById('gb-github')?.value;
     const fav_song = document.getElementById('gb-fav-song')?.value;
     const avatar = document.getElementById('gb-avatar')?.value;
-    const message = document.getElementById('gb-message')?.value;
+    const message = rawMessage.trim();
 
     const { error } = await supabase.from('guestbook').insert([{ 
       name: name, 
