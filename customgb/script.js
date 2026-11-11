@@ -451,7 +451,11 @@ const gbForm = document.getElementById('gb-form');
 if (gbForm) {
   gbForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('gb-name')?.value;
+    
+    // Check if name is empty/blank and defaults to Anon
+    const rawName = document.getElementById('gb-name')?.value;
+    const name = (rawName && rawName.trim() !== '') ? rawName.trim() : 'Anonymous';
+
     const user_url = document.getElementById('gb-github')?.value;
     const fav_song = document.getElementById('gb-fav-song')?.value;
     const avatar = document.getElementById('gb-avatar')?.value;
@@ -522,7 +526,7 @@ window.openColorPicker = function() {
   
   const colorPicker = document.getElementById('native-color-picker');
   if (colorPicker) {
-    colorPicker.click();
+    colorPicker.click(); // Triggers native browser color wheel/picker dialog
   }
 };
 
