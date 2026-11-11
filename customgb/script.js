@@ -8,6 +8,7 @@ const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=20
 let activeReplyId = null;
 let currentPage = 1;
 const pageSize = 20;
+let isNewSubmission = false; // Flag to trigger popup animation for new submissions
 
 // Live Taskbar Clock
 function updateClock() {
@@ -142,7 +143,7 @@ window.confirmImageEmbed = () => {
 };
 
 window.openPreviewModal = () => {
-  const name = document.getElementById('gb-name')?.value || 'Anonymous';
+  const name = document.getElementById('gb-name')?.value.trim() || 'Anonymous';
   const github = document.getElementById('gb-github')?.value;
   const favSong = document.getElementById('gb-fav-song')?.value;
   const avatar = document.getElementById('gb-avatar')?.value.trim();
@@ -380,9 +381,15 @@ async function loadEntries() {
   }
 
   container.innerHTML = '';
-  data.forEach(entry => {
+  data.forEach((entry, index) => {
     const el = document.createElement('div');
     el.className = 'window';
+
+    // Trigger popup animation only on the newest entry of page 1 during a new submission
+    if (currentPage === 1 && index === 0 && isNewSubmission) {
+      el.classList.add('window-popup-anim');
+    }
+
     const existingReplyEscaped = entry.reply_html ? entry.reply_html.replace(/"/g, '&quot;') : '';
     
     const hasAvatar = entry.email && entry.email.trim() !== '';
@@ -445,6 +452,9 @@ async function loadEntries() {
       </div>
     `;
   }
+
+  // Reset the new submission flag after load completes
+  isNewSubmission = false;
 }
 
 const gbForm = document.getElementById('gb-form');
@@ -452,7 +462,7 @@ if (gbForm) {
   gbForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Check if name is empty/blank and defaults to Anon
+    // Default to 'Anonymous' if name is left blank
     const rawName = document.getElementById('gb-name')?.value;
     const name = (rawName && rawName.trim() !== '') ? rawName.trim() : 'Anonymous';
 
@@ -477,6 +487,16 @@ if (gbForm) {
       document.getElementById('gb-fav-song').value = '';
       document.getElementById('gb-avatar').value = '';
       currentPage = 1;
+      
+      // Play the XP notification ding sound
+      const dingSound = document.getElementById('ding-sound');
+      if (dingSound) {
+        dingSound.currentTime = 0;
+        dingSound.play().catch(() => {});
+      }
+
+      // Mark as fresh submission to animate the newest entry popup
+      isNewSubmission = true;
       loadEntries();
     }
   });
