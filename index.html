@@ -1,361 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="assets/UI/pn.png">
-  <meta charset="UTF-8">
-  <title>serph/runo's guestbook</title>
-  <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920">
+	<link rel="stylesheet" href="digital.css">
+	<link rel="icon" href="https://file.garden/ZlwiKgzAvyz0wLRz/GITHUB/vial" type="image/x-icon">
+    <title>serphentized</title>
 </head>
 <body>
+    <div class="desktop">
+        <div class="desktop-icon" style="top: 20px; left: 20px;">
+			<a href="https://github.com/shinminase" target="_blank" onclick="alert('Opening My Computer... (github)')">
+				<img src="https://files.catbox.moe/lh64o9.gif" alt="My Computer">
+				<div>My Computer</div>
+			</a>
+		</div>
 
-<div style="max-width: 800px; margin: 0 auto 15px auto;">
-  <iframe src="https://shinminase.github.io/projects/ultraguest/" width="100%" height="450" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-</div>
+       <div class="desktop-icon" style="top: 120px; left: 20px;">
+			<a href="https://github.com/shinminase?tab=repositories" target="_blank" onclick="alert('Opening Recycle Bin... (repository list)')">
+				<img src="https://files.catbox.moe/p9uva9.gif" alt="Recycle Bin">
+				<div>Recycle Bin</div>
+			</a>
+		</div>
+		
+        <div class="desktop-icon" style="top: 220px; left: 20px;">
+			<a href="https://www.ultraguest.com/view/1717388758" target="_blank" onclick="alert('Opening Netrunner Terminal... (guestbook)')">
+				<img src="https://files.catbox.moe/2ha1xk.gif" alt="Netrunner Terminal">
+				<div>Netrunner Terminal</div>
+			</a>
+		</div>
 
-<div class="guestbook-wrapper">
-  <div class="gb-header">
-    <h1 class="gb-title">
-      <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
-    </h1>
-    <div class="gb-subtitle">to send a photo: attach an image link!</div>
-    <div class="gb-links">
-      <a href="#gb-form-window">Sign Guestbook</a>
-    </div>
-  </div>
-
-<!-- Sign Guestbook Form Window -->
-<div class="window" id="gb-form-window">
-  <div class="title-bar">
-    <div class="title-bar-text">
-      <img src="assets/UI/pn.png" class="user-avatar-icon"> sign_guestbook.exe
-    </div>
-    <div class="title-bar-controls">
-      <button aria-label="Close"></button>
-    </div>
-  </div>
-  <div class="window-body">
-    <form id="gb-form">
-      <div class="form-group">
-        <label>Name:</label>
-        <input type="text" id="gb-name" placeholder="user">
-      </div>
-
-      <div class="form-group">
-        <label>github*:</label>
-        <input type="text" id="gb-github" placeholder="username">
-      </div>
-
-      <div class="form-group">
-        <label>fav song?*:</label>
-        <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
-      </div>
-
-      <div class="form-group">
-        <label>Avatar Image Link* (Optional*):</label>
-        <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
-      </div>
-      
-      <div class="form-group">
-        <label>Message*:</label>
-<div class="toolbar">
-  <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
-  <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
-  
-  <!-- Custom Color Picker Trigger -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="openColorPicker()">
-      <img src="assets/UI/textcolor.png" width="14" height="14" style="vertical-align: middle;" alt="Color">
-    </button>
-    <input type="color" id="native-color-picker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="insertCustomColor(this.value)">
-  </div>
-
-  <!-- Font Dropdown -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="toggleFontDropdown()">
-      <img src="assets/UI/font.png" width="17" height="14" style="vertical-align: middle;" alt="Font"> ▼
-    </button>
-    <div id="font-dropdown" class="toolbar-popup-dropdown">
-      <div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
-      <div class="font-option" style="font-family: 'Courier New';" onclick="insertFont('Courier New')">Courier New</div>
-      <div class="font-option" style="font-family: Georgia;" onclick="insertFont('Georgia')">Georgia</div>
-      <div class="font-option" style="font-family: Tahoma;" onclick="insertFont('Tahoma')">Tahoma</div>
-      <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertFont('Times New Roman')">Times New Roman</div>
-      <div class="font-option" style="font-family: Verdana;" onclick="insertFont('Verdana')">Verdana</div>
-      <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertFont('Comic Sans MS')">Comic Sans MS</div>
-      <div class="font-option" style="font-family: cursive;" onclick="insertFont('cursive')">Cursive</div>
-      <div class="font-option" style="font-family: serif;" onclick="insertFont('serif')">Serif</div>
-    </div>
-  </div>
-
-  <!-- Size Dropdown -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="toggleSizeDropdown()">
-      <img src="assets/UI/textsize.png" width="14" height="14" style="vertical-align: middle;" alt="Size"> ▼
-    </button>
-    <div id="size-dropdown" class="toolbar-popup-dropdown">
-      <div class="size-option" onclick="insertSize('8px')">8px</div>
-      <div class="size-option" onclick="insertSize('10px')">10px</div>
-      <div class="size-option" onclick="insertSize('13px')">13px</div>
-      <div class="size-option" onclick="insertSize('16px')">16px</div>
-      <div class="size-option" onclick="insertSize('20px')">20px</div>
-      <div class="size-option" onclick="insertSize('24px')">24px</div>
-    </div>
-  </div>
-
-  <button type="button" onclick="openImageModal()">
-    <img src="assets/UI/viewer.png" width="16" height="14" style="vertical-align: middle;" alt="Image">
-  </button>
-  <button type="button" onclick="toggleEmojiDropdown()">
-    <img src="emoticons/smile.gif" width="14" height="14" style="vertical-align: middle;" alt="Emoticons"> ▼
-  </button>
-  <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">
-    <img src="assets/UI/preview.png" width="14" height="14" style="vertical-align: middle;" alt="Preview"> Preview
-  </button>
-          <!-- CUSTOM EMOJI DROPDOWN GRID -->
-          <div id="emoji-dropdown">
-            <img src="emoticons/smile.gif" title=":smile:" onclick="insertEmoji(':smile:')">
-            <img src="emoticons/laugh.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
-            <img src="emoticons/tu.gif" title=":tu:" onclick="insertEmoji(':tu:')">
-            <img src="emoticons/td.gif" title=":td:" onclick="insertEmoji(':td:')">
-            <img src="emoticons/wink.gif" title=":wink:" onclick="insertEmoji(':wink:')">
-            <img src="emoticons/p.gif" title=":p:" onclick="insertEmoji(':p:')">
-            <img src="emoticons/bownita.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
-            <img src="emoticons/ty.gif" title=":ty:" onclick="insertEmoji(':ty:')">
-            <img src="emoticons/puzzled.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
-            <img src="emoticons/shock.gif" title=":shock:" onclick="insertEmoji(':shock:')">
-            <img src="emoticons/grin.gif" title=":grin:" onclick="insertEmoji(':grin:')">
-            <img src="emoticons/blush.gif" title=":blush:" onclick="insertEmoji(':blush:')">
-            <img src="emoticons/worry.gif" title=":worry:" onclick="insertEmoji(':worry:')">
-            <img src="emoticons/nono.gif" title=":nono:" onclick="insertEmoji(':nono:')">
-            <img src="emoticons/sad.gif" title=":sad:" onclick="insertEmoji(':sad:')">
-            <img src="emoticons/awesomesauce.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
-            <img src="emoticons/mad.gif" title=":mad:" onclick="insertEmoji(':mad:')">
-            <img src="emoticons/cheers.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
-            <img src="emoticons/groovy.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
-            <img src="emoticons/bleh.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
-            <img src="emoticons/x.gif" title=":x:" onclick="insertEmoji(':x:')">
-            <img src="emoticons/kneel.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
-            <img src="emoticons/snorkmimi.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
-            <img src="emoticons/x_x.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
-            <img src="emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
-            <img src="emoticons/luv.gif" title=":luv:" onclick="insertEmoji(':luv:')">
-            <img src="emoticons/taptap.gif" title=":taptap:" onclick="insertEmoji(':taptap:')">
-            <img src="emoticons/msnflush.png" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
-            <img src="emoticons/ohoho.gif" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
-          </div>
+        <div class="window" style="top: 10%; left: 5%; width: 200px; height: 150px;">
+            <div class="window-title">README.txt</div>
+            <div class="window-content"> basic layout &copy; aeon flexx <br> love u, dear!</div>
         </div>
-        <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
-      </div>
-
-      <button type="submit" style="margin-top: 10px;">Submit Message</button>
-    </form>
-  </div>
-</div>
-
-  <!-- Messages List Container -->
-  <div id="entries-container">Loading entries...</div>
-
-  <!-- Pagination Buttons Container -->
-  <div id="pagination-container"></div>
-
-</div>
-
-<!-- Custom Image Modal -->
-<div id="image-modal" class="custom-modal">
-  <div class="window" style="width: 320px;">
-    <div class="title-bar">
-      <div class="title-bar-text">Insert Image Link</div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closeImageModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="form-group">
-        <label>Paste Image URL:</label>
-        <input type="text" id="modal-img-url" placeholder="https://example.com/image.png">
-      </div>
-      <div style="margin-top: 10px; display: flex; gap: 6px;">
-        <button type="button" onclick="confirmImageEmbed()">Add</button>
-        <button type="button" onclick="closeImageModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Custom Message Preview Modal -->
-<div id="preview-modal" class="custom-modal">
-  <div class="window" style="width: 480px; max-width: 90vw;">
-    <div class="title-bar">
-      <div class="title-bar-text">
-        <img id="preview-avatar-title" src="" class="user-avatar-icon" style="display:none;"> message_preview.exe
-      </div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closePreviewModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="entry-field">
-        <span class="entry-label">Name :</span>
-        <span class="entry-value" id="preview-name-container"></span>
-      </div>
-      <div class="entry-field"><span class="entry-label">Date :</span><span class="entry-value" id="preview-date"></span></div>
-      <div class="entry-field" id="preview-github-row"><span class="entry-label">github :</span><span class="entry-value" id="preview-github"></span></div>
-      <div class="entry-field" id="preview-song-row"><span class="entry-label">fav song? :</span><span class="entry-value" id="preview-song"></span></div>
-      
-      <div class="entry-field" style="margin-top:10px;">
-        <span class="entry-label">Message:</span>
-        <div class="entry-value entry-message-body" id="preview-body"></div>
-      </div>
-
-      <!-- Owner Reply Preview inside modal -->
-      <div class="owner-reply">
-        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="owner-avatar">
-        <div class="reply-content"><span class="reply-prefix">R:</span> hey buddy... i see your previews..... Just kidding. Just joshing around..... <br>This is just my reply preview</div>
-      </div>
-
-      <div style="margin-top: 15px; text-align: right;">
-        <button type="button" onclick="closePreviewModal()">Close Preview</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Custom About System Modal -->
-<div id="about-modal" class="custom-modal">
-  <div class="window" style="width: 480px; max-width: 90vw;">
-    <div class="title-bar">
-      <div class="title-bar-text">
-        <img src="assets/ui/question.png" class="user-avatar-icon"> about_system.exe
-      </div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closeAboutModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div style="margin-bottom: 6px; text-align: center;">
-         switched to self-hosting my own guestbook site; former messages are from UltraGuest.<br><br>
-         if you're interested in a custom guestbook site, let me know!
-      </div>
-
-      <div class="about-video-container">
-        <video id="about-video-player" controls preload="metadata">
-          <source src="https://file.garden/ZlwiKgzAvyz0wLRz/moviegallery/nostalgic" type="video/mp4">
-        </video>
-      </div>
-
-      <div style="margin-top: 15px; text-align: right;">
-        <button type="button" onclick="closeAboutModal()">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Windows XP Log On Admin Modal -->
-<div id="admin-auth-modal" class="custom-modal">
-  <div class="window" style="width: 380px; max-width: 90vw;">
-    <div class="title-bar">
-      <div class="title-bar-text">Log On to Windows</div>
-      <div class="title-bar-controls">
-        <button aria-label="Close" onclick="closeAdminAuthModal()"></button>
-      </div>
-    </div>
-    <div class="window-body">
-      <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-        <img src="https://avatars.githubusercontent.com/u/139236438?v=4" class="xp-login-avatar">
-        <div>
-          <div style="font-weight: bold; font-size: 1.1em;">serph / runo</div>
-          <div style="font-size: 0.8em; color: #555;">Administrator</div>
+        <div class="window" style="top: 30%; left: 70%; width: 250px; height: 200px;">
+            <div class="window-title">SYSTEM STATUS</div>
+            <div class="window-content">All systems operational. Neural link stable. Firewall integrity at 98%.</div>
         </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom: 6px;">
-        <label for="admin-email-input">Admin Email:</label>
-        <input type="text" id="admin-email-input" placeholder="you@domain.com">
-      </div>
-
-      <div class="form-group">
-        <label for="admin-pass-input">Type your password:</label>
-        <input type="password" id="admin-pass-input" placeholder="••••••••">
-      </div>
-
-      <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 6px;">
-        <button type="button" onclick="submitAdminAuth()">OK</button>
-        <button type="button" onclick="closeAdminAuthModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Custom Owner Reply Modal -->
-<div id="reply-modal" class="custom-modal">
-  <div class="window" style="width: 420px;">
-    <div class="title-bar">
-      <div class="title-bar-text">Owner Reply (HTML Supported)</div>
-      <div class="title-bar-controls"><button aria-label="Close" onclick="closeReplyModal()"></button></div>
-    </div>
-    <div class="window-body">
-      <div class="form-group">
-        <label>Type custom reply:</label>
-        <textarea id="modal-reply-html" rows="4" style="width:100%;" placeholder="s2 is so good!"></textarea>
-      </div>
-
-      <!-- Live Reply Preview Box -->
-      <div style="margin-top: 10px;">
-        <label style="font-weight: bold; margin-bottom: 2px; display: block;">Live Preview:</label>
-        <div class="owner-reply" style="margin-top: 0;">
-          <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="owner-avatar">
-          <div class="reply-content"><span class="reply-prefix">R:</span><span id="reply-preview-output" style="color: #444; font-style: italic;">(Type something above to preview...)</span></div>
+        <div class="window" style="top: 60%; left: 15%; width: 180px; height: 120px;">
+            <div class="window-title">UPDATES</div>
+            <div class="window-content">New cybernetic enhancements available. Visit your local augmentation clinic.</div>
         </div>
-      </div>
+        <div class="console-container">
+            <div class="console">
+                <div class="screen">
+                    <div id="home" class="content active">
+                        <h1 class="text-glitch">REANIMATING...</h1>
+						<div class="grid-container">
+				<div class="grid-item"> 
+						  <p>My online alias is Serph, known also by my github handle shinminase. <br> <br>
+						    I go by many names. Whatever you know me by is fine.<br><br>
+                            This site is under construction and hosted on github.io.<br> <br>
+                            I am TACA, an IT Mobile App Web Dev student at STI College.<br><br>
+			    Here on github, I host web stuff for my classes and shenanigans. Little digital man-made horrors.<br><br>
+                          </p>
 
-      <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 6px;">
-        <button type="button" onclick="confirmReplySubmit()">Save Reply</button>
-        <button type="button" onclick="closeReplyModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
+				</div>
+				<div class="grid-item">
+				<img src="https://file.garden/ZlwiKgzAvyz0wLRz/GITHUB/reani.png">
+				</div>
+			</div>
+						
+                        
+                    </div>
+                    <div id="summons" class="content">
+                        <h2>Digital Sigil</h2>
+                        <div class="digital-sigil">
+                            <div class="sigil-part">
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                            </div>
+                            <div class="sigil-part">
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                            </div>
+                            <div class="sigil-part">
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                                <div class="sigil-shape"></div>
+                            </div>
+                            <div class="sigil-burst"></div>
+                        </div>
+                        <div class="sigil-actions">
+                            <button class="button" onclick="sigilAction('activate')">Activate</button>
+                            <button class="button" onclick="sigilAction('resonate')">Resonate</button>
+                            <button class="button" onclick="sigilAction('dissipate')">Dissipate</button>
+                        </div>
+                        <h3>Digital Familiars</h3>
+                        <div class="dragcave-pets">
+			    <a href="https://github.com/tojifg" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/116244347?v=4"></div></a>
+                            <a href="https://github.com/Etherealexulansis" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/139181613?v=4"></div></a>
+                            <a href="https://github.com/akishinji" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/125509650?v=4"></div></a>
+                            <a href="https://github.com/purrcore" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/137357633?v=4"></div></a>
+                            <a href="https://github.com/dreamcide" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/128229943?v=4"></div></a>
+                            <a href="https://github.com/endearr" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/150192534?v=4"></div></a> 
+			</div>
+			    
+			     <div class="dragcave-pets">
+			    <a href="https://github.com/ryutsushi" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/123282551?v=4"></div></a>
+                            <a href="https://github.com/FIeshwater" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/132245487?v=4"></div></a>
+                            <a href="https://github.com/oldmanyaoi" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/137847627?v=4"></div></a>
+                            <a href="https://github.com/bathroombreak" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/108626152?v=4"></div></a>
+                            <a href="https://github.com/meowgana" target="blank"><div class="dragcave-pet"><img src="https://avatars.githubusercontent.com/u/135413796?v=4"></div></a>
+                            <a href="#" target="blank"><div class="dragcave-pet"><img src="#"></div></a>                       
+			 </div>
+			<p> Message me or <a onclick="switchTab('nexus')"> chat me to be added. Let me know if you also want to be removed!</a></p>
+                    </div>
+                    <div id="grimoire" class="content">
+                        <h2>Digital Grimoire</h2>
 
-<!-- Windows XP Start Menu Popup -->
-<div id="xp-start-menu" class="xp-start-menu">
-  <div class="xp-start-header" id="xp-start-header">
-    <img src="assets/UI/admin.png" width="20" height="20" style="border-radius:2px;">
-    <span>serph / runo</span>
-  </div>
-  <div class="xp-start-body">
-    <div class="xp-start-item" onclick="window.scrollTo({top:0, behavior:'smooth'}); toggleStartMenu();">
-      <span>Back to Top</span>
-    </div>
-    <div class="xp-start-item" onclick="document.getElementById('gb-form-window').scrollIntoView({behavior:'smooth'}); toggleStartMenu();">
-      <span>Sign Guestbook</span>
-    </div>
-    <div class="xp-start-item" onclick="openAboutModal(); toggleStartMenu();">
-      <span>About System</span>
-    </div>
+						<h3>HELLO WORLD</h3>
+						<p> At the moment, I'm studying JAVA, PYTHON, C#, RUBY AND PHP.<br>
+						Learning programmer & web developer. Mostly self-taught and only now properly learning. Amateur game dev. <br><br>
+						I'm not a very social person - at least, it depends on my mood. I have a tendency to withdraw from people, so I may be hard to work with.<br>
+						And for that, I apologize in advance if you ever had the displeasure of meeting me.</p>
+						<p> Contact me under the email: 7633x14@gmail.com. </p>
+			    			<p> Literally do not be intimidated by me, because I assure you I'm just some hermit. </p>
 
-    <!-- ADDED LOG OFF OPTION -->
-    <div class="xp-start-item admin-only-item" onclick="logoutAdmin(); toggleStartMenu();" style="border-top: 1px solid #d0d0d0; margin-top: 4px; padding-top: 6px;">
-      <span style="color: #cc0000; font-weight: bold;">Log Off</span>
+			    			<h3>Dear Diary... (14/10/2024) </h3>
+						<p>I truly believe I experienced the worst of the worst school environments back in my JHS days. I will keep this school unnamed.
+						<br>Because I had been researching schools, and you know? I heard about the change of schedule for next semester in STI.
+						<br>When I heard it would change to a 6 AM to 6 PM schedule next sem, I didn't really see what the problem was.<br>
+						<br>Maybe [UNNAMED] has fucked up my views forever as a school because we had 7AM to 7PM classes, <br>
+						and that was for two days, not including the fact it was a full school week schedule.<br><br>
+						I have suffered from more toxic environments than the one here in my current school. I believe that anything is better than [UNNAMED]
+						and I don't understand how people can look back at [UNNAMED] and say with their heart, that they liked that class. <br><br>
+						This is a screw you to [UNNAMED.]</p>	
+						
+                    </div>
+                    <div id="nexus" class="content">
+                        <h2>Ethereal Nexus</h2>
+                        <p>Connected realms: 7</p>
+                        <p>Astral bandwidth: 66.6 Tb/s</p>
+                        <p>Void resonance: Stable</p>
+                        <p>Eldritch firewalls: Active</p>
+                        <h3>Cyberspace Chat</h3>
+						<iframe src="https://www3.cbox.ws/box/?boxid=3541448&boxtag=j7nAIo" width="100%" height="450" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>	
+                        
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="button" onclick="switchTab('home')">SANCTUM</button>
+                    <button class="button" onclick="switchTab('summons')">SUMMONS</button>
+                    <button class="button" onclick="switchTab('grimoire')">GRIMOIRE</button>
+                    <button class="button" onclick="switchTab('nexus')">NEXUS</button>
+                </div>
+            </div>
+        </div>
+        <div class="theme-switcher">
+            <div class="theme-button" onclick="switchTheme('cyberpunk')">
+                <img src="https://files.catbox.moe/vjmt2k.gif" alt="Cyberpunk">
+            </div>
+            <div class="theme-button" onclick="switchTheme('vaporwave')">
+                <img src="https://files.catbox.moe/1j5x2p.gif" alt="Vaporwave">
+            </div>
+            <div class="theme-button" onclick="switchTheme('matrix')">
+                <img src="https://files.catbox.moe/lh64o9.gif" alt="Matrix">
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<!-- Windows XP Taskbar -->
-<div class="xp-taskbar">
-  <button class="xp-start-btn" onclick="toggleStartMenu()">
-    <img src="https://www.rw-designer.com/icon-image/18835-256x256x4.png" width="16" height="16"> start
-  </button>
-  <div class="xp-taskbar-tasks">
-    <div class="xp-task-item active">
-      <img src="assets/UI/pn.png" width="14" height="14"> guestbook.exe
-    </div>
-  </div>
-  <div class="xp-tray" id="xp-clock">
-    12:00 PM
-  </div>
-</div>
-
-<!-- Audio Elements for Click and Keyboard Sounds -->
-<audio id="click-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/xpclick" preload="auto"></audio>
-<audio id="type-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/key" preload="auto"></audio>
-<audio id="ding-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/mreow/Windows%20XP%20Ding.wav" preload="auto"></audio>
-
-<script type="module" src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="helloworld.js"></script>
 
 </body>
 </html>
