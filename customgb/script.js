@@ -10,6 +10,30 @@ let currentPage = 1;
 const pageSize = 20;
 let isNewSubmission = false; // Flag to trigger popup animation for new submissions
 
+// ==========================================
+// SUPABASE AUTH & SESSION MANAGEMENT
+// ==========================================
+async function checkAdminSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    document.body.classList.add('is-admin');
+  } else {
+    document.body.classList.remove('is-admin');
+  }
+}
+
+// Run session check on load
+checkAdminSession();
+
+// Listen for login/logout state changes automatically across tabs/sessions
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    document.body.classList.add('is-admin');
+  } else {
+    document.body.classList.remove('is-admin');
+  }
+});
+
 // Live Taskbar Clock
 function updateClock() {
   const now = new Date();
@@ -232,11 +256,10 @@ window.openAdminAuthModal = () => {
   const modal = document.getElementById('admin-auth-modal');
   if (modal) {
     modal.style.display = 'flex';
+    const emailInput = document.getElementById('admin-email-input');
     const passInput = document.getElementById('admin-pass-input');
-    if (passInput) {
-      passInput.value = '';
-      setTimeout(() => passInput.focus(), 100);
-    }
+    if (emailInput) emailInput.focus();
+    if (passInput) passInput.value = '';
   }
 };
 
@@ -247,23 +270,33 @@ window.closeAdminAuthModal = () => {
   if (passInput) passInput.value = '';
 };
 
-window.submitAdminAuth = () => {
+// Updated Supabase Auth Login Execution
+window.submitAdminAuth = async () => {
+  const emailInput = document.getElementById('admin-email-input');
   const passInput = document.getElementById('admin-pass-input');
-  const inputPass = passInput ? passInput.value : '';
-  if (inputPass === "Letmein7633x14!!") {
-    document.body.classList.add('is-admin');
-    alert("Admin Mode Unlocked!");
-    closeAdminAuthModal();
-  } else if (inputPass) {
-    alert("Incorrect password!");
+  
+  const email = emailInput ? emailInput.value.trim() : '';
+  const password = passInput ? passInput.value : '';
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+
+  if (error) {
+    alert("Login failed: " + error.message);
     if (passInput) {
       passInput.value = '';
       passInput.focus();
     }
+  } else {
+    document.body.classList.add('is-admin');
+    alert("Successfully logged in as Admin!");
+    closeAdminAuthModal();
   }
 };
 
-// Listen for Enter key inside the password input
+// Listen for Enter key inside password input
 const adminPassInput = document.getElementById('admin-pass-input');
 if (adminPassInput) {
   adminPassInput.addEventListener('keydown', (e) => {
@@ -391,7 +424,6 @@ async function loadEntries() {
     const el = document.createElement('div');
     el.className = 'window';
 
-    // Trigger popup animation only on the newest entry of page 1 during a new submission
     if (currentPage === 1 && index === 0 && isNewSubmission) {
       el.classList.add('window-popup-anim');
     }
@@ -448,7 +480,6 @@ async function loadEntries() {
     container.appendChild(el);
   });
 
-  // Render Pagination Controls
   if (paginationContainer) {
     paginationContainer.innerHTML = `
       <div class="pagination-controls">
@@ -459,7 +490,6 @@ async function loadEntries() {
     `;
   }
 
-  // Reset the new submission flag after load completes
   isNewSubmission = false;
 }
 
@@ -468,14 +498,12 @@ if (gbForm) {
   gbForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-
     const rawMessage = document.getElementById('gb-message')?.value || '';
     if (!rawMessage.trim()) {
       alert('Wow, a blank message. ');
       return;
     }
 
-    // Default to 'Anonymous' if name is left blank
     const rawName = document.getElementById('gb-name')?.value;
     const name = (rawName && rawName.trim() !== '') ? rawName.trim() : 'Anonymous';
 
@@ -501,14 +529,12 @@ if (gbForm) {
       document.getElementById('gb-avatar').value = '';
       currentPage = 1;
       
-      // Play the XP notification ding sound
       const dingSound = document.getElementById('ding-sound');
       if (dingSound) {
         dingSound.currentTime = 0;
         dingSound.play().catch(() => {});
       }
 
-      // Mark as fresh submission to animate the newest entry popup
       isNewSubmission = true;
       loadEntries();
     }
@@ -530,7 +556,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Secret 5-Click Trigger on Start Menu Header
 let headerClicks = 0;
 let headerClickTimer = null;
 const xpStartHeader = document.getElementById('xp-start-header');
@@ -550,7 +575,6 @@ if (xpStartHeader) {
 
 loadEntries();
 
-// --- Toolbar Dropdown & Color Picker Toggles ---
 window.openColorPicker = function() {
   const fontDd = document.getElementById('font-dropdown');
   const sizeDd = document.getElementById('size-dropdown');
@@ -559,7 +583,7 @@ window.openColorPicker = function() {
   
   const colorPicker = document.getElementById('native-color-picker');
   if (colorPicker) {
-    colorPicker.click(); // Triggers native browser color wheel/picker dialog
+    colorPicker.click();
   }
 };
 
@@ -581,7 +605,6 @@ window.toggleSizeDropdown = function() {
   if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
 };
 
-// Close dropdowns if clicking outside toolbar
 window.addEventListener('click', (e) => {
   if (!e.target.closest('.toolbar')) {
     const fontDd = document.getElementById('font-dropdown');
@@ -603,39 +626,30 @@ window.insertSize = function(sizeVal) {
   if (dd) dd.style.display = 'none';
 };
 
-// ==========================================
-// FREELY DRAGGABLE WINDOWS (Taskbar-Crossing, Below Modals)
-// ==========================================
 (function() {
   let activeDragWindow = null;
   let startX = 0, startY = 0;
   let initialLeft = 0, initialTop = 0;
-  let highestZIndex = 50; // Safely below modals (1000+) but above page content & taskbar (999)
+  let highestZIndex = 50;
 
   document.addEventListener('mousedown', (e) => {
-    // Look for a title bar inside the entries container
     const titleBar = e.target.closest('#entries-container .title-bar');
     if (!titleBar) return;
-
-    // Don't drag if clicking buttons inside the title bar
     if (e.target.closest('button')) return;
 
     const windowEl = titleBar.closest('.window');
     if (!windowEl) return;
 
     activeDragWindow = windowEl;
-    
-    // Bring window to the front among other entries
     highestZIndex++;
     activeDragWindow.style.zIndex = highestZIndex;
 
-    // If it hasn't been positioned absolutely yet, convert its current layout rect into absolute positioning
     if (activeDragWindow.style.position !== 'absolute') {
       const rect = activeDragWindow.getBoundingClientRect();
       activeDragWindow.style.position = 'absolute';
       activeDragWindow.style.left = rect.left + window.scrollX + 'px';
       activeDragWindow.style.top = rect.top + window.scrollY + 'px';
-      activeDragWindow.style.transform = 'none'; // clear any old transforms
+      activeDragWindow.style.transform = 'none';
     }
 
     startX = e.clientX;
@@ -661,7 +675,6 @@ window.insertSize = function(sizeVal) {
     activeDragWindow = null;
   });
 
-  // Reset position when clicking the window's close button
   document.addEventListener('click', (e) => {
     const closeBtn = e.target.closest('#entries-container .title-bar-controls button');
     if (!closeBtn) return;
@@ -672,7 +685,6 @@ window.insertSize = function(sizeVal) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Revert back to original document layout flow
     windowEl.style.position = '';
     windowEl.style.left = '';
     windowEl.style.top = '';
