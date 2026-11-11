@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>serph/runo's guestbook</title>
+  <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
+  <!-- Link your custom separated CSS file -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -250,10 +252,17 @@
           <div style="font-size: 0.8em; color: #555;">Administrator</div>
         </div>
       </div>
+
+      <div class="form-group" style="margin-bottom: 6px;">
+        <label for="admin-email-input">Admin Email:</label>
+        <input type="text" id="admin-email-input" placeholder="you@domain.com">
+      </div>
+
       <div class="form-group">
         <label for="admin-pass-input">Type your password:</label>
         <input type="password" id="admin-pass-input" placeholder="••••••••">
       </div>
+
       <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 6px;">
         <button type="button" onclick="submitAdminAuth()">OK</button>
         <button type="button" onclick="closeAdminAuthModal()">Cancel</button>
