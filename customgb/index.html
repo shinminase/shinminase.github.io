@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>serph/runo's guestbook</title>
-  <!-- Import Windows XP Stylesheet -->
+  <!-- Import Authentic Windows XP Stylesheet -->
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
+  <!-- Link your custom separated CSS file -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,7 +29,7 @@
 <div class="window" id="gb-form-window">
   <div class="title-bar">
     <div class="title-bar-text">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> sign_guestbook.exe
+      <img src="assets/UI/pn.png" class="user-avatar-icon"> sign_guestbook.exe
     </div>
     <div class="title-bar-controls">
       <button aria-label="Close"></button>
@@ -211,13 +212,14 @@
   <div class="window" style="width: 480px; max-width: 90vw;">
     <div class="title-bar">
       <div class="title-bar-text">
-        <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" class="user-avatar-icon"> about_system.exe
+        <img src="assets/ui/question.png" class="user-avatar-icon"> about_system.exe
       </div>
       <div class="title-bar-controls"><button aria-label="Close" onclick="closeAboutModal()"></button></div>
     </div>
     <div class="window-body">
-      <div style="font-weight: bold; margin-bottom: 6px; font-size: 2em; color: #0055ea; text-align: center;">
-        <a href="https://github.com/shinminase">shinminase on github</a>
+      <div style="margin-bottom: 6px; text-align: center;">
+         switched to self-hosting my own guestbook site; former messages are from UltraGuest.<br><br>
+         if you're interested in a custom guestbook site, let me know!
       </div>
 
       <div class="about-video-container">
@@ -244,7 +246,7 @@
     </div>
     <div class="window-body">
       <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="xp-login-avatar">
+        <img src="https://avatars.githubusercontent.com/u/139236438?v=4" class="xp-login-avatar">
         <div>
           <div style="font-weight: bold; font-size: 1.1em;">serph / runo</div>
           <div style="font-size: 0.8em; color: #555;">Administrator</div>
@@ -295,7 +297,7 @@
 <!-- Windows XP Start Menu Popup -->
 <div id="xp-start-menu" class="xp-start-menu">
   <div class="xp-start-header" id="xp-start-header">
-    <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" width="20" height="20" style="border-radius:2px;">
+    <img src="assets/UI/admin.png" width="20" height="20" style="border-radius:2px;">
     <span>serph / runo</span>
   </div>
   <div class="xp-start-body">
@@ -318,7 +320,7 @@
   </button>
   <div class="xp-taskbar-tasks">
     <div class="xp-task-item active">
-      <img src="https://abs.twimg.com/emoji/v1/72x72/1f4e8.png" width="14" height="14"> guestbook.exe
+      <img src="assets/UI/pn.png" width="14" height="14"> guestbook.exe
     </div>
   </div>
   <div class="xp-tray" id="xp-clock">
@@ -326,11 +328,11 @@
   </div>
 </div>
 
-<!-- Audio Elements for Click and Keyboard ASMR Sounds -->
+<!-- Audio Elements for Click and Keyboard Sounds -->
 <audio id="click-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/emoticons/xpclick" preload="auto"></audio>
 <audio id="type-sound" src="https://file.garden/ZlwiKgzAvyz0wLRz/key" preload="auto"></audio>
 
-<!-- Link your custom separated JS file with type="module" -->
+
 <script type="module" src="script.js"></script>
 
 </body>
