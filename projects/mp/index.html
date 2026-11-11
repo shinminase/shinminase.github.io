@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Media Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+        :root {
+            --wmp-title-bg: linear-gradient(180deg, #0058ee 0%, #3593ff 4%, #288eff 18%, #0055ea 48%, #0045d0 52%, #0060e0 100%);
+            --wmp-menu-bg: #ece9d8;
+            --wmp-deck-bg: linear-gradient(180deg, #ffffff 0%, #d2e3f7 15%, #a1c3eb 50%, #7ca8df 85%, #6294d5 100%);
+        }
+
+        body {
+            font-family: 'Tahoma', sans-serif;
+            user-select: none;
+        }
+
+        .wmp-window {
+            background-color: #0b2f70;
+            border: 4px solid #08245b;
+            border-radius: 8px 8px 10px 10px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.85);
+            padding: 2px;
+        }
+
+        .wmp-titlebar {
+            background: var(--wmp-title-bg);
+            border-radius: 4px 4px 0 0;
+            height: 26px;
+        }
+
+        .wmp-menubar {
+            background-color: var(--wmp-menu-bg);
+            border-bottom: 1px solid #aca899;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .wmp-menubar span {
+            padding: 1px 6px;
+        }
+
+        .wmp-menubar span:hover {
+            background-color: #316ac5;
+            color: #ffffff;
+        }
+
+        /* Sidebar & Tab Navigation */
+        .wmp-sidebar {
+            background: linear-gradient(180deg, #b8ceee 0%, #9cbce5 100%);
+            border-right: 1px solid #6b8ebf;
+        }
+
+        .wmp-sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+        }
+
+        .wmp-sidebar-btn {
+            background: transparent;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 11px;
+            font-weight: bold;
+            color: #0a2046;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+            padding: 6px 8px;
+            text-align: left;
+            position: relative;
+            cursor: pointer;
+            line-height: 1.25;
+        }
+
+        .wmp-sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .wmp-sidebar-btn.active {
+            background: linear-gradient(180deg, #dcebfa 0%, #bcd6f7 100%);
+            border-top: 1px solid #7fa4dc;
+            border-bottom: 1px solid #5a80b8;
+            border-right: none;
+            border-radius: 0 4px 4px 0;
+            box-shadow: inset 1px 1px 0 rgba(255,255,255,0.9), 2px 1px 4px rgba(0,0,0,0.15);
+            color: #000;
+            margin-right: -1px;
+            z-index: 10;
+        }
+
+        /* Right Panel */
+        .wmp-right-panel-top {
+            background: linear-gradient(180deg, #5b7bb8 0%, #4a6aa7 100%);
+            border-left: 1px solid #334e80;
+        }
+
+        .wmp-right-panel-bottom {
+            background: #38538c;
+            border-left: 1px solid #334e80;
+            border-top: 1px solid #2a3d66;
+        }
+
+        /* Playlist Queue Styles */
+        .wmp-playlist-item {
+            padding: 5px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            font-size: 11px;
+        }
+
+        .wmp-playlist-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .wmp-playlist-item.active {
+            background-color: #1a2848;
+            color: #76ff76;
+            font-weight: bold;
+            border-left: 3px solid #76ff76;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #2d3f61;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #5572a5;
+            border: 1px solid #1e2c47;
+        }
+
+        .wmp-deck {
+            background: var(--wmp-deck-bg);
+            border-top: 2px solid #ffffff;
+            border-bottom: 1px solid #1a3a6e;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.9);
+        }
+
+        .btn-wmp-circle {
+            background: linear-gradient(180deg, #ffffff 0%, #d5e4f7 40%, #a2c4ed 50%, #bcd6f5 100%);
+            border: 1px solid #365b8c;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #153561;
+            cursor: pointer;
+        }
+
+        .btn-wmp-circle:hover {
+            filter: brightness(1.08);
+        }
+
+        .btn-wmp-circle:active {
+            background: linear-gradient(180deg, #9bbde8 0%, #cce0f8 100%);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .btn-play-large {
+            width: 34px;
+            height: 34px;
+            font-size: 13px;
+        }
+
+        .btn-play-small {
+            width: 22px;
+            height: 22px;
+            font-size: 9px;
+        }
+
+        input[type=range].wmp-slider {
+            -webkit-appearance: none;
+            background: transparent;
+            width: 100%;
+        }
+
+        input[type=range].wmp-slider:focus {
+            outline: none;
+        }
+
+        input[type=range].wmp-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: linear-gradient(180deg, #6c84a7 0%, #a4b9d8 100%);
+            border-radius: 2px;
+            border: 1px solid #3d506d;
+        }
+
+        input[type=range].wmp-slider::-webkit-slider-thumb {
+            height: 12px;
+            width: 8px;
+            border-radius: 1px;
+            background: linear-gradient(180deg, #a6f6a6 0%, #3cd73c 50%, #159315 100%);
+            border: 1px solid #0d540d;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 select-none">
+
+    <div class="wmp-window w-full max-w-4xl flex flex-col overflow-hidden relative">
+
+        <!-- TITLEBAR -->
+        <div class="wmp-titlebar px-2 flex items-center justify-between text-white text-xs font-bold">
+            <div class="flex items-center space-x-1.5">
+                <div class="w-4 h-4 rounded-full bg-gradient-to-br from-orange-400 to-amber-600 border border-white flex items-center justify-center shadow">
+                    <i class="fa-solid fa-play text-white text-[7px] ml-0.5"></i>
+                </div>
+                <span class="tracking-wide text-[11px] drop-shadow">Windows Media Player</span>
+            </div>
+            <div class="flex items-center space-x-1">
+                <button class="w-5 h-4 bg-[#0058ee] hover:bg-blue-400 border border-white/60 rounded-xs flex items-center justify-center text-white text-[9px] font-bold">_</button>
+                <button class="w-5 h-4 bg-[#0058ee] hover:bg-blue-400 border border-white/60 rounded-xs flex items-center justify-center text-white text-[9px] font-bold">☐</button>
+                <button class="w-5 h-4 bg-[#e81123] hover:bg-red-500 border border-white/60 rounded-xs flex items-center justify-center text-white text-[9px] font-bold">✕</button>
+            </div>
+        </div>
+
+        <!-- MENU BAR -->
+        <div class="wmp-menubar px-2 py-0.5 flex items-center space-x-1">
+            <span class="cursor-pointer">File</span>
+            <span class="cursor-pointer">View</span>
+            <span class="cursor-pointer">Play</span>
+            <span class="cursor-pointer">Tools</span>
+            <span class="cursor-pointer">Help</span>
+        </div>
+
+        <!-- MAIN CONTENT BODY -->
+        <div class="flex-1 flex flex-col md:flex-row bg-black relative overflow-hidden min-h-[340px]">
+            
+            <!-- LEFT NAVIGATION -->
+            <div class="wmp-sidebar w-full md:w-32 py-1 pr-1 flex flex-col justify-between shrink-0">
+                <div class="wmp-sidebar-nav">
+                    <div class="w-5 h-5 rounded-full bg-white/40 border border-blue-900/30 flex items-center justify-center mb-1 mx-auto cursor-pointer hover:bg-white/60">
+                        <i class="fa-solid fa-arrows-up-down text-[10px] text-blue-900"></i>
+                    </div>
+                    <button class="wmp-sidebar-btn active flex items-center justify-between">
+                        <span>Now<br/>Playing</span>
+                        <i class="fa-solid fa-caret-right text-blue-900 text-[9px]"></i>
+                    </button>
+                    <button class="wmp-sidebar-btn">Media<br/>Guide</button>
+                    <button class="wmp-sidebar-btn">Copy from<br/>CD</button>
+                    <button class="wmp-sidebar-btn">Media<br/>Library</button>
+                    <button class="wmp-sidebar-btn">Radio<br/>Tuner</button>
+                    <button class="wmp-sidebar-btn">Copy to CD<br/>or Device</button>
+                    <div class="text-center pt-1">
+                        <i class="fa-solid fa-angles-down text-blue-900 text-xs"></i>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center p-2">
+                    <div class="grid grid-cols-2 gap-0.5 w-4 h-4">
+                        <div class="bg-red-500 rounded-tl-xs"></div>
+                        <div class="bg-green-500 rounded-tr-xs"></div>
+                        <div class="bg-blue-500 rounded-bl-xs"></div>
+                        <div class="bg-yellow-400 rounded-br-xs"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER DISPLAY (VIDEO + MAIN ALBUM COVER DISPLAY) -->
+            <div class="flex-1 relative flex flex-col bg-[#050b1e]">
+                
+                <!-- Dropdown Header -->
+                <div class="h-6 bg-gradient-to-r from-[#4b6cb7] to-[#182848] px-2 flex items-center justify-between border-b border-blue-900 z-10">
+                    <div></div>
+                    <div class="bg-white/15 hover:bg-white/25 text-white px-2 py-0.5 rounded-sm text-[10px] flex items-center space-x-2 border border-white/20 cursor-pointer">
+                        <i class="fa-solid fa-window-restore text-[9px]"></i>
+                        <span id="header-track-title">Now Playing</span>
+                        <i class="fa-solid fa-caret-down text-[9px]"></i>
+                    </div>
+                </div>
+
+                <!-- MAIN DISPLAY VIEWPORT -->
+                <div class="flex-1 bg-black flex items-center justify-center relative overflow-hidden">
+                    
+                    <!-- Video Element -->
+                    <video id="media-player" class="w-full h-full object-contain" playsinline></video>
+                    
+                    <!-- MAIN ALBUM COVER DISPLAY OVERLAY (Center Screen) -->
+                    <div id="main-art-overlay" class="absolute inset-0 bg-gradient-to-b from-[#020514] via-[#050e2d] to-[#010410] flex flex-col items-center justify-center p-4">
+                        <div class="w-40 h-40 md:w-48 md:h-48 rounded border border-blue-500/30 bg-black shadow-2xl overflow-hidden mb-3 relative group">
+                            <img id="main-display-cover" src="" alt="Album Cover" class="w-full h-full object-cover">
+                        </div>
+                        <div id="main-display-title" class="text-white text-xs font-bold tracking-wide drop-shadow"></div>
+                        <div id="main-display-artist" class="text-blue-300 text-[11px] font-medium mt-0.5"></div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM STATUS STRIP -->
+                <div class="h-6 bg-[#0a0a0a] border-t border-gray-800 px-2 flex items-center justify-between text-[11px] text-white z-10">
+                    <div class="flex items-center space-x-1.5">
+                        <button class="w-3.5 h-3.5 bg-gray-700 rounded-xs flex items-center justify-center text-[8px] text-gray-300 border border-gray-500">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                        <button class="w-3.5 h-3.5 bg-gray-700 rounded-xs flex items-center justify-center text-[8px] text-gray-300 border border-gray-500" onclick="togglePlayPause()">
+                            <i id="viewport-play-icon" class="fa-solid fa-play"></i>
+                        </button>
+                        <span id="status-bar-label" class="text-gray-200 text-[10px] ml-1">Stopped</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <button class="w-3.5 h-3.5 bg-gray-800 rounded-xs text-[8px] text-gray-400 flex items-center justify-center border border-gray-600">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                        <button class="w-3.5 h-3.5 bg-gray-800 rounded-xs text-[8px] text-gray-400 flex items-center justify-center border border-gray-600">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                        <button class="w-3.5 h-3.5 bg-gray-800 rounded-xs text-[8px] text-gray-400 flex items-center justify-center border border-gray-600">
+                            <i class="fa-solid fa-window-maximize"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+          <!-- RIGHT PANEL: TOP ALBUM THUMBNAIL + BOTTOM PLAYLIST QUEUE LIST -->
+            <div class="w-full md:w-60 flex flex-col shrink-0">
+                <div class="wmp-right-panel-top p-2.5 flex flex-col items-center justify-center text-center">
+                    <div class="text-[10px] text-blue-200 font-bold mb-1 tracking-wide uppercase">Visitor's Top Hits</div>
+                    <div class="w-16 h-16 bg-black border border-blue-900/60 rounded shadow overflow-hidden relative mb-1">
+                        <img id="right-thumb-art" src="" alt="Album Art" class="w-full h-full object-cover">
+                    </div>
+                    <div id="right-album-name" class="text-[11px] font-bold text-white truncate w-full px-1">Album Name</div>
+                    <!-- Requester Tag Container -->
+                    <div id="right-requester" class="text-[9px] text-blue-100/80 truncate w-full px-1 mt-0.5"></div>
+                </div>
+
+                <div class="wmp-right-panel-bottom flex-1 flex flex-col overflow-hidden">
+                    <div id="playlist-items-list" class="flex-1 overflow-y-auto custom-scroll max-h-[170px]">
+                        <!-- Injected via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TRACK SEEK BAR & STATUS BAR -->
+        <div class="bg-[#0a0a0a] border-t border-b border-gray-800 px-3 py-1 flex items-center justify-between text-[11px] text-[#76ff76] font-mono">
+            <div class="flex items-center space-x-2 truncate">
+                <i class="fa-solid fa-play text-[9px]"></i>
+                <span id="bar-album-label" class="truncate">Album: Loading...</span>
+            </div>
+            <div id="time-marker" class="shrink-0 text-[#76ff76] font-bold">00:00</div>
+        </div>
+        <div class="bg-gradient-to-r from-[#b3caea] via-[#cce0f5] to-[#b3caea] border-b border-[#6f8ebf] px-3 py-1 flex items-center space-x-2">
+            <button class="px-2.5 py-0.5 bg-gradient-to-b from-white to-[#c5d8f2] border border-[#365b8c] rounded-full text-[9px] flex items-center justify-center text-[#153561] shadow cursor-pointer hover:brightness-105 active:bg-[#9bbde8]" onclick="mediaPlayer.currentTime = Math.max(0, mediaPlayer.currentTime - 5)" title="Rewind 5s">
+                <i class="fa-solid fa-backward text-[8px]"></i><i class="fa-solid fa-backward text-[8px] -ml-1"></i>
+            </button>
+            <input type="range" id="seek-bar" class="wmp-slider flex-1" min="0" max="100" value="0">
+            <button class="px-2.5 py-0.5 bg-gradient-to-b from-white to-[#c5d8f2] border border-[#365b8c] rounded-full text-[9px] flex items-center justify-center text-[#153561] shadow cursor-pointer hover:brightness-105 active:bg-[#9bbde8]" onclick="mediaPlayer.currentTime = Math.min(mediaPlayer.duration || 0, mediaPlayer.currentTime + 5)" title="Fast Forward 5s">
+                <i class="fa-solid fa-forward text-[8px]"></i><i class="fa-solid fa-forward text-[8px] -ml-1"></i>
+            </button>
+        </div>
+
+        <!-- BOTTOM CONTROL DECK -->
+        <div class="wmp-deck px-4 py-1.5 flex items-center justify-between">
+            <div class="flex items-center space-x-1.5">
+                <button id="btn-play" onclick="togglePlayPause()" class="btn-wmp-circle btn-play-large" title="Play / Pause">
+                    <i id="play-icon" class="fa-solid fa-play ml-0.5"></i>
+                </button>
+                <button id="btn-stop" onclick="stopMedia()" class="btn-wmp-circle btn-play-small" title="Stop">
+                    <i class="fa-solid fa-square text-[8px]"></i>
+                </button>
+                <button id="btn-prev" onclick="playPrevTrack()" class="btn-wmp-circle btn-play-small" title="Previous Track">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button id="btn-next" onclick="playNextTrack()" class="btn-wmp-circle btn-play-small" title="Next Track">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-2 w-36">
+                <button id="btn-mute" onclick="toggleMute()" class="btn-wmp-circle btn-play-small">
+                    <i id="mute-icon" class="fa-solid fa-volume-high text-[9px]"></i>
+                </button>
+                <input type="range" id="volume-bar" class="wmp-slider" min="0" max="1" step="0.01" value="0.8">
+            </div>
+
+            <div class="flex items-center space-x-1.5">
+                <button class="btn-wmp-circle btn-play-small" title="Turn Shuffle On/Off">
+                    <i class="fa-solid fa-arrow-rotate-left text-[9px]"></i>
+                </button>
+                <button class="btn-wmp-circle btn-play-small" title="Skin Chooser">
+                    <i class="fa-solid fa-paint-brush text-[9px]"></i>
+                </button>
+                <button class="btn-wmp-circle btn-play-small" title="Anchor Window">
+                    <i class="fa-solid fa-window-minimize text-[8px]"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Script File -->
+    <script src="player.js"></script>
+</body>
+</html>
