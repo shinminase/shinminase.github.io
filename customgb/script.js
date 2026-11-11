@@ -522,7 +522,7 @@ window.openColorPicker = function() {
   
   const colorPicker = document.getElementById('native-color-picker');
   if (colorPicker) {
-    colorPicker.click(); // Triggers native browser color wheel/picker dialog
+    colorPicker.click();
   }
 };
 
