@@ -8,7 +8,7 @@ const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=20
 let activeReplyId = null;
 let currentPage = 1;
 const pageSize = 20;
-let isNewSubmission = false; // Flag to trigger popup animation for new submissions
+let isNewSubmission = false; 
 
 // ==========================================
 // SUPABASE AUTH & SESSION MANAGEMENT
@@ -61,7 +61,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Fixed Click Sound
+// Click Sound
 document.addEventListener('click', (e) => {
   if (e.target.closest('button, a')) {
     const sound = document.getElementById('click-sound');
@@ -72,7 +72,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ASMR Keyboard Sound
+//  Keyboard Sound
 const msgTextarea = document.getElementById('gb-message');
 if (msgTextarea) {
   msgTextarea.addEventListener('keydown', (e) => {
@@ -377,18 +377,29 @@ function parseMessageText(text) {
 }
 
 window.changePage = function(direction) {
+  const container = document.getElementById('entries-container');
   currentPage += direction;
-  loadEntries();
   window.scrollTo({ top: 400, behavior: 'smooth' });
+
+  if (container) {
+    container.classList.remove('page-enter');
+    container.classList.add('page-exit');
+    setTimeout(() => {
+      loadEntries(true);
+    }, 180);
+  } else {
+    loadEntries(true);
+  }
 }
 
-async function loadEntries() {
+async function loadEntries(animateTransition = false) {
   const container = document.getElementById('entries-container');
   const paginationContainer = document.getElementById('pagination-container');
   if (!container) return;
 
   const { count, error: countError } = await supabase.from('guestbook').select('*', { count: 'exact', head: true });
   if (countError) {
+    container.classList.remove('page-exit');
     container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading count: ${countError.message}</p>`;
     return;
   }
@@ -406,11 +417,13 @@ async function loadEntries() {
     .range(from, to);
 
   if (error) {
+    container.classList.remove('page-exit');
     container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
     return;
   }
 
   if (data.length === 0) {
+    container.classList.remove('page-exit');
     container.innerHTML = '<p style="color: #fff; text-shadow:1px 1px 2px #000;">No messages yet. Be the first to sign!</p>';
     if (paginationContainer) paginationContainer.innerHTML = '';
     return;
@@ -425,7 +438,7 @@ async function loadEntries() {
       el.classList.add('window-popup-anim');
     }
 
-const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_html) : '';
+    const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_html) : '';
 
     const hasAvatar = entry.email && entry.email.trim() !== '';
     const titleBarImgHtml = hasAvatar ? `<img src="${entry.email}" class="user-avatar-icon">` : '';
@@ -434,20 +447,28 @@ const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_h
       ? `<div class="entry-name-container"><img src="${entry.email}" class="entry-name-avatar"><span>${entry.name}</span></div>` 
       : entry.name;
 
-    const formattedDate = new Date(entry.created_at).toLocaleDateString('en-US', {
+    const entryDate = new Date(entry.created_at);
+    const isLegacy = entryDate.getFullYear() < 2026;
+
+    const formattedDate = entryDate.toLocaleDateString('en-US', {
       month: 'long', day: '2-digit', year: 'numeric'
     });
+
+    const legacyBannerHtml = isLegacy 
+      ? `<div class="legacy-archive-banner">LEGACY ARCHIVE - Carried over from ULTRAGUEST</div>` 
+      : '';
 
     el.innerHTML = `
       <div class="title-bar">
         <div class="title-bar-text">
-          ${titleBarImgHtml} you got mail.exe
+          ${titleBarImgHtml} ${isLegacy ? 'legacy_mail.exe' : 'you got mail.exe'}
         </div>
         <div class="title-bar-controls">
           <button aria-label="Close"></button>
         </div>
       </div>
       <div class="window-body">
+        ${legacyBannerHtml}
         <div class="entry-field">
           <span class="entry-label">Name :</span>
           <span class="entry-value">${nameHtml}</span>
@@ -469,7 +490,8 @@ const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_h
         ` : ''}
 
         <div class="admin-actions">
-<button class="admin-btn" onclick="openReplyModal('${entry.id}', decodeURIComponent('${existingReplyEscaped}'))">Reply HTML</button>          <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
+          <button class="admin-btn" onclick="openReplyModal('${entry.id}', decodeURIComponent('${existingReplyEscaped}'))">Reply HTML</button>
+          <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
         </div>
       </div>
       <!-- Windows XP Resize Handle -->
@@ -477,6 +499,12 @@ const existingReplyEscaped = entry.reply_html ? encodeURIComponent(entry.reply_h
     `;
     container.appendChild(el);
   });
+
+  container.classList.remove('page-exit');
+  if (animateTransition) {
+    void container.offsetWidth; 
+    container.classList.add('page-enter');
+  }
 
   if (paginationContainer) {
     paginationContainer.innerHTML = `
@@ -646,7 +674,6 @@ window.insertSize = function(sizeVal) {
       highestZIndex++;
       activeResizeWindow.style.zIndex = highestZIndex;
 
-      // Lock current layout into explicit pixels if not already positioned
       if (activeResizeWindow.style.position !== 'absolute') {
         const rect = activeResizeWindow.getBoundingClientRect();
         activeResizeWindow.style.position = 'absolute';
@@ -666,7 +693,6 @@ window.insertSize = function(sizeVal) {
       return;
     }
 
-    // Check for Title Bar Dragging
     const titleBar = e.target.closest('#entries-container .title-bar');
     if (!titleBar) return;
     if (e.target.closest('button')) return;
@@ -683,7 +709,7 @@ window.insertSize = function(sizeVal) {
       activeDragWindow.style.position = 'absolute';
       activeDragWindow.style.left = rect.left + window.scrollX + 'px';
       activeDragWindow.style.top = rect.top + window.scrollY + 'px';
-      activeDragWindow.style.width = rect.width + 'px'; // preserve width
+      activeDragWindow.style.width = rect.width + 'px';
       activeDragWindow.style.transform = 'none';
     }
 
