@@ -6,9 +6,16 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
 
 let activeReplyId = null;
-let currentPage = 1;
-const pageSize = 20;
-let isNewSubmission = false; 
+
+// Read initial page from URL hash (e.g. #page2) if present
+function getPageFromHash() {
+  const match = window.location.hash.match(/^#page(\d+)$/i);
+  return match ? Math.max(1, parseInt(match[1], 10)) : 1;
+}
+
+let currentPage = getPageFromHash();
+const pageSize = 10;
+let isNewSubmission = false; // Flag to trigger popup animation for new submissions
 
 // ==========================================
 // SUPABASE AUTH & SESSION MANAGEMENT
@@ -61,7 +68,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Click Sound
+// Fixed Click Sound
 document.addEventListener('click', (e) => {
   if (e.target.closest('button, a')) {
     const sound = document.getElementById('click-sound');
@@ -72,7 +79,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-//  Keyboard Sound
+// ASMR Keyboard Sound
 const msgTextarea = document.getElementById('gb-message');
 if (msgTextarea) {
   msgTextarea.addEventListener('keydown', (e) => {
@@ -379,6 +386,8 @@ function parseMessageText(text) {
 window.changePage = function(direction) {
   const container = document.getElementById('entries-container');
   currentPage += direction;
+  
+  history.pushState(null, '', `#page${currentPage}`);
   window.scrollTo({ top: 400, behavior: 'smooth' });
 
   if (container) {
@@ -391,6 +400,22 @@ window.changePage = function(direction) {
     loadEntries(true);
   }
 }
+
+// Handle browser Back/Forward navigation or direct hash inputs
+window.addEventListener('hashchange', () => {
+  const targetPage = getPageFromHash();
+  if (targetPage !== currentPage) {
+    currentPage = targetPage;
+    const container = document.getElementById('entries-container');
+    if (container) {
+      container.classList.remove('page-enter');
+      container.classList.add('page-exit');
+      setTimeout(() => loadEntries(true), 180);
+    } else {
+      loadEntries(true);
+    }
+  }
+});
 
 async function loadEntries(animateTransition = false) {
   const container = document.getElementById('entries-container');
@@ -407,6 +432,11 @@ async function loadEntries(animateTransition = false) {
   const totalPages = Math.ceil((count || 0) / pageSize) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
   if (currentPage < 1) currentPage = 1;
+
+  // Keep URL hash synchronized if clamped out-of-range
+  if (window.location.hash !== `#page${currentPage}`) {
+    history.replaceState(null, '', `#page${currentPage}`);
+  }
 
   const from = (currentPage - 1) * pageSize;
   const to = from + pageSize - 1;
@@ -448,7 +478,7 @@ async function loadEntries(animateTransition = false) {
       : entry.name;
 
     const entryDate = new Date(entry.created_at);
-    const isLegacy = entryDate.getFullYear() < 2026;
+    const isLegacy = entryDate.getFullYear() < 2025;
 
     const formattedDate = entryDate.toLocaleDateString('en-US', {
       month: 'long', day: '2-digit', year: 'numeric'
@@ -502,7 +532,7 @@ async function loadEntries(animateTransition = false) {
 
   container.classList.remove('page-exit');
   if (animateTransition) {
-    void container.offsetWidth; 
+    void container.offsetWidth; // Force reflow
     container.classList.add('page-enter');
   }
 
@@ -554,6 +584,7 @@ if (gbForm) {
       document.getElementById('gb-fav-song').value = '';
       document.getElementById('gb-avatar').value = '';
       currentPage = 1;
+      history.replaceState(null, '', '#page1');
       
       const dingSound = document.getElementById('ding-sound');
       if (dingSound) {
@@ -693,6 +724,7 @@ window.insertSize = function(sizeVal) {
       return;
     }
 
+    // Check for Title Bar Dragging
     const titleBar = e.target.closest('#entries-container .title-bar');
     if (!titleBar) return;
     if (e.target.closest('button')) return;
