@@ -3,7 +3,7 @@
 <head>
   <link rel="icon" type="image/png" href="assets/UI/pn.png">
   <meta charset="UTF-8">
-  <title>serph's guestbook</title>
+  <title>serph/runo's guestbook</title>
   <link rel="stylesheet" href="https://botoxparty.github.io/XP.css/XP.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,7 +18,7 @@
     <h1 class="gb-title">
       <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
     </h1>
-    <div class="gb-subtitle">to send a photo: attach an image link!</div>
+    <div class="gb-subtitle">to send a photo: attach an image link! | messages are draggable and resizable</div>
     <div class="gb-links">
       <a href="#gb-form-window">Sign Guestbook</a>
     </div>
@@ -76,14 +76,15 @@
       <img src="assets/UI/font.png" width="17" height="14" style="vertical-align: middle;" alt="Font"> ▼
     </button>
     <div id="font-dropdown" class="toolbar-popup-dropdown">
-      <div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
+<div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
       <div class="font-option" style="font-family: 'Courier New';" onclick="insertFont('Courier New')">Courier New</div>
       <div class="font-option" style="font-family: Georgia;" onclick="insertFont('Georgia')">Georgia</div>
       <div class="font-option" style="font-family: Tahoma;" onclick="insertFont('Tahoma')">Tahoma</div>
       <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertFont('Times New Roman')">Times New Roman</div>
       <div class="font-option" style="font-family: Verdana;" onclick="insertFont('Verdana')">Verdana</div>
       <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertFont('Comic Sans MS')">Comic Sans MS</div>
-      <div class="font-option" style="font-family: cursive;" onclick="insertFont('cursive')">Cursive</div>
+      <div class="font-option" style="font-family: Papyrus;" onclick="insertFont('Papyrus')">Papyrus</div>
+      <div class="font-option" style="font-family: 'Brush Script MT', cursive;" onclick="insertFont('Brush Script MT')">Brush Script</div>
       <div class="font-option" style="font-family: serif;" onclick="insertFont('serif')">Serif</div>
     </div>
   </div>
@@ -141,8 +142,18 @@
             <img src="emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
             <img src="emoticons/luv.gif" title=":luv:" onclick="insertEmoji(':luv:')">
             <img src="emoticons/taptap.gif" title=":taptap:" onclick="insertEmoji(':taptap:')">
-            <img src="emoticons/msnflush.png" title=":msnflush:" onclick="insertEmoji(':msnflush:')">
-            <img src="emoticons/ohoho.gif" title=":ohoho:" onclick="insertEmoji(':ohoho:')">
+            <img src="emoticons/daydream.png" title=":daydream:" onclick="insertEmoji(':daydream:')">
+            <img src="emoticons/bouncey.gif" title=":bouncey:" onclick="insertEmoji(':bouncey:')">
+            <img src="emoticons/rose.gif" title=":rose:" onclick="insertEmoji(':rose:')">
+            <img src="emoticons/twitch.gif" title=":twitch:" onclick="insertEmoji(':twitch:')">
+            <img src="emoticons/pimp.gif" title=":pimp:" onclick="insertEmoji(':pimp:')">
+            <img src="emoticons/kiss.gif" title=":kiss:" onclick="insertEmoji(':kiss:')">
+            <img src="emoticons/cry.gif" title=":cry:" onclick="insertEmoji(':cry:')">
+            <img src="emoticons/smoke.gif" title=":smoke:" onclick="insertEmoji(':smoke:')">
+            <img src="emoticons/walkin.gif" title=":walkin:" onclick="insertEmoji(':walkin:')">
+            <img src="emoticons/drool.gif" title=":drool:" onclick="insertEmoji(':drool:')">
+            <img src="emoticons/silly.gif" title=":silly:" onclick="insertEmoji(':silly:')">
+            <img src="emoticons/uaa.gif" title=":uaa:" onclick="insertEmoji(':uaa:')">
           </div>
         </div>
         <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
