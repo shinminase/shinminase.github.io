@@ -500,17 +500,14 @@ body.is-admin .admin-actions { display: flex; }
   transform-origin: center center;
 }
 
-/* Hide Log Off option by default */
 .admin-only-item {
   display: none !important;
 }
 
-/* Show Log Off option when body has .is-admin */
 body.is-admin .admin-only-item {
   display: flex !important;
 }
 
-/* Windows XP Window Resizing Handle Styling */
 .window.resizable-window {
   position: relative;
   overflow: hidden; 
@@ -531,4 +528,48 @@ body.is-admin .admin-only-item {
 #reply-modal .window-body {
   max-height: 80vh;
   overflow-y: auto;
+}
+
+/* Page Switch Animations */
+@keyframes pageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-exit {
+  animation: pageExit 0.18s ease-in forwards;
+}
+
+.page-enter {
+  animation: pageEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Legacy Archive Banner (Pre-2026) */
+.legacy-archive-banner {
+  background: #ece9d8;
+  border: 1px solid #7f9db9;
+  border-left: 4px solid #808080;
+  color: #444;
+  font-size: 0.78em;
+  font-weight: bold;
+  padding: 4px 8px;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
 }
