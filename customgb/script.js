@@ -530,10 +530,14 @@ async function loadEntries(animateTransition = false) {
     container.appendChild(el);
   });
 
-  container.classList.remove('page-exit');
+container.classList.remove('page-exit');
   if (animateTransition) {
-    void container.offsetWidth; // Force reflow
+    void container.offsetWidth; 
     container.classList.add('page-enter');
+    
+    setTimeout(() => {
+      container.classList.remove('page-enter');
+    }, 300);
   }
 
   if (paginationContainer) {
