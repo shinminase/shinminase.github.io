@@ -94,7 +94,7 @@ if (msgTextarea) {
 }
 
 const EMOJI_MAP = {
-  ':smile:': '<img src="emoticons/smile.gif" class="custom-emoji" alt="smile">',
+':smile:': '<img src="emoticons/smile.gif" class="custom-emoji" alt="smile">',
   ':laugh:': '<img src="emoticons/laugh.gif" class="custom-emoji" alt="laugh">',
   ':tu:': '<img src="emoticons/tu.gif" class="custom-emoji" alt="tu">',
   ':td:': '<img src="emoticons/td.gif" class="custom-emoji" alt="td">',
@@ -121,8 +121,17 @@ const EMOJI_MAP = {
   ':wave:': '<img src="emoticons/wave.gif" class="custom-emoji" alt="wave">',
   ':luv:': '<img src="emoticons/luv.gif" class="custom-emoji" alt="luv">',
   ':taptap:': '<img src="emoticons/taptap.gif" class="custom-emoji" alt="taptap">',
-  ':msnflush:': '<img src="emoticons/msnflush.png" class="custom-emoji" alt="msnflush">',
-  ':ohoho:': '<img src="emoticons/ohoho.gif" class="custom-emoji" alt="ohoho">'
+  ':daydream:': '<img src="emoticons/daydream.png" class="custom-emoji" alt="daydream">',
+  ':bouncey:': '<img src="emoticons/bouncey.gif" class="custom-emoji" alt="bouncey">',
+  ':rose:': '<img src="emoticons/rose.gif" class="custom-emoji" alt="rose">',
+  ':twitch:': '<img src="emoticons/twitch.gif" class="custom-emoji" alt="twitch">',
+  ':pimp:': '<img src="emoticons/pimp.gif" class="custom-emoji" alt="pimp">',
+  ':kiss:': '<img src="emoticons/kiss.gif" class="custom-emoji" alt="kiss">',
+  ':cry:': '<img src="emoticons/cry.gif" class="custom-emoji" alt="cry">',
+  ':smoke:': '<img src="emoticons/smoke.gif" class="custom-emoji" alt="smoke">',
+  ':drool:': '<img src="emoticons/drool.gif" class="custom-emoji" alt="drool">',
+  ':silly:': '<img src="emoticons/silly.gif" class="custom-emoji" alt="silly">',
+  ':uaa:': '<img src="emoticons/uaa.gif" class="custom-emoji" alt="uaa">'
 };
 
 window.toggleEmojiDropdown = function() {
