@@ -3,17 +3,6 @@
  * ================================================================= */
 const PLAYLIST = [
     {
-        title: "Losing Focus",
-        artist: "Autumn Contagious",
-        album: "A Portrait for the Ransom",
-        cover: "https://i.scdn.co/image/ab67616d0000b2739c12ad26c4548db67a0bf9d5",
-        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Autumn%20Contagious%20-%20Losing%20Focus.mp3",
-        isVideo: false,
-        requesterName: "lou",
-        requesterHandle: "HerWordsKill",
-        requesterUrl: "https://github.com/HerWordsKill"
-    },
-    {
         title: "Winston (1984)",
         artist: "Bita and the Botflies",
         album: "Winston (1984)",
@@ -24,6 +13,19 @@ const PLAYLIST = [
         requesterHandle: "shinminase",
         requesterUrl: "https://github.com/shinminase"
     }
+	,
+    {
+        title: "Losing Focus",
+        artist: "Autumn Contagious",
+        album: "A Portrait for the Ransom",
+        cover: "https://i.scdn.co/image/ab67616d0000b2739c12ad26c4548db67a0bf9d5",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Autumn%20Contagious%20-%20Losing%20Focus.mp3",
+        isVideo: false,
+        requesterName: "lou",
+        requesterHandle: "HerWordsKill",
+        requesterUrl: "https://github.com/HerWordsKill"
+    }
+
 ];
 
 let currentTrackIndex = 0;
@@ -62,12 +64,32 @@ function formatTime(seconds) {
 }
 
 window.onload = function() {
-    renderPlaylist();
-    loadTrack(0);
+    // 1. Restore Saved Track Index (Default to 0 if none saved)
+    const savedTrackIndex = localStorage.getItem('wmp_track_index');
+    if (savedTrackIndex !== null && PLAYLIST[parseInt(savedTrackIndex)]) {
+        currentTrackIndex = parseInt(savedTrackIndex);
+    }
 
-    // Volume Bar Listener
+    // 2. Restore Saved Volume or Default to 30% (0.3)
+    const savedVolume = localStorage.getItem('wmp_volume');
+    const initialVolume = savedVolume !== null ? parseFloat(savedVolume) : 0.3;
+    mediaPlayer.volume = initialVolume;
+    volumeBar.value = initialVolume;
+
+    renderPlaylist();
+    loadTrack(currentTrackIndex, false); // Load track without auto-playing on refresh
+
+    // 3. Restore Saved Track Current Time once metadata loads
+    const savedCurrentTime = localStorage.getItem('wmp_current_time');
+    if (savedCurrentTime !== null) {
+        mediaPlayer.currentTime = parseFloat(savedCurrentTime);
+    }
+
+    // Volume Bar Listener & Persistence
     volumeBar.addEventListener('input', (e) => {
-        mediaPlayer.volume = parseFloat(e.target.value);
+        const vol = parseFloat(e.target.value);
+        mediaPlayer.volume = vol;
+        localStorage.setItem('wmp_volume', vol);
     });
 
     // Seek Bar Scrubbing Listeners (Fixes snapping back bug)
@@ -87,22 +109,26 @@ window.onload = function() {
         isDragging = false;
         if (mediaPlayer.duration) {
             mediaPlayer.currentTime = (e.target.value / 100) * mediaPlayer.duration;
+            localStorage.setItem('wmp_current_time', mediaPlayer.currentTime);
         }
     });
     seekBar.addEventListener('touchend', (e) => {
         isDragging = false;
         if (mediaPlayer.duration) {
             mediaPlayer.currentTime = (e.target.value / 100) * mediaPlayer.duration;
+            localStorage.setItem('wmp_current_time', mediaPlayer.currentTime);
         }
     });
 
-    // Time update listener (Only updates if user is not currently dragging)
+    // Time update listener & continuous time saving
     mediaPlayer.addEventListener('timeupdate', () => {
         if (mediaPlayer.duration && !isDragging) {
             seekBar.value = (mediaPlayer.currentTime / mediaPlayer.duration) * 100;
             if (timeMarker) {
                 timeMarker.textContent = formatTime(mediaPlayer.currentTime);
             }
+            // Save current playback position periodically
+            localStorage.setItem('wmp_current_time', mediaPlayer.currentTime);
         }
     });
 
@@ -136,8 +162,9 @@ function renderPlaylist() {
 }
 
 /* Load Track & Update Main Screen + Right Panel Metadata */
-function loadTrack(index) {
+function loadTrack(index, autoPlay = true) {
     currentTrackIndex = index;
+    localStorage.setItem('wmp_track_index', currentTrackIndex);
     const track = PLAYLIST[index];
 
     mediaPlayer.src = track.src;
@@ -154,7 +181,7 @@ function loadTrack(index) {
         mainArtOverlay.classList.remove('hidden');
     }
 
-    // Update Right Panel Metadata & Requester (Name plain text, Handle/URL clickable link)
+    // Update Right Panel Metadata & Requester
     rightThumbArt.src = track.cover;
     rightAlbumName.textContent = track.album;
 
@@ -190,6 +217,14 @@ function loadTrack(index) {
     mediaPlayer.load();
     seekBar.value = 0;
     renderPlaylist();
+
+    if (autoPlay) {
+        mediaPlayer.play().then(() => {
+            isPlaying = true;
+            playIcon.className = 'fa-solid fa-pause';
+            viewportPlayIcon.className = 'fa-solid fa-pause';
+        }).catch(err => console.log('Playback error:', err));
+    }
 }
 
 function togglePlayPause() {
@@ -213,6 +248,7 @@ function togglePlayPause() {
 function stopMedia() {
     mediaPlayer.pause();
     mediaPlayer.currentTime = 0;
+    localStorage.setItem('wmp_current_time', 0);
     isPlaying = false;
     playIcon.className = 'fa-solid fa-play ml-0.5';
     viewportPlayIcon.className = 'fa-solid fa-play';
@@ -233,8 +269,7 @@ function playPrevTrack() {
 
 function selectTrack(idx) {
     stopMedia();
-    loadTrack(idx);
-    togglePlayPause();
+    loadTrack(idx, true);
 }
 
 function toggleMute() {
