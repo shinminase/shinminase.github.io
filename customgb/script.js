@@ -478,7 +478,7 @@ async function loadEntries(animateTransition = false) {
       : entry.name;
 
     const entryDate = new Date(entry.created_at);
-    const isLegacy = entryDate.getFullYear() < 2025;
+    const isLegacy = entryDate.getFullYear() < 2026;
 
     const formattedDate = entryDate.toLocaleDateString('en-US', {
       month: 'long', day: '2-digit', year: 'numeric'
