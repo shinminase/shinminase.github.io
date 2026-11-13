@@ -1,11 +1,10 @@
-/* Windows XP Wallpaper Background */
 body {
   background: #4a88eb url('assets/bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #000;
   font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
+  padding: 20px 20px 60px 20px; 
 }
 
 .guestbook-wrapper {
@@ -13,7 +12,6 @@ body {
   margin: 0 auto;
 }
 
-/* Page Header Aesthetics */
 .gb-header {
   text-align: center;
   margin-bottom: 20px;
@@ -624,6 +622,13 @@ body.is-admin .admin-only-item {
   display: block;
   border: 1px solid #7f9db9;
   background: #fff;
+}
+
+#oekaki-gallery .owner-reply img:not(.owner-avatar) {
+  max-width: none !important;
+  max-height: none !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 /* Stack vertically on smaller screens */
