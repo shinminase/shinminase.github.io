@@ -1,10 +1,11 @@
+/* Windows XP Wallpaper Background */
 body {
   background: #4a88eb url('assets/bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #000;
   font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 20px 20px 60px 20px; 
+  padding: 20px 20px 60px 20px; /* Padding bottom to prevent taskbar overlap */
 }
 
 .guestbook-wrapper {
@@ -12,6 +13,7 @@ body {
   margin: 0 auto;
 }
 
+/* Page Header Aesthetics */
 .gb-header {
   text-align: center;
   margin-bottom: 20px;
@@ -162,6 +164,8 @@ body {
   min-width: unset !important;
 }
 .toolbar button:active { border-style: inset; }
+
+
 
 /* Side-by-side Emoji Grid Dropdown */
 #emoji-dropdown {
@@ -500,14 +504,17 @@ body.is-admin .admin-actions { display: flex; }
   transform-origin: center center;
 }
 
+/* Hide Log Off option by default */
 .admin-only-item {
   display: none !important;
 }
 
+/* Show Log Off option when body has .is-admin */
 body.is-admin .admin-only-item {
   display: flex !important;
 }
 
+/* Windows XP Window Resizing Handle Styling */
 .window.resizable-window {
   position: relative;
   overflow: hidden; 
@@ -561,7 +568,7 @@ body.is-admin .admin-only-item {
   animation: pageEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Legacy Archive Banner (Pre-2026) */
+/* Legacy Archive Banner (Pre-2025 Entries) */
 .legacy-archive-banner {
   background: #ece9d8;
   border: 1px solid #7f9db9;
@@ -572,4 +579,184 @@ body.is-admin .admin-only-item {
   padding: 4px 8px;
   margin-bottom: 10px;
   letter-spacing: 0.3px;
+}
+
+/* Oekaki */
+.main-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.guestbook-wrapper {
+  flex: 1;
+  max-width: 580px;
+  margin: 0; /* Override margin: 0 auto */
+}
+
+.oekaki-sidebar {
+  width: 310px;
+  flex-shrink: 0;
+  margin-top: 0; 
+}
+
+#oekaki-canvas {
+  background: #ffffff;
+  border: 2px inset #808080;
+  cursor: crosshair;
+  display: block;
+  margin: 6px auto;
+  touch-action: none; /* Prevents scrolling while drawing on mobile */
+}
+
+#oekaki-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#oekaki-gallery img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid #7f9db9;
+  background: #fff;
+}
+
+/* Stack vertically on smaller screens */
+@media (max-width: 860px) {
+  .main-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .oekaki-sidebar {
+    width: 100%;
+    max-width: 580px;
+    margin-top: 0;
+  }
+}
+
+#oekaki-paint-window {
+  position: relative;
+  min-width: 256px;
+  min-height: 290px;
+}
+
+#oekaki-canvas {
+  background: #ffffff;
+  border: 2px inset #808080;
+  cursor: crosshair;
+  display: block;
+  margin: 0 auto;
+  touch-action: none;
+}
+
+#oekaki-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- Windows XP MS Paint Layout Styling --- */
+.mspaint-menu {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  padding: 2px 4px;
+  background: #ece9d8;
+  border-bottom: 1px solid #d4d0c8;
+  color: #000;
+  user-select: none;
+}
+.mspaint-menu span {
+  cursor: pointer;
+}
+.mspaint-menu span:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+.mspaint-toolbox {
+  display: grid;
+  grid-template-columns: repeat(2, 20px);
+  gap: 1px;
+  background: #ece9d8;
+  padding: 2px;
+  border: 1px solid #7f9db9;
+  align-content: start;
+  height: fit-content;
+}
+
+.tool-btn {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  padding: 0;
+  background: #ece9d8;
+  border: 1px outset #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: unset !important;
+}
+.tool-btn:active, .tool-btn.active {
+  border-style: inset;
+  background: #d4d0c8;
+}
+
+.mspaint-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: #ece9d8;
+  padding: 3px;
+  border: 1px solid #7f9db9;
+  margin-top: 4px;
+}
+
+.palette-swatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #808080;
+  cursor: pointer;
+}
+.palette-swatch:hover {
+  border-color: #0055ea;
+}
+
+/* Flush Menu Bar directly under Title Bar with no gap */
+.mspaint-menu {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  padding: 3px 6px;
+  background: #ece9d8;
+  border-bottom: 1px solid #7f9db9;
+  color: #000;
+  user-select: none;
+  margin-top: 0;
+}
+.mspaint-menu span {
+  cursor: pointer;
+}
+.mspaint-menu span:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+/* Ms Paint Disclaimer Box */
+.mspaint-disclaimer {
+  margin-top: 6px;
+  padding: 4px 6px;
+  font-size: 0.72em;
+  color: #444;
+  background: #ffffe1;
+  border: 1px solid #7f9db9;
+  line-height: 1.3;
+  font-family: 'Tahoma', sans-serif;
+  word-break: break-word;
 }
