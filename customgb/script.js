@@ -1198,3 +1198,16 @@ window.deleteOekaki = async function (id) {
 };
 
 loadOekakiGallery();
+
+// ==========================================
+// DYNAMIC OEKAKI WINDOW TITLE UPDATE
+// ==========================================
+const oekakiAuthorInput = document.getElementById("oekaki-author");
+const oekakiWindowTitle = document.getElementById("oekaki-window-title");
+
+if (oekakiAuthorInput && oekakiWindowTitle) {
+  oekakiAuthorInput.addEventListener("input", (e) => {
+    const nameVal = e.target.value.trim();
+    oekakiWindowTitle.textContent = nameVal !== "" ? nameVal : "untitled";
+  });
+}
