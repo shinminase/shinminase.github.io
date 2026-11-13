@@ -870,7 +870,7 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
   let restoreArray = [];
   let startIndex = -1;
   let isDrawing = false;
-  let isEraser = false;
+  let currentTool = "brush";
 
   // --- DRAWING & CTRL+Z UNDO ---
   function getPos(e) {
@@ -883,19 +883,45 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
     };
   }
 
-  function startDraw(e) {
-    isDrawing = true;
+function startDraw(e) {
+    e.preventDefault();
     const pos = getPos(e);
+    const x = Math.floor(pos.x);
+    const y = Math.floor(pos.y);
+
+    if (currentTool === "picker") {
+      if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        const hex = "#" + [pixel[0], pixel[1], pixel[2]]
+          .map(c => c.toString(16).padStart(2, "0"))
+          .join("");
+        
+        const colorInput = document.getElementById("oekaki-color");
+        if (colorInput) colorInput.value = hex;
+        
+        setTool("brush");
+      }
+      return;
+    }
+
+    if (currentTool === "fill") {
+      const fillColorHex = document.getElementById("oekaki-color").value;
+      floodFill(x, y, fillColorHex);
+      restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      startIndex++;
+      return;
+    }
+
+    isDrawing = true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
-    e.preventDefault();
   }
 
   function draw(e) {
     if (!isDrawing) return;
     const pos = getPos(e);
     ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = isEraser ? "#ffffff" : document.getElementById("oekaki-color").value;
+    ctx.strokeStyle = currentTool === "eraser" ? "#ffffff" : document.getElementById("oekaki-color").value;
     ctx.lineWidth = document.getElementById("oekaki-size").value;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -931,6 +957,62 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
     }
   }
 
+  // --- LINE-AWARE FLOOD FILL ALGORITHM ---
+  function floodFill(startX, startY, fillHex) {
+    const width = canvas.width;
+    const height = canvas.height;
+    if (startX < 0 || startX >= width || startY < 0 || startY >= height) return;
+
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    const fillR = parseInt(fillHex.slice(1, 3), 16);
+    const fillG = parseInt(fillHex.slice(3, 5), 16);
+    const fillB = parseInt(fillHex.slice(5, 7), 16);
+
+    const startIdx = (startY * width + startX) * 4;
+    const startR = data[startIdx];
+    const startG = data[startIdx + 1];
+    const startB = data[startIdx + 2];
+
+    if (startR === fillR && startG === fillG && startB === fillB) return;
+
+    const tolerance = 32;
+    const visited = new Uint8Array(width * height);
+
+    function matchesTarget(idx) {
+      return (
+        Math.abs(data[idx] - startR) <= tolerance &&
+        Math.abs(data[idx + 1] - startG) <= tolerance &&
+        Math.abs(data[idx + 2] - startB) <= tolerance
+      );
+    }
+
+    const stack = [[startX, startY]];
+
+    while (stack.length > 0) {
+      const [x, y] = stack.pop();
+      const pixelPos = y * width + x;
+
+      if (visited[pixelPos]) continue;
+      const idx = pixelPos * 4;
+      if (!matchesTarget(idx)) continue;
+
+      visited[pixelPos] = 1;
+      data[idx] = fillR;
+      data[idx + 1] = fillG;
+      data[idx + 2] = fillB;
+      data[idx + 3] = 255;
+
+      if (x > 0) stack.push([x - 1, y]);
+      if (x < width - 1) stack.push([x + 1, y]);
+      if (y > 0) stack.push([x, y - 1]);
+      if (y < height - 1) stack.push([x, y + 1]);
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+  }
+
   canvas.addEventListener("mousedown", startDraw);
   canvas.addEventListener("mousemove", draw);
   window.addEventListener("mouseup", stopDraw);
@@ -947,17 +1029,21 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
     }
   });
 
-document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
+  document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
   document.getElementById("oekaki-clear")?.addEventListener("click", clearCanvas);
 
-  const brushBtn = document.getElementById("oekaki-brush");
+const brushBtn = document.getElementById("oekaki-brush");
   const eraserBtn = document.getElementById("oekaki-eraser");
   const pencilBtn = document.getElementById("oekaki-pencil");
+  const fillBtn = document.getElementById("oekaki-fill");
+  const pickerBtn = document.getElementById("oekaki-picker"); // Added picker
 
   function setTool(toolName) {
-    isEraser = (toolName === "eraser");
+    currentTool = toolName;
     if (brushBtn) brushBtn.classList.toggle("active", toolName === "brush");
     if (pencilBtn) pencilBtn.classList.toggle("active", toolName === "pencil");
+    if (fillBtn) fillBtn.classList.toggle("active", toolName === "fill");
+    if (pickerBtn) pickerBtn.classList.toggle("active", toolName === "picker"); // Added picker active state
     if (eraserBtn) {
       eraserBtn.classList.toggle("active", toolName === "eraser");
       eraserBtn.style.fontWeight = toolName === "eraser" ? "bold" : "normal";
@@ -966,8 +1052,10 @@ document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
 
   brushBtn?.addEventListener("click", () => setTool("brush"));
   pencilBtn?.addEventListener("click", () => setTool("pencil"));
+  fillBtn?.addEventListener("click", () => setTool("fill"));
+  pickerBtn?.addEventListener("click", () => setTool("picker")); // Added picker listener
   eraserBtn?.addEventListener("click", () => {
-    setTool(isEraser ? "brush" : "eraser");
+    setTool(currentTool === "eraser" ? "brush" : "eraser");
   });
 
   // --- DRAGGING & RESIZING PAINT WINDOW (PRESERVING ART) ---
