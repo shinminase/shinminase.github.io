@@ -947,11 +947,27 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
     }
   });
 
-  document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
+document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
   document.getElementById("oekaki-clear")?.addEventListener("click", clearCanvas);
-  document.getElementById("oekaki-eraser")?.addEventListener("click", (e) => {
-    isEraser = !isEraser;
-    e.target.style.fontWeight = isEraser ? "bold" : "normal";
+
+  const brushBtn = document.getElementById("oekaki-brush");
+  const eraserBtn = document.getElementById("oekaki-eraser");
+  const pencilBtn = document.getElementById("oekaki-pencil");
+
+  function setTool(toolName) {
+    isEraser = (toolName === "eraser");
+    if (brushBtn) brushBtn.classList.toggle("active", toolName === "brush");
+    if (pencilBtn) pencilBtn.classList.toggle("active", toolName === "pencil");
+    if (eraserBtn) {
+      eraserBtn.classList.toggle("active", toolName === "eraser");
+      eraserBtn.style.fontWeight = toolName === "eraser" ? "bold" : "normal";
+    }
+  }
+
+  brushBtn?.addEventListener("click", () => setTool("brush"));
+  pencilBtn?.addEventListener("click", () => setTool("pencil"));
+  eraserBtn?.addEventListener("click", () => {
+    setTool(isEraser ? "brush" : "eraser");
   });
 
   // --- DRAGGING & RESIZING PAINT WINDOW (PRESERVING ART) ---
