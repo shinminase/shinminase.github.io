@@ -37,6 +37,18 @@ const PLAYLIST = [
         requesterHandle: "fleshwater",
         requesterUrl: "https://github.com/fleshwater"
     }
+	,
+		    {
+        title: "Nicole Kidman",
+        artist: "ADÉLA",
+        album: "PRIMA",
+        cover: "https://images.genius.com/de5df8d4e8c7ab396e03bc9e9edd59f3.1000x1000x1.png",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Nicole%20Kidman%20-%20AD%C3%89LA.mp3",
+        isVideo: false,
+        requesterName: "wilson",
+        requesterHandle: "r0wlys",
+        requesterUrl: "https://github.com/r0wlys"
+    }
 
 ];
 
