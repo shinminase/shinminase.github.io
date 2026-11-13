@@ -25,6 +25,18 @@ const PLAYLIST = [
         requesterHandle: "HerWordsKill",
         requesterUrl: "https://github.com/HerWordsKill"
     }
+	,
+	    {
+        title: "Ghost",
+        artist: "Megumi Acorda",
+        album: "Unexpectedly",
+        cover: "https://f4.bcbits.com/img/a0791862077_10.jpg",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Ghost%20-%20Megumi%20Acorda.mp3",
+        isVideo: false,
+        requesterName: "tyr",
+        requesterHandle: "fleshwater",
+        requesterUrl: "https://github.com/fleshwater"
+    }
 
 ];
 
