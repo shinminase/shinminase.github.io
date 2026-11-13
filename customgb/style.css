@@ -632,7 +632,7 @@ body.is-admin .admin-only-item {
   background: transparent !important;
   border: none !important;
   display: inline-block !important;
-  vertical-align: middle;
+  vertical-align: middle !important;
 }
 
 /* Stack vertically on smaller screens */
