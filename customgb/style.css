@@ -579,16 +579,17 @@ body.is-admin .admin-only-item {
   letter-spacing: 0.3px;
 }
 
-/* Oekaki */
+
 .main-layout {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   gap: 24px;
-  max-width: 900px;
+  max-width: 930px; 
   margin: 0 auto;
 }
 
+/* Oekaki */
 .guestbook-wrapper {
   flex: 1;
   max-width: 580px;
