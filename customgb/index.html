@@ -13,164 +13,263 @@
   <iframe src="https://shinminase.github.io/projects/mp/" width="100%" height="520" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
 </div>
 
-<div class="guestbook-wrapper">
-  <div class="gb-header">
-    <h1 class="gb-title">
-      <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
-    </h1>
-    <div class="gb-subtitle">to send a photo: attach an image link! | will only add songs to playlist if you attach your socmed / github user</div>
-    <div class="gb-links">
-      <a href="#gb-form-window">Sign Guestbook</a>
-    </div>
+<div class="gb-header">
+  <h1 class="gb-title">
+    <a href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">serph/runo's guestbook</a>
+  </h1>
+  <div class="gb-subtitle">to send a photo: attach an image link! | messages are draggable and resizable</div>
+  <div class="gb-links">
+    <a href="#gb-form-window">Sign Guestbook</a>
   </div>
+</div>
 
-<!-- Sign Guestbook Form Window -->
-<div class="window" id="gb-form-window">
-  <div class="title-bar">
-    <div class="title-bar-text">
-      <img src="assets/UI/pn.png" class="user-avatar-icon"> sign_guestbook.exe
+<!-- TWO-COLUMN LAYOUT WRAPPER -->
+<div class="main-layout">
+
+  <!-- LEFT COLUMN: Guestbook & Messages -->
+  <div class="guestbook-wrapper">
+
+  <!-- Sign Guestbook Form Window -->
+  <div class="window" id="gb-form-window">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img src="assets/UI/pn.png" class="user-avatar-icon"> sign_guestbook.exe
+      </div>
+      <div class="title-bar-controls">
+        <button aria-label="Close"></button>
+      </div>
     </div>
-    <div class="title-bar-controls">
-      <button aria-label="Close"></button>
+    <div class="window-body">
+      <form id="gb-form">
+        <div class="form-group">
+          <label>Name:</label>
+          <input type="text" id="gb-name" placeholder="user">
+        </div>
+
+        <div class="form-group">
+          <label>github*:</label>
+          <input type="text" id="gb-github" placeholder="username">
+        </div>
+
+        <div class="form-group">
+          <label>fav song?*:</label>
+          <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
+        </div>
+
+        <div class="form-group">
+          <label>Avatar Image Link* (Optional*):</label>
+          <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
+        </div>
+        
+        <div class="form-group">
+          <label>Message*:</label>
+  <div class="toolbar">
+    <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
+    <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
+    
+    <!-- Custom Color Picker Trigger -->
+    <div style="display:inline-block; position:relative;">
+      <button type="button" onclick="openColorPicker()">
+        <img src="assets/UI/textcolor.png" width="14" height="14" style="vertical-align: middle;" alt="Color">
+      </button>
+      <input type="color" id="native-color-picker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="insertCustomColor(this.value)">
     </div>
-  </div>
-  <div class="window-body">
-    <form id="gb-form">
-      <div class="form-group">
-        <label>Name:</label>
-        <input type="text" id="gb-name" placeholder="user">
-      </div>
 
-      <div class="form-group">
-        <label>github*:</label>
-        <input type="text" id="gb-github" placeholder="username">
+    <!-- Font Dropdown -->
+    <div style="display:inline-block; position:relative;">
+      <button type="button" onclick="toggleFontDropdown()">
+        <img src="assets/UI/font.png" width="17" height="14" style="vertical-align: middle;" alt="Font"> ▼
+      </button>
+      <div id="font-dropdown" class="toolbar-popup-dropdown">
+  <div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
+        <div class="font-option" style="font-family: 'Courier New';" onclick="insertFont('Courier New')">Courier New</div>
+        <div class="font-option" style="font-family: Georgia;" onclick="insertFont('Georgia')">Georgia</div>
+        <div class="font-option" style="font-family: Tahoma;" onclick="insertFont('Tahoma')">Tahoma</div>
+        <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertFont('Times New Roman')">Times New Roman</div>
+        <div class="font-option" style="font-family: Verdana;" onclick="insertFont('Verdana')">Verdana</div>
+        <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertFont('Comic Sans MS')">Comic Sans MS</div>
+        <div class="font-option" style="font-family: Papyrus;" onclick="insertFont('Papyrus')">Papyrus</div>
+        <div class="font-option" style="font-family: 'Brush Script MT', cursive;" onclick="insertFont('Brush Script MT')">Brush Script</div>
+        <div class="font-option" style="font-family: serif;" onclick="insertFont('serif')">Serif</div>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label>fav song?*:</label>
-        <input type="text" id="gb-fav-song" placeholder="Artist - Song title">
+    <!-- Size Dropdown -->
+    <div style="display:inline-block; position:relative;">
+      <button type="button" onclick="toggleSizeDropdown()">
+        <img src="assets/UI/textsize.png" width="14" height="14" style="vertical-align: middle;" alt="Size"> ▼
+      </button>
+      <div id="size-dropdown" class="toolbar-popup-dropdown">
+        <div class="size-option" onclick="insertSize('8px')">8px</div>
+        <div class="size-option" onclick="insertSize('10px')">10px</div>
+        <div class="size-option" onclick="insertSize('13px')">13px</div>
+        <div class="size-option" onclick="insertSize('16px')">16px</div>
+        <div class="size-option" onclick="insertSize('20px')">20px</div>
+        <div class="size-option" onclick="insertSize('24px')">24px</div>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label>Avatar Image Link* (Optional*):</label>
-        <input type="text" id="gb-avatar" placeholder="https://site.com/my-avatar.png">
-      </div>
-      
-      <div class="form-group">
-        <label>Message*:</label>
-<div class="toolbar">
-  <button type="button" onclick="insertTag('[b]', '[/b]')"><b>B</b></button>
-  <button type="button" onclick="insertTag('[i]', '[/i]')"><i>I</i></button>
-  
-  <!-- Custom Color Picker Trigger -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="openColorPicker()">
-      <img src="assets/UI/textcolor.png" width="14" height="14" style="vertical-align: middle;" alt="Color">
+    <button type="button" onclick="openImageModal()">
+      <img src="assets/UI/viewer.png" width="16" height="14" style="vertical-align: middle;" alt="Image">
     </button>
-    <input type="color" id="native-color-picker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="insertCustomColor(this.value)">
-  </div>
-
-  <!-- Font Dropdown -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="toggleFontDropdown()">
-      <img src="assets/UI/font.png" width="17" height="14" style="vertical-align: middle;" alt="Font"> ▼
+    <button type="button" onclick="toggleEmojiDropdown()">
+      <img src="emoticons/smile.gif" width="14" height="14" style="vertical-align: middle;" alt="Emoticons"> ▼
     </button>
-    <div id="font-dropdown" class="toolbar-popup-dropdown">
-<div class="font-option" style="font-family: Arial;" onclick="insertFont('Arial')">Arial</div>
-      <div class="font-option" style="font-family: 'Courier New';" onclick="insertFont('Courier New')">Courier New</div>
-      <div class="font-option" style="font-family: Georgia;" onclick="insertFont('Georgia')">Georgia</div>
-      <div class="font-option" style="font-family: Tahoma;" onclick="insertFont('Tahoma')">Tahoma</div>
-      <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertFont('Times New Roman')">Times New Roman</div>
-      <div class="font-option" style="font-family: Verdana;" onclick="insertFont('Verdana')">Verdana</div>
-      <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertFont('Comic Sans MS')">Comic Sans MS</div>
-      <div class="font-option" style="font-family: Papyrus;" onclick="insertFont('Papyrus')">Papyrus</div>
-      <div class="font-option" style="font-family: 'Brush Script MT', cursive;" onclick="insertFont('Brush Script MT')">Brush Script</div>
-      <div class="font-option" style="font-family: serif;" onclick="insertFont('serif')">Serif</div>
+    <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">
+      <img src="assets/UI/preview.png" width="14" height="14" style="vertical-align: middle;" alt="Preview"> Preview
+    </button>
+            <!-- CUSTOM EMOJI DROPDOWN GRID -->
+            <div id="emoji-dropdown">
+              <img src="emoticons/smile.gif" title=":smile:" onclick="insertEmoji(':smile:')">
+              <img src="emoticons/laugh.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
+              <img src="emoticons/tu.gif" title=":tu:" onclick="insertEmoji(':tu:')">
+              <img src="emoticons/td.gif" title=":td:" onclick="insertEmoji(':td:')">
+              <img src="emoticons/wink.gif" title=":wink:" onclick="insertEmoji(':wink:')">
+              <img src="emoticons/p.gif" title=":p:" onclick="insertEmoji(':p:')">
+              <img src="emoticons/bownita.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
+              <img src="emoticons/ty.gif" title=":ty:" onclick="insertEmoji(':ty:')">
+              <img src="emoticons/puzzled.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
+              <img src="emoticons/shock.gif" title=":shock:" onclick="insertEmoji(':shock:')">
+              <img src="emoticons/grin.gif" title=":grin:" onclick="insertEmoji(':grin:')">
+              <img src="emoticons/blush.gif" title=":blush:" onclick="insertEmoji(':blush:')">
+              <img src="emoticons/worry.gif" title=":worry:" onclick="insertEmoji(':worry:')">
+              <img src="emoticons/nono.gif" title=":nono:" onclick="insertEmoji(':nono:')">
+              <img src="emoticons/sad.gif" title=":sad:" onclick="insertEmoji(':sad:')">
+              <img src="emoticons/awesomesauce.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
+              <img src="emoticons/mad.gif" title=":mad:" onclick="insertEmoji(':mad:')">
+              <img src="emoticons/cheers.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
+              <img src="emoticons/groovy.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
+              <img src="emoticons/bleh.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
+              <img src="emoticons/x.gif" title=":x:" onclick="insertEmoji(':x:')">
+              <img src="emoticons/kneel.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
+              <img src="emoticons/snorkmimi.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
+              <img src="emoticons/x_x.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
+              <img src="emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
+              <img src="emoticons/luv.gif" title=":luv:" onclick="insertEmoji(':luv:')">
+              <img src="emoticons/taptap.gif" title=":taptap:" onclick="insertEmoji(':taptap:')">
+              <img src="emoticons/daydream.png" title=":daydream:" onclick="insertEmoji(':daydream:')">
+              <img src="emoticons/bouncey.gif" title=":bouncey:" onclick="insertEmoji(':bouncey:')">
+              <img src="emoticons/rose.gif" title=":rose:" onclick="insertEmoji(':rose:')">
+              <img src="emoticons/twitch.gif" title=":twitch:" onclick="insertEmoji(':twitch:')">
+              <img src="emoticons/pimp.gif" title=":pimp:" onclick="insertEmoji(':pimp:')">
+              <img src="emoticons/kiss.gif" title=":kiss:" onclick="insertEmoji(':kiss:')">
+              <img src="emoticons/cry.gif" title=":cry:" onclick="insertEmoji(':cry:')">
+              <img src="emoticons/smoke.gif" title=":smoke:" onclick="insertEmoji(':smoke:')">
+              <img src="emoticons/walkin.gif" title=":walkin:" onclick="insertEmoji(':walkin:')">
+              <img src="emoticons/drool.gif" title=":drool:" onclick="insertEmoji(':drool:')">
+              <img src="emoticons/silly.gif" title=":silly:" onclick="insertEmoji(':silly:')">
+              <img src="emoticons/uaa.gif" title=":uaa:" onclick="insertEmoji(':uaa:')">
+            </div>
+          </div>
+          <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
+        </div>
+
+        <button type="submit" style="margin-top: 10px;">Submit Message</button>
+      </form>
     </div>
   </div>
 
-  <!-- Size Dropdown -->
-  <div style="display:inline-block; position:relative;">
-    <button type="button" onclick="toggleSizeDropdown()">
-      <img src="assets/UI/textsize.png" width="14" height="14" style="vertical-align: middle;" alt="Size"> ▼
-    </button>
-    <div id="size-dropdown" class="toolbar-popup-dropdown">
-      <div class="size-option" onclick="insertSize('8px')">8px</div>
-      <div class="size-option" onclick="insertSize('10px')">10px</div>
-      <div class="size-option" onclick="insertSize('13px')">13px</div>
-      <div class="size-option" onclick="insertSize('16px')">16px</div>
-      <div class="size-option" onclick="insertSize('20px')">20px</div>
-      <div class="size-option" onclick="insertSize('24px')">24px</div>
-    </div>
+    <!-- Messages List Container -->
+    <div id="entries-container">Loading entries...</div>
+
+    <!-- Pagination Buttons Container -->
+    <div id="pagination-container"></div>
   </div>
 
-  <button type="button" onclick="openImageModal()">
-    <img src="assets/UI/viewer.png" width="16" height="14" style="vertical-align: middle;" alt="Image">
-  </button>
-  <button type="button" onclick="toggleEmojiDropdown()">
-    <img src="emoticons/smile.gif" width="14" height="14" style="vertical-align: middle;" alt="Emoticons"> ▼
-  </button>
-  <button type="button" onclick="openPreviewModal()" style="background: #e5f0ff; font-weight: bold;">
-    <img src="assets/UI/preview.png" width="14" height="14" style="vertical-align: middle;" alt="Preview"> Preview
-  </button>
-          <!-- CUSTOM EMOJI DROPDOWN GRID -->
-          <div id="emoji-dropdown">
-            <img src="emoticons/smile.gif" title=":smile:" onclick="insertEmoji(':smile:')">
-            <img src="emoticons/laugh.gif" title=":laugh:" onclick="insertEmoji(':laugh:')">
-            <img src="emoticons/tu.gif" title=":tu:" onclick="insertEmoji(':tu:')">
-            <img src="emoticons/td.gif" title=":td:" onclick="insertEmoji(':td:')">
-            <img src="emoticons/wink.gif" title=":wink:" onclick="insertEmoji(':wink:')">
-            <img src="emoticons/p.gif" title=":p:" onclick="insertEmoji(':p:')">
-            <img src="emoticons/bownita.gif" title=":bownita:" onclick="insertEmoji(':bownita:')">
-            <img src="emoticons/ty.gif" title=":ty:" onclick="insertEmoji(':ty:')">
-            <img src="emoticons/puzzled.gif" title=":puzzled:" onclick="insertEmoji(':puzzled:')">
-            <img src="emoticons/shock.gif" title=":shock:" onclick="insertEmoji(':shock:')">
-            <img src="emoticons/grin.gif" title=":grin:" onclick="insertEmoji(':grin:')">
-            <img src="emoticons/blush.gif" title=":blush:" onclick="insertEmoji(':blush:')">
-            <img src="emoticons/worry.gif" title=":worry:" onclick="insertEmoji(':worry:')">
-            <img src="emoticons/nono.gif" title=":nono:" onclick="insertEmoji(':nono:')">
-            <img src="emoticons/sad.gif" title=":sad:" onclick="insertEmoji(':sad:')">
-            <img src="emoticons/awesomesauce.gif" title=":awesomesauce:" onclick="insertEmoji(':awesomesauce:')">
-            <img src="emoticons/mad.gif" title=":mad:" onclick="insertEmoji(':mad:')">
-            <img src="emoticons/cheers.gif" title=":cheers:" onclick="insertEmoji(':cheers:')">
-            <img src="emoticons/groovy.gif" title=":groovy:" onclick="insertEmoji(':groovy:')">
-            <img src="emoticons/bleh.gif" title=":bleh:" onclick="insertEmoji(':bleh:')">
-            <img src="emoticons/x.gif" title=":x:" onclick="insertEmoji(':x:')">
-            <img src="emoticons/kneel.gif" title=":kneel:" onclick="insertEmoji(':kneel:')">
-            <img src="emoticons/snorkmimi.gif" title=":snorkmimi:" onclick="insertEmoji(':snorkmimi:')">
-            <img src="emoticons/x_x.gif" title=":x_x:" onclick="insertEmoji(':x_x:')">
-            <img src="emoticons/wave.gif" title=":wave:" onclick="insertEmoji(':wave:')">
-            <img src="emoticons/luv.gif" title=":luv:" onclick="insertEmoji(':luv:')">
-            <img src="emoticons/taptap.gif" title=":taptap:" onclick="insertEmoji(':taptap:')">
-            <img src="emoticons/daydream.png" title=":daydream:" onclick="insertEmoji(':daydream:')">
-            <img src="emoticons/bouncey.gif" title=":bouncey:" onclick="insertEmoji(':bouncey:')">
-            <img src="emoticons/rose.gif" title=":rose:" onclick="insertEmoji(':rose:')">
-            <img src="emoticons/twitch.gif" title=":twitch:" onclick="insertEmoji(':twitch:')">
-            <img src="emoticons/pimp.gif" title=":pimp:" onclick="insertEmoji(':pimp:')">
-            <img src="emoticons/kiss.gif" title=":kiss:" onclick="insertEmoji(':kiss:')">
-            <img src="emoticons/cry.gif" title=":cry:" onclick="insertEmoji(':cry:')">
-            <img src="emoticons/smoke.gif" title=":smoke:" onclick="insertEmoji(':smoke:')">
-            <img src="emoticons/walkin.gif" title=":walkin:" onclick="insertEmoji(':walkin:')">
-            <img src="emoticons/drool.gif" title=":drool:" onclick="insertEmoji(':drool:')">
-            <img src="emoticons/silly.gif" title=":silly:" onclick="insertEmoji(':silly:')">
-            <img src="emoticons/uaa.gif" title=":uaa:" onclick="insertEmoji(':uaa:')">
+<!-- RIGHT COLUMN: Mini Oekaki Board & Gallery Sidebar -->
+  <aside class="oekaki-sidebar">
+<div class="window" id="oekaki-paint-window" style="min-width: 320px;">
+      <div class="title-bar" id="oekaki-title-bar">
+        <div class="title-bar-text">untitled - Paint</div>
+        <div class="title-bar-controls">
+          <button aria-label="Close" id="oekaki-reset-pos" title="Reset Position & Size"></button>
+        </div>
+      </div>
+      <div class="window-body" style="padding: 0;">
+        <!-- XP Paint Menu Bar -->
+        <div class="mspaint-menu">
+          <span><u>F</u>ile</span>
+          <span><u>E</u>dit</span>
+          <span><u>V</u>iew</span>
+          <span><u>I</u>mage</span>
+          <span><u>C</u>olors</span>
+          <span><u>H</u>elp</span>
+        </div>
+
+        <div style="padding: 6px;">
+          <!-- Main Workspace: Toolbox + Canvas -->
+          <div class="mspaint-workspace" style="display: flex; gap: 4px;">
+            <!-- Left Vertical Toolbar -->
+            <div class="mspaint-toolbox">
+<button type="button" class="tool-btn" title="Free-Form Select"><img src="assets/UI/paint/freeform.png" width="14" height="14" alt="Select"></button>
+            <button type="button" class="tool-btn" title="Select"><img src="assets/UI/paint/select.png" width="14" height="14" alt="Select"></button>
+            <button type="button" class="tool-btn" title="Eraser" id="oekaki-eraser"><img src="assets/UI/paint/eraser.png" width="14" height="14" alt="Eraser"></button>
+            <button type="button" class="tool-btn" title="Fill with Color"><img src="assets/UI/paint/fill.png" width="14" height="14" alt="Fill"></button>
+            <button type="button" class="tool-btn" title="Pick Color"><img src="assets/UI/paint/picker.png" width="14" height="14" alt="Picker"></button>
+            <button type="button" class="tool-btn" title="Magnifier"><img src="assets/UI/paint/zoom.png" width="14" height="14" alt="Zoom"></button>
+            <button type="button" class="tool-btn" title="Pencil" id="oekaki-pencil"><img src="assets/UI/paint/pencil.png" width="14" height="14" alt="Pencil"></button>
+            <button type="button" class="tool-btn" title="Brush"><img src="assets/UI/paint/brush.png" width="14" height="14" alt="Brush"></button>
+            <button type="button" class="tool-btn" title="Airbrush"><img src="assets/UI/paint/airbrush.png" width="14" height="14" alt="Airbrush"></button>
+            <button type="button" class="tool-btn" title="Text"><img src="assets/UI/paint/text.png" width="14" height="14" alt="Text"></button>
+            <button type="button" class="tool-btn" title="Line"><img src="assets/UI/paint/line.png" width="14" height="14" alt="Line"></button>
+            <button type="button" class="tool-btn" title="Curve"><img src="assets/UI/paint/curve.png" width="14" height="14" alt="Curve"></button>
+            <button type="button" class="tool-btn" title="Rectangle"><img src="assets/UI/paint/rect.png" width="14" height="14" alt="Rect"></button>
+            <button type="button" class="tool-btn" title="Polygon"><img src="assets/UI/paint/poly.png" width="14" height="14" alt="Polygon"></button>
+            <button type="button" class="tool-btn" title="Ellipse"><img src="assets/UI/paint/ellipse.png" width="14" height="14" alt="Ellipse"></button>
+            <button type="button" class="tool-btn" title="Rounded Rectangle"><img src="assets/UI/paint/roundrect.png" width="14" height="14" alt="Rounded Rect"></button>
+            </div>
+
+            <!-- Canvas Area -->
+            <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+              <canvas id="oekaki-canvas" width="220" height="190" style="max-width: 100%;"></canvas>
+              
+              <!-- Quick Controls: Color Picker, Size, Undo, Clear -->
+              <div style="display: flex; align-items: center; gap: 4px; margin-top: 4px; padding: 2px; background: #ece9d8; border: 1px solid #7f9db9;">
+                <input type="color" id="oekaki-color" value="#000000" title="Color" style="cursor: pointer; width: 22px; height: 20px; padding: 0; border: 1px solid #7f9db9;">
+                <input type="range" id="oekaki-size" min="1" max="25" value="3" title="Brush Size" style="width: 45px;">
+                <button type="button" id="oekaki-undo" style="font-size: 0.7em; padding: 1px 4px;">Undo</button>
+                <button type="button" id="oekaki-clear" style="font-size: 0.7em; padding: 1px 4px;">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom XP Color Palette Bar -->
+          <div class="mspaint-palette">
+            <div class="palette-swatch" style="background:#000000" onclick="document.getElementById('oekaki-color').value='#000000'"></div>
+            <div class="palette-swatch" style="background:#ffffff" onclick="document.getElementById('oekaki-color').value='#ffffff'"></div>
+            <div class="palette-swatch" style="background:#808080" onclick="document.getElementById('oekaki-color').value='#808080'"></div>
+            <div class="palette-swatch" style="background:#c0c0c0" onclick="document.getElementById('oekaki-color').value='#c0c0c0'"></div>
+            <div class="palette-swatch" style="background:#800000" onclick="document.getElementById('oekaki-color').value='#800000'"></div>
+            <div class="palette-swatch" style="background:#ff0000" onclick="document.getElementById('oekaki-color').value='#ff0000'"></div>
+            <div class="palette-swatch" style="background:#808000" onclick="document.getElementById('oekaki-color').value='#808000'"></div>
+            <div class="palette-swatch" style="background:#ffff00" onclick="document.getElementById('oekaki-color').value='#ffff00'"></div>
+            <div class="palette-swatch" style="background:#008000" onclick="document.getElementById('oekaki-color').value='#008000'"></div>
+            <div class="palette-swatch" style="background:#00ff00" onclick="document.getElementById('oekaki-color').value='#00ff00'"></div>
+            <div class="palette-swatch" style="background:#000080" onclick="document.getElementById('oekaki-color').value='#000080'"></div>
+            <div class="palette-swatch" style="background:#0000ff" onclick="document.getElementById('oekaki-color').value='#0000ff'"></div>
+            <div class="palette-swatch" style="background:#800000" onclick="document.getElementById('oekaki-color').value='#800000'"></div>
+            <div class="palette-swatch" style="background:#ff00ff" onclick="document.getElementById('oekaki-color').value='#ff00ff'"></div>
+          </div>
+
+          <!-- Author Name & Post Art -->
+          <div style="margin-top: 6px; display: flex; gap: 6px;">
+            <input type="text" id="oekaki-author" placeholder="Artist name" style="flex: 1; min-width: 0; font-size: 0.85em;">
+            <button type="button" id="oekaki-submit" style="font-size: 0.8em; padding: 2px 8px; font-weight: bold;">Post Art</button>
+          </div>
+
+          <!-- Disclaimer / Info Box -->
+          <div class="mspaint-disclaimer">
+            * <b>Only ERASER & BRUSH work for the meantime</b>, the rest are decorative. Ctrl+Z works.<br><br><b>Canvas is resizable by dragging the window out</b>, use the tab on the left bottom corner to resize.
           </div>
         </div>
-        <textarea id="gb-message" required placeholder="Type something cool..."></textarea>
       </div>
+      <!-- Bottom-Right XP Resize Handle -->
+      <div class="window-resizer" id="oekaki-resizer"></div>
+    </div>
 
-      <button type="submit" style="margin-top: 10px;">Submit Message</button>
-    </form>
-  </div>
-</div>
-
-  <!-- Messages List Container -->
-  <div id="entries-container">Loading entries...</div>
-
-  <!-- Pagination Buttons Container -->
-  <div id="pagination-container"></div>
-
-</div>
+    <!-- Vertically Stacked Art Gallery Feed -->
+    <div id="oekaki-gallery"></div>
+  </aside>
 
 <!-- Custom Image Modal -->
 <div id="image-modal" class="custom-modal">
