@@ -6,6 +6,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
 
 let activeReplyId = null;
+let activeReplyTable = 'guestbook';
 
 // Read initial page from URL hash (e.g. #page2) if present
 function getPageFromHash() {
@@ -321,8 +322,9 @@ if (adminPassInput) {
   });
 }
 
-window.openReplyModal = (id, currentHtml) => {
+window.openReplyModal = (id, currentHtml, table = 'guestbook') => {
   activeReplyId = id;
+  activeReplyTable = table;
   const textarea = document.getElementById('modal-reply-html');
   if (textarea) {
     textarea.value = currentHtml || '';
@@ -371,9 +373,16 @@ window.confirmReplySubmit = async () => {
   const textarea = document.getElementById('modal-reply-html');
   const htmlReply = textarea ? textarea.value : '';
   if (activeReplyId) {
-    const { error } = await supabase.from('guestbook').update({ reply_html: htmlReply }).eq('id', activeReplyId);
-    if (error) alert("Error saving reply: " + error.message);
-    else loadEntries();
+    const { error } = await supabase
+      .from(activeReplyTable)
+      .update({ reply_html: htmlReply })
+      .eq('id', activeReplyId);
+    if (error) {
+      alert("Error saving reply: " + error.message);
+    } else {
+      if (activeReplyTable === 'oekaki') loadOekakiGallery();
+      else loadEntries();
+    }
   }
   window.closeReplyModal();
 };
@@ -394,6 +403,7 @@ function parseMessageText(text) {
 
 window.changePage = function(direction) {
   const container = document.getElementById('entries-container');
+  const oekakiGallery = document.getElementById('oekaki-gallery');
   currentPage += direction;
   
   history.pushState(null, '', `#page${currentPage}`);
@@ -402,12 +412,16 @@ window.changePage = function(direction) {
   if (container) {
     container.classList.remove('page-enter');
     container.classList.add('page-exit');
-    setTimeout(() => {
-      loadEntries(true);
-    }, 180);
-  } else {
-    loadEntries(true);
   }
+  if (oekakiGallery) {
+    oekakiGallery.classList.remove('page-enter');
+    oekakiGallery.classList.add('page-exit');
+  }
+
+  setTimeout(() => {
+    loadEntries(true);
+    loadOekakiGallery(true);
+  }, 180);
 }
 
 // Handle browser Back/Forward navigation or direct hash inputs
@@ -416,13 +430,21 @@ window.addEventListener('hashchange', () => {
   if (targetPage !== currentPage) {
     currentPage = targetPage;
     const container = document.getElementById('entries-container');
+    const oekakiGallery = document.getElementById('oekaki-gallery');
+    
     if (container) {
       container.classList.remove('page-enter');
       container.classList.add('page-exit');
-      setTimeout(() => loadEntries(true), 180);
-    } else {
-      loadEntries(true);
     }
+    if (oekakiGallery) {
+      oekakiGallery.classList.remove('page-enter');
+      oekakiGallery.classList.add('page-exit');
+    }
+
+    setTimeout(() => {
+      loadEntries(true);
+      loadOekakiGallery(true);
+    }, 180);
   }
 });
 
@@ -822,3 +844,341 @@ window.logoutAdmin = async () => {
     }
   }
 };
+
+// ==========================================
+// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES)
+// ==========================================
+const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
+
+(function () {
+  const paintWin = document.getElementById("oekaki-paint-window");
+  const titleBar = document.getElementById("oekaki-title-bar");
+  const resizer = document.getElementById("oekaki-resizer");
+  const resetBtn = document.getElementById("oekaki-reset-pos");
+  const canvas = document.getElementById("oekaki-canvas");
+  if (!paintWin || !canvas) return;
+
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Block external image pasting
+  ctx.drawImage = function () {
+    console.warn("noo >:(");
+  };
+
+  let restoreArray = [];
+  let startIndex = -1;
+  let isDrawing = false;
+  let isEraser = false;
+
+  // --- DRAWING & CTRL+Z UNDO ---
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  }
+
+  function startDraw(e) {
+    isDrawing = true;
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    e.preventDefault();
+  }
+
+  function draw(e) {
+    if (!isDrawing) return;
+    const pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = isEraser ? "#ffffff" : document.getElementById("oekaki-color").value;
+    ctx.lineWidth = document.getElementById("oekaki-size").value;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+    e.preventDefault();
+  }
+
+  function stopDraw(e) {
+    if (!isDrawing) return;
+    ctx.stroke();
+    ctx.closePath();
+    isDrawing = false;
+    restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    startIndex++;
+    e.preventDefault();
+  }
+
+  function clearCanvas() {
+    ctx.fillStyle = "#ffffff";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    restoreArray = [];
+    startIndex = -1;
+  }
+
+  function undoCanvas() {
+    if (startIndex <= 0) {
+      clearCanvas();
+    } else {
+      startIndex--;
+      restoreArray.pop();
+      ctx.putImageData(restoreArray[startIndex], 0, 0);
+    }
+  }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", draw);
+  window.addEventListener("mouseup", stopDraw);
+
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove", draw, { passive: false });
+  window.addEventListener("touchend", stopDraw, { passive: false });
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+      if (document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "INPUT") return;
+      e.preventDefault();
+      undoCanvas();
+    }
+  });
+
+  document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
+  document.getElementById("oekaki-clear")?.addEventListener("click", clearCanvas);
+  document.getElementById("oekaki-eraser")?.addEventListener("click", (e) => {
+    isEraser = !isEraser;
+    e.target.style.fontWeight = isEraser ? "bold" : "normal";
+  });
+
+  // --- DRAGGING & RESIZING PAINT WINDOW (PRESERVING ART) ---
+  let isDraggingWin = false;
+  let isResizingWin = false;
+  let dragStartX = 0, dragStartY = 0;
+  let winStartLeft = 0, winStartTop = 0;
+  let winStartW = 0, winStartH = 0;
+  let canvasStartW = 0, canvasStartH = 0;
+  let savedArtData = null;
+
+  function floatPaintWindow() {
+    if (paintWin.style.position !== "absolute") {
+      const rect = paintWin.getBoundingClientRect();
+      paintWin.style.position = "absolute";
+      paintWin.style.left = rect.left + window.scrollX + "px";
+      paintWin.style.top = rect.top + window.scrollY + "px";
+      paintWin.style.width = rect.width + "px";
+      paintWin.style.zIndex = 200;
+    }
+  }
+
+  titleBar.addEventListener("mousedown", (e) => {
+    if (e.target.closest("button")) return;
+    floatPaintWindow();
+    isDraggingWin = true;
+    paintWin.style.zIndex = 200;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    winStartLeft = parseFloat(paintWin.style.left) || 0;
+    winStartTop = parseFloat(paintWin.style.top) || 0;
+    e.preventDefault();
+  });
+
+  resizer.addEventListener("mousedown", (e) => {
+    floatPaintWindow();
+    isResizingWin = true;
+    paintWin.style.zIndex = 200;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    winStartW = paintWin.offsetWidth;
+    winStartH = paintWin.offsetHeight;
+    canvasStartW = canvas.width;
+    canvasStartH = canvas.height;
+    // Snapshot current drawing before resizing clears the canvas
+    savedArtData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDraggingWin) {
+      paintWin.style.left = winStartLeft + (e.clientX - dragStartX) + "px";
+      paintWin.style.top = winStartTop + (e.clientY - dragStartY) + "px";
+    } else if (isResizingWin) {
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+
+      const newW = Math.max(256, winStartW + dx);
+      const newH = Math.max(290, winStartH + dy);
+      paintWin.style.width = newW + "px";
+      paintWin.style.height = newH + "px";
+
+      // Resize canvas proportionally and restore drawing onto white background
+      canvas.width = Math.max(220, canvasStartW + dx);
+      canvas.height = Math.max(180, canvasStartH + dy);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (savedArtData) {
+        ctx.putImageData(savedArtData, 0, 0);
+      }
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (isResizingWin) {
+      // Save resized state into Undo stack so Ctrl+Z works smoothly
+      restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      startIndex++;
+      savedArtData = null;
+    }
+    isDraggingWin = false;
+    isResizingWin = false;
+  });
+
+  // Clicking the 'X' button docks the Paint window back to the sidebar
+  resetBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const snap = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    paintWin.style.position = "";
+    paintWin.style.left = "";
+    paintWin.style.top = "";
+    paintWin.style.width = "";
+    paintWin.style.height = "";
+    paintWin.style.zIndex = "";
+    canvas.width = 240;
+    canvas.height = 220;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.putImageData(snap, 0, 0);
+  });
+
+  // --- SUBMIT TO IMGUR & SUPABASE ---
+  document.getElementById("oekaki-submit")?.addEventListener("click", async (e) => {
+    const btn = e.target;
+    btn.disabled = true;
+    const origText = btn.textContent;
+    btn.textContent = "Uploading...";
+
+    try {
+      const imageData = canvas.toDataURL("image/png");
+      const blob = await (await fetch(imageData)).blob();
+      const formData = new FormData();
+      formData.append("image", blob, "drawing.png");
+
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: { Authorization: `Client-ID ${IMGUR_CLIENT_ID}` },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!data.success) throw new Error("Imgur upload failed");
+
+      const author = document.getElementById("oekaki-author")?.value.trim() || "Anonymous";
+      const { error } = await supabase.from("oekaki").insert([
+        { author: author, image_url: data.data.link }
+      ]);
+
+      if (error) throw error;
+
+      const dingSound = document.getElementById("ding-sound");
+      if (dingSound) {
+        dingSound.currentTime = 0;
+        dingSound.play().catch(() => {});
+      }
+
+      clearCanvas();
+      if (document.getElementById("oekaki-author")) {
+        document.getElementById("oekaki-author").value = "";
+      }
+      loadOekakiGallery();
+    } catch (err) {
+      console.error(err);
+      alert("Error posting drawing: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+  });
+})();
+
+const oekakiPageSize = 5;
+
+// --- LOAD OEKAKI GALLERY WITH OWNER REPLIES ---
+window.loadOekakiGallery = async function (animateTransition = false) {
+  const gallery = document.getElementById("oekaki-gallery");
+  if (!gallery) return;
+
+  const from = (currentPage - 1) * oekakiPageSize;
+  const to = from + oekakiPageSize - 1;
+
+  const { data, error } = await supabase
+    .from("oekaki")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error || !data) {
+    gallery.classList.remove("page-exit");
+    return;
+  }
+
+  if (data.length === 0) {
+    gallery.classList.remove("page-exit");
+    gallery.innerHTML = `<p style="color: #fff; text-shadow: 1px 1px 2px #000; text-align: center; font-size: 0.85em;">No drawings on this page.</p>`;
+    return;
+  }
+
+  gallery.innerHTML = data.map((item) => {
+    const replyEscaped = item.reply_html ? encodeURIComponent(item.reply_html) : "";
+    const dateStr = new Date(item.created_at).toLocaleDateString("en-US", {
+      month: "short", day: "numeric", year: "numeric"
+    });
+
+    return `
+      <div class="window" style="margin-bottom: 0;">
+        <div class="title-bar">
+          <div class="title-bar-text" style="font-size: 11px;">${item.author}.png</div>
+        </div>
+        <div class="window-body" style="padding: 6px;">
+          <img src="${item.image_url}" alt="drawing by ${item.author}" loading="lazy" style="width:100%; height:auto; display:block; background:#fff; border:1px solid #7f9db9;">
+          <div style="font-size: 0.75em; color: #555; margin-top: 4px; text-align: right;">${dateStr}</div>
+
+          ${item.reply_html ? `
+            <div class="owner-reply" style="margin-top: 8px; padding: 6px 8px;">
+              <img src="${OWNER_AVATAR_URL}" class="owner-avatar" style="width: 20px; height: 20px;">
+              <div class="reply-content" style="font-size: 0.85em;"><span class="reply-prefix">R:</span>${item.reply_html}</div>
+            </div>
+          ` : ""}
+
+          <div class="admin-actions">
+            <button class="admin-btn" onclick="openReplyModal('${item.id}', decodeURIComponent('${replyEscaped}'), 'oekaki')">Reply HTML</button>
+            <button class="admin-btn" onclick="deleteOekaki('${item.id}')" style="background:#f2acac;">Delete</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  gallery.classList.remove("page-exit");
+  if (animateTransition) {
+    void gallery.offsetWidth;
+    gallery.classList.add("page-enter");
+    setTimeout(() => {
+      gallery.classList.remove("page-enter");
+    }, 300);
+  }
+};
+
+window.deleteOekaki = async function (id) {
+  if (confirm("Delete this drawing?")) {
+    const { error } = await supabase.from("oekaki").delete().eq("id", id);
+    if (error) alert("Error deleting: " + error.message);
+    else loadOekakiGallery();
+  }
+};
+
+loadOekakiGallery();
