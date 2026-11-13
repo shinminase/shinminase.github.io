@@ -1105,7 +1105,7 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
   });
 })();
 
-const oekakiPageSize = 5;
+const oekakiPageSize = 8;
 
 // --- LOAD OEKAKI GALLERY WITH OWNER REPLIES ---
 window.loadOekakiGallery = async function (animateTransition = false) {
