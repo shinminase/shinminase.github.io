@@ -629,6 +629,10 @@ body.is-admin .admin-only-item {
   max-height: none !important;
   width: auto !important;
   height: auto !important;
+  background: transparent !important;
+  border: none !important;
+  display: inline-block !important;
+  vertical-align: middle;
 }
 
 /* Stack vertically on smaller screens */
