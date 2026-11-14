@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Gaster';
+  src: url('assets/font/gaster-wingdings.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   background: #4a88eb url('assets/bg.png') no-repeat center center fixed;
   background-size: cover;
