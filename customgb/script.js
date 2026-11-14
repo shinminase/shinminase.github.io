@@ -8,6 +8,7 @@ const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=20
 let activeReplyId = null;
 let activeReplyTable = 'guestbook';
 
+// Read initial page from URL hash (e.g. #page2) if present
 function getPageFromHash() {
   const match = window.location.hash.match(/^#page(\d+)$/i);
   return match ? Math.max(1, parseInt(match[1], 10)) : 1;
@@ -15,7 +16,7 @@ function getPageFromHash() {
 
 let currentPage = getPageFromHash();
 const pageSize = 10;
-let isNewSubmission = false; 
+let isNewSubmission = false; // Flag to trigger popup animation for new submissions
 
 // ==========================================
 // SUPABASE AUTH & SESSION MANAGEMENT
@@ -1755,10 +1756,12 @@ window.loadOekakiGallery = async function (animateTransition = false) {
       month: "short", day: "numeric", year: "numeric"
     });
 
-    return `
+return `
       <div class="window" style="margin-bottom: 0;">
         <div class="title-bar">
-          <div class="title-bar-text" style="font-size: 11px;">${item.author}.png</div>
+          <div class="title-bar-text" style="font-size: 11px;">
+            <img src="assets/UI/paint/mspaint.png" width="16" height="16" style="width: 16px !important; height: 16px !important; max-width: 16px !important; max-height: 16px !important; vertical-align: middle; display: inline-block; background: transparent; border: none;"> ${item.author}.png
+          </div>
         </div>
         <div class="window-body" style="padding: 6px;">
           <img src="${item.image_url}" alt="drawing by ${item.author}" loading="lazy" style="width:100%; height:auto; display:block; background:#fff; border:1px solid #7f9db9;">
