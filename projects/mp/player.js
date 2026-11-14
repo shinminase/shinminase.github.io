@@ -49,6 +49,30 @@ const PLAYLIST = [
         requesterHandle: "r0wlys",
         requesterUrl: "https://github.com/r0wlys"
     }
+	,
+			    {
+        title: "When Somebody Needs You (Song)",
+        artist: "Will Wood",
+        album: "Camp Here & There: Campfire Songs Edition",
+        cover: "https://images.genius.com/dfa2fd95ef9db7e2eac62c350b35f9c8.640x640x1.png",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/When%20Somebody%20Needs%20You%20(Song)%20-%20Will%20Wood.mp3",
+        isVideo: false,
+        requesterName: "Nat",
+        requesterHandle: "aliceinmadness",
+        requesterUrl: "https://github.com/aliceinmadness"
+    }
+	,
+				    {
+        title: "Do It For Her",
+        artist: "Steven Universe",
+        album: "Steven Universe, Vol. 1",
+        cover: "https://images.genius.com/b0f774acb0ff2de584a211bbb3583ce1.1000x1000x1.png",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Do%20It%20For%20Her.mp3",
+        isVideo: false,
+        requesterName: "Kaya",
+        requesterHandle: "KayaToast017",
+        requesterUrl: "https://github.com/KayaToast017"
+    }
 
 ];
 
