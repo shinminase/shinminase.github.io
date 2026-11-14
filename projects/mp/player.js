@@ -84,7 +84,20 @@ const PLAYLIST = [
         requesterName: "PizzaGuy",
         requesterHandle: "NikaMokochi",
         requesterUrl: "https://github.com/NikaMokochi"
-    }	
+    }
+	,
+	  			   {
+        title: "The Real You",
+        artist: "Changing Faces",
+        album: "Changing Faces",
+        cover: "https://i.imgur.com/LLKjcZv.png",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/The%20Real%20You%20-%20Changing%20Faces%20-%20Pop%20Punk'd.mp3",
+        isVideo: false,
+        requesterName: "lou",
+        requesterHandle: "HerWordsKill",
+        requesterUrl: "https://github.com/HerWordsKill"
+    }
+	
 
 ];
 
