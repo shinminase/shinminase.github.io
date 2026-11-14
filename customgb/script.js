@@ -8,7 +8,6 @@ const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=20
 let activeReplyId = null;
 let activeReplyTable = 'guestbook';
 
-// Read initial page from URL hash (e.g. #page2) if present
 function getPageFromHash() {
   const match = window.location.hash.match(/^#page(\d+)$/i);
   return match ? Math.max(1, parseInt(match[1], 10)) : 1;
@@ -846,7 +845,7 @@ window.logoutAdmin = async () => {
 };
 
 // ==========================================
-// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES, RECT/FREEFORM SELECT/ROTATE, LINE & GHOST-FREE S-CURVE)
+// OEKAKI BOARD (DRAGGABLE, RESIZABLE, ROTATABLE, CTRL+Z, REPLIES, RECT/FREEFORM SELECT)
 // ==========================================
 
 (function () {
@@ -861,7 +860,7 @@ window.logoutAdmin = async () => {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Save private reference for internal Select/Rotate rendering, then block external image pasting
+  // Save private reference for internal Select/Rotate/Scale rendering, then block external image pasting
   const internalDrawImage = ctx.drawImage.bind(ctx);
   ctx.drawImage = function () {
     console.warn("noo >:(");
@@ -882,15 +881,16 @@ window.logoutAdmin = async () => {
   let cp1X = 0, cp1Y = 0;
   let cp2X = 0, cp2Y = 0;
   let snapshot = null;
-  let curveStep = 0; // 0 = idle, 1 = dragging line, 2 = waiting for pull 1, 3 = dragging pull 1, 4 = waiting for pull 2, 5 = dragging pull 2
+  let curveStep = 0;
 
-  // State variables for Select / Freeform / Drag / Rotate
+  // State variables for Select / Freeform / Drag / Rotate / Resize
   let selection = null; // { x, y, w, h, angle, path, baseSnapshot }
-  let selAction = null; // 'selecting' | 'freeform-selecting' | 'dragging' | 'rotating'
+  let selAction = null; // 'selecting' | 'freeform-selecting' | 'dragging' | 'rotating' | 'resizing-nw' | 'resizing-ne' | 'resizing-sw' | 'resizing-se'
   let dragOffset = { x: 0, y: 0 };
+  let resizeStart = { x: 0, y: 0, w: 0, h: 0, selX: 0, selY: 0 };
   let pathPoints = [];
 
-  // --- SELECTION & ROTATION HELPERS ---
+  // --- SELECTION, ROTATION & RESIZING HELPERS ---
   function renderSelectionOverlay() {
     if (!selection) return;
     ctx.putImageData(selection.baseSnapshot, 0, 0);
@@ -902,15 +902,15 @@ window.logoutAdmin = async () => {
     ctx.translate(cx, cy);
     ctx.rotate(selection.angle);
 
-    // If it's a freeform shape, clip the rendering to the lasso path
+    // Draw scaled cutout
     if (selection.path) {
       ctx.save();
       ctx.translate(-selection.w / 2, -selection.h / 2);
       ctx.clip(selection.path);
-      internalDrawImage(selCanvas, 0, 0);
+      internalDrawImage(selCanvas, 0, 0, selCanvas.width, selCanvas.height, 0, 0, selection.w, selection.h);
       ctx.restore();
     } else {
-      internalDrawImage(selCanvas, -selection.w / 2, -selection.h / 2);
+      internalDrawImage(selCanvas, 0, 0, selCanvas.width, selCanvas.height, -selection.w / 2, -selection.h / 2, selection.w, selection.h);
     }
 
     // Draw dashed bounding box
@@ -920,15 +920,32 @@ window.logoutAdmin = async () => {
     ctx.strokeRect(-selection.w / 2, -selection.h / 2, selection.w, selection.h);
     ctx.setLineDash([]);
 
+    // Draw 4 Resize Handles at the corners
+    const hw = selection.w / 2;
+    const hh = selection.h / 2;
+    const handles = [
+      { x: -hw, y: -hh }, // NW
+      { x: hw, y: -hh },  // NE
+      { x: -hw, y: hh },  // SW
+      { x: hw, y: hh }    // SE
+    ];
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#0055ea";
+    ctx.lineWidth = 1;
+    handles.forEach(h => {
+      ctx.fillRect(h.x - 3, h.y - 3, 6, 6);
+      ctx.strokeRect(h.x - 3, h.y - 3, 6, 6);
+    });
+
     // Draw rotation handle stem & green circle above top center
     ctx.beginPath();
-    ctx.moveTo(0, -selection.h / 2);
-    ctx.lineTo(0, -selection.h / 2 - 16);
+    ctx.moveTo(0, -hh);
+    ctx.lineTo(0, -hh - 16);
     ctx.stroke();
 
     ctx.fillStyle = "#389638";
     ctx.beginPath();
-    ctx.arc(0, -selection.h / 2 - 16, 4.5, 0, Math.PI * 2);
+    ctx.arc(0, -hh - 16, 4.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
@@ -950,10 +967,10 @@ window.logoutAdmin = async () => {
       ctx.save();
       ctx.translate(-selection.w / 2, -selection.h / 2);
       ctx.clip(selection.path);
-      internalDrawImage(selCanvas, 0, 0);
+      internalDrawImage(selCanvas, 0, 0, selCanvas.width, selCanvas.height, 0, 0, selection.w, selection.h);
       ctx.restore();
     } else {
-      internalDrawImage(selCanvas, -selection.w / 2, -selection.h / 2);
+      internalDrawImage(selCanvas, 0, 0, selCanvas.width, selCanvas.height, -selection.w / 2, -selection.h / 2, selection.w, selection.h);
     }
     ctx.restore();
 
@@ -968,7 +985,7 @@ window.logoutAdmin = async () => {
     const cx = selection.x + selection.w / 2;
     const cy = selection.y + selection.h / 2;
 
-    // Convert cursor coordinates into the selection's rotated local space
+    // Convert cursor coordinates into selection's rotated local space
     const dx = mx - cx;
     const dy = my - cy;
     const cos = Math.cos(-selection.angle);
@@ -976,12 +993,23 @@ window.logoutAdmin = async () => {
     const localX = dx * cos - dy * sin;
     const localY = dx * sin + dy * cos;
 
-    // Check rotation handle knob (at 0, -h/2 - 16)
-    if (Math.hypot(localX, localY - (-selection.h / 2 - 16)) <= 9) {
+    const hw = selection.w / 2;
+    const hh = selection.h / 2;
+
+    // 1. Check rotation handle knob (at 0, -hh - 16)
+    if (Math.hypot(localX, localY - (-hh - 16)) <= 9) {
       return "rotating";
     }
-    // Check inside selection bounding box
-    if (Math.abs(localX) <= selection.w / 2 && Math.abs(localY) <= selection.h / 2) {
+
+    // 2. Check 4 Corner Resize Handles
+    const handleSize = 8;
+    if (Math.abs(localX - (-hw)) <= handleSize && Math.abs(localY - (-hh)) <= handleSize) return "resizing-nw";
+    if (Math.abs(localX - hw) <= handleSize && Math.abs(localY - (-hh)) <= handleSize) return "resizing-ne";
+    if (Math.abs(localX - (-hw)) <= handleSize && Math.abs(localY - hh) <= handleSize) return "resizing-sw";
+    if (Math.abs(localX - hw) <= handleSize && Math.abs(localY - hh) <= handleSize) return "resizing-se";
+
+    // 3. Check inside bounding box (dragging)
+    if (Math.abs(localX) <= hw && Math.abs(localY) <= hh) {
       return "dragging";
     }
     return null;
@@ -1009,18 +1037,17 @@ window.logoutAdmin = async () => {
     if (currentTool === "select") {
       if (selection) {
         const hit = hitTestSelection(x, y);
-        if (hit === "rotating") {
-          selAction = "rotating";
+        if (hit) {
+          selAction = hit;
+          if (hit === "dragging") {
+            dragOffset = { x: x - selection.x, y: y - selection.y };
+          } else if (hit.startsWith("resizing")) {
+            resizeStart = { x, y, w: selection.w, h: selection.h, selX: selection.x, selY: selection.y };
+          }
           isDrawing = true;
           return;
-        } else if (hit === "dragging") {
-          selAction = "dragging";
-          dragOffset = { x: x - selection.x, y: y - selection.y };
-          isDrawing = true;
-          return;
-        } else {
-          commitSelection();
         }
+        commitSelection();
       }
 
       isDrawing = true;
@@ -1037,7 +1064,11 @@ window.logoutAdmin = async () => {
         const hit = hitTestSelection(x, y);
         if (hit) {
           selAction = hit;
-          if (hit === "dragging") dragOffset = { x: x - selection.x, y: y - selection.y };
+          if (hit === "dragging") {
+            dragOffset = { x: x - selection.x, y: y - selection.y };
+          } else if (hit.startsWith("resizing")) {
+            resizeStart = { x, y, w: selection.w, h: selection.h, selX: selection.x, selY: selection.y };
+          }
           isDrawing = true;
           return;
         }
@@ -1138,7 +1169,7 @@ window.logoutAdmin = async () => {
     const x = Math.floor(pos.x);
     const y = Math.floor(pos.y);
 
-    if (currentTool === "select") {
+    if (currentTool === "select" || currentTool === "freeform") {
       if (selAction === "selecting") {
         ctx.putImageData(snapshot, 0, 0);
         ctx.strokeStyle = "#0055ea";
@@ -1146,22 +1177,7 @@ window.logoutAdmin = async () => {
         ctx.setLineDash([4, 3]);
         ctx.strokeRect(startX, startY, x - startX, y - startY);
         ctx.setLineDash([]);
-      } else if (selAction === "dragging" && selection) {
-        selection.x = x - dragOffset.x;
-        selection.y = y - dragOffset.y;
-        renderSelectionOverlay();
-      } else if (selAction === "rotating" && selection) {
-        const cx = selection.x + selection.w / 2;
-        const cy = selection.y + selection.h / 2;
-        selection.angle = Math.atan2(y - cy, x - cx) + Math.PI / 2;
-        renderSelectionOverlay();
-      }
-      e.preventDefault();
-      return;
-    }
-
-    if (currentTool === "freeform") {
-      if (selAction === "freeform-selecting") {
+      } else if (selAction === "freeform-selecting") {
         pathPoints.push({ x, y });
         ctx.putImageData(snapshot, 0, 0);
         ctx.strokeStyle = "#0055ea";
@@ -1182,6 +1198,38 @@ window.logoutAdmin = async () => {
         const cx = selection.x + selection.w / 2;
         const cy = selection.y + selection.h / 2;
         selection.angle = Math.atan2(y - cy, x - cx) + Math.PI / 2;
+        renderSelectionOverlay();
+      } else if (selAction && selAction.startsWith("resizing") && selection) {
+        const dx = x - resizeStart.x;
+        const dy = y - resizeStart.y;
+        
+        // Unrotate deltas to match axis-aligned box resizing
+        const cos = Math.cos(-selection.angle);
+        const sin = Math.sin(-selection.angle);
+        const localDx = dx * cos - dy * sin;
+        const localDy = dx * sin + dy * cos;
+
+        if (selAction === "resizing-se") {
+          selection.w = Math.max(10, resizeStart.w + localDx);
+          selection.h = Math.max(10, resizeStart.h + localDy);
+        } else if (selAction === "resizing-sw") {
+          const newW = Math.max(10, resizeStart.w - localDx);
+          selection.x = resizeStart.selX + (resizeStart.w - newW);
+          selection.w = newW;
+          selection.h = Math.max(10, resizeStart.h + localDy);
+        } else if (selAction === "resizing-ne") {
+          selection.w = Math.max(10, resizeStart.w + localDx);
+          const newH = Math.max(10, resizeStart.h - localDy);
+          selection.y = resizeStart.selY + (resizeStart.h - newH);
+          selection.h = newH;
+        } else if (selAction === "resizing-nw") {
+          const newW = Math.max(10, resizeStart.w - localDx);
+          const newH = Math.max(10, resizeStart.h - localDy);
+          selection.x = resizeStart.selX + (resizeStart.w - newW);
+          selection.y = resizeStart.selY + (resizeStart.h - newH);
+          selection.w = newW;
+          selection.h = newH;
+        }
         renderSelectionOverlay();
       }
       e.preventDefault();
