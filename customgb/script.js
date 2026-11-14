@@ -846,9 +846,8 @@ window.logoutAdmin = async () => {
 };
 
 // ==========================================
-// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES)
+// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES, LINE & GHOST-FREE S-CURVE)
 // ==========================================
-const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
 
 (function () {
   const paintWin = document.getElementById("oekaki-paint-window");
@@ -872,6 +871,14 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
   let isDrawing = false;
   let currentTool = "brush";
 
+  // State variables for line and multi-point curves
+  let startX = 0, startY = 0;
+  let endX = 0, endY = 0;
+  let cp1X = 0, cp1Y = 0; 
+  let cp2X = 0, cp2Y = 0;
+  let snapshot = null;
+  let curveStep = 0; // 0 = idle, 1 = dragging line, 2 = waiting for pull 1, 3 = dragging pull 1, 4 = waiting for pull 2, 5 = dragging pull 2
+
   // --- DRAWING & CTRL+Z UNDO ---
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
@@ -883,12 +890,32 @@ const IMGUR_CLIENT_ID = "b4fb95e0edc434c";
     };
   }
 
-function startDraw(e) {
+  function startDraw(e) {
     e.preventDefault();
     const pos = getPos(e);
     const x = Math.floor(pos.x);
     const y = Math.floor(pos.y);
 
+    // 1. TEXT TOOL
+    if (currentTool === "text") {
+      const userText = prompt("Enter text to stamp on canvas:");
+      if (userText && userText.trim() !== "") {
+        const color = document.getElementById("oekaki-color").value;
+        const size = document.getElementById("oekaki-size").value;
+        
+        ctx.fillStyle = color;
+        ctx.font = `${Math.max(10, size * 3)}px Tahoma, sans-serif`;
+        ctx.textBaseline = "top";
+        ctx.fillText(userText, x, y);
+
+        restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        startIndex++;
+      }
+      setTool("brush");
+      return;
+    }
+
+    // 2. COLOR PICKER (EYEDROPPER)
     if (currentTool === "picker") {
       if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
         const pixel = ctx.getImageData(x, y, 1, 1).data;
@@ -904,6 +931,7 @@ function startDraw(e) {
       return;
     }
 
+    // 3. FLOOD FILL BUCKET
     if (currentTool === "fill") {
       const fillColorHex = document.getElementById("oekaki-color").value;
       floodFill(x, y, fillColorHex);
@@ -912,6 +940,39 @@ function startDraw(e) {
       return;
     }
 
+    // 4. LINE TOOL INITIALIZATION
+    if (currentTool === "line") {
+      if (!isDrawing) {
+        isDrawing = true;
+        startX = x;
+        startY = y;
+        snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      }
+      return;
+    }
+
+    // 5. GHOST-FREE MS-PAINT STYLE CURVE TOOL
+    if (currentTool === "curve") {
+      if (curveStep === 0) {
+        isDrawing = true;
+        startX = x;
+        startY = y;
+        endX = x;
+        endY = y;
+        // Take clean snapshot ONCE at the very beginning of the curve tool workflow
+        snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        curveStep = 1;
+      } else if (curveStep === 2) {
+        isDrawing = true;
+        curveStep = 3;
+      } else if (curveStep === 4) {
+        isDrawing = true;
+        curveStep = 5;
+      }
+      return;
+    }
+
+    // 6. BRUSH / ERASER / PENCIL
     isDrawing = true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
@@ -920,9 +981,55 @@ function startDraw(e) {
   function draw(e) {
     if (!isDrawing) return;
     const pos = getPos(e);
+    const x = Math.floor(pos.x);
+    const y = Math.floor(pos.y);
+
+    const color = document.getElementById("oekaki-color").value;
+    const size = document.getElementById("oekaki-size").value;
+
+    if (currentTool === "line") {
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = size;
+      ctx.lineCap = "round";
+      ctx.stroke();
+      return;
+    }
+
+    if (currentTool === "curve") {
+      // Always restore the original clean snapshot before rendering preview to completely eliminate ghosting
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+
+      if (curveStep === 1) {
+        endX = x;
+        endY = y;
+        ctx.lineTo(endX, endY);
+      } else if (curveStep === 3) {
+        cp1X = x;
+        cp1Y = y;
+        ctx.quadraticCurveTo(cp1X, cp1Y, endX, endY);
+      } else if (curveStep === 5) {
+        cp2X = x;
+        cp2Y = y;
+        // Render true cubic bezier curve cleanly from original endpoints using locked cp1 and live cp2
+        ctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, endX, endY);
+      }
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = size;
+      ctx.lineCap = "round";
+      ctx.stroke();
+      return;
+    }
+
     ctx.lineTo(pos.x, pos.y);
-    ctx.strokeStyle = currentTool === "eraser" ? "#ffffff" : document.getElementById("oekaki-color").value;
-    ctx.lineWidth = document.getElementById("oekaki-size").value;
+    ctx.strokeStyle = currentTool === "eraser" ? "#ffffff" : color;
+    ctx.lineWidth = size;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
@@ -931,11 +1038,32 @@ function startDraw(e) {
 
   function stopDraw(e) {
     if (!isDrawing) return;
-    ctx.stroke();
-    ctx.closePath();
-    isDrawing = false;
-    restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    startIndex++;
+
+    if (currentTool === "line") {
+      isDrawing = false;
+      snapshot = null;
+      restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      startIndex++;
+    } else if (currentTool === "curve") {
+      isDrawing = false;
+      if (curveStep === 1) {
+        curveStep = 2; // Baseline line set, waiting for first pull
+      } else if (curveStep === 3) {
+        curveStep = 4; // First bend locked in, waiting for second twist pull
+      } else if (curveStep === 5) {
+        curveStep = 0; // Final twist locked in, shape complete!
+        snapshot = null;
+        restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        startIndex++;
+      }
+    } else {
+      ctx.stroke();
+      ctx.closePath();
+      isDrawing = false;
+      restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      startIndex++;
+    }
+
     e.preventDefault();
   }
 
@@ -945,6 +1073,7 @@ function startDraw(e) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     restoreArray = [];
     startIndex = -1;
+    curveStep = 0;
   }
 
   function undoCanvas() {
@@ -954,6 +1083,7 @@ function startDraw(e) {
       startIndex--;
       restoreArray.pop();
       ctx.putImageData(restoreArray[startIndex], 0, 0);
+      curveStep = 0;
     }
   }
 
@@ -1032,18 +1162,25 @@ function startDraw(e) {
   document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
   document.getElementById("oekaki-clear")?.addEventListener("click", clearCanvas);
 
-const brushBtn = document.getElementById("oekaki-brush");
+  const brushBtn = document.getElementById("oekaki-brush");
   const eraserBtn = document.getElementById("oekaki-eraser");
   const pencilBtn = document.getElementById("oekaki-pencil");
   const fillBtn = document.getElementById("oekaki-fill");
-  const pickerBtn = document.getElementById("oekaki-picker"); // Added picker
+  const pickerBtn = document.getElementById("oekaki-picker");
+  const textBtn = document.getElementById("oekaki-text");
+  const lineBtn = document.getElementById("oekaki-line");
+  const curveBtn = document.getElementById("oekaki-curve");
 
   function setTool(toolName) {
     currentTool = toolName;
+    curveStep = 0; 
     if (brushBtn) brushBtn.classList.toggle("active", toolName === "brush");
     if (pencilBtn) pencilBtn.classList.toggle("active", toolName === "pencil");
     if (fillBtn) fillBtn.classList.toggle("active", toolName === "fill");
-    if (pickerBtn) pickerBtn.classList.toggle("active", toolName === "picker"); // Added picker active state
+    if (pickerBtn) pickerBtn.classList.toggle("active", toolName === "picker");
+    if (textBtn) textBtn.classList.toggle("active", toolName === "text");
+    if (lineBtn) lineBtn.classList.toggle("active", toolName === "line");
+    if (curveBtn) curveBtn.classList.toggle("active", toolName === "curve");
     if (eraserBtn) {
       eraserBtn.classList.toggle("active", toolName === "eraser");
       eraserBtn.style.fontWeight = toolName === "eraser" ? "bold" : "normal";
@@ -1053,7 +1190,10 @@ const brushBtn = document.getElementById("oekaki-brush");
   brushBtn?.addEventListener("click", () => setTool("brush"));
   pencilBtn?.addEventListener("click", () => setTool("pencil"));
   fillBtn?.addEventListener("click", () => setTool("fill"));
-  pickerBtn?.addEventListener("click", () => setTool("picker")); // Added picker listener
+  pickerBtn?.addEventListener("click", () => setTool("picker"));
+  textBtn?.addEventListener("click", () => setTool("text"));
+  lineBtn?.addEventListener("click", () => setTool("line"));
+  curveBtn?.addEventListener("click", () => setTool("curve"));
   eraserBtn?.addEventListener("click", () => {
     setTool(currentTool === "eraser" ? "brush" : "eraser");
   });
@@ -1100,7 +1240,6 @@ const brushBtn = document.getElementById("oekaki-brush");
     winStartH = paintWin.offsetHeight;
     canvasStartW = canvas.width;
     canvasStartH = canvas.height;
-    // Snapshot current drawing before resizing clears the canvas
     savedArtData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     e.preventDefault();
     e.stopPropagation();
@@ -1119,7 +1258,6 @@ const brushBtn = document.getElementById("oekaki-brush");
       paintWin.style.width = newW + "px";
       paintWin.style.height = newH + "px";
 
-      // Resize canvas proportionally and restore drawing onto white background
       canvas.width = Math.max(220, canvasStartW + dx);
       canvas.height = Math.max(180, canvasStartH + dy);
       ctx.fillStyle = "#ffffff";
@@ -1132,7 +1270,6 @@ const brushBtn = document.getElementById("oekaki-brush");
 
   document.addEventListener("mouseup", () => {
     if (isResizingWin) {
-      // Save resized state into Undo stack so Ctrl+Z works smoothly
       restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
       startIndex++;
       savedArtData = null;
@@ -1141,7 +1278,6 @@ const brushBtn = document.getElementById("oekaki-brush");
     isResizingWin = false;
   });
 
-  // Clicking the 'X' button docks the Paint window back to the sidebar
   resetBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -1159,7 +1295,7 @@ const brushBtn = document.getElementById("oekaki-brush");
     ctx.putImageData(snap, 0, 0);
   });
 
-  // --- SUBMIT TO IMGUR & SUPABASE ---
+  // --- SUBMIT TO SUPABASE STORAGE & DATABASE ---
   document.getElementById("oekaki-submit")?.addEventListener("click", async (e) => {
     const btn = e.target;
     btn.disabled = true;
@@ -1169,24 +1305,29 @@ const brushBtn = document.getElementById("oekaki-brush");
     try {
       const imageData = canvas.toDataURL("image/png");
       const blob = await (await fetch(imageData)).blob();
-      const formData = new FormData();
-      formData.append("image", blob, "drawing.png");
 
-      const response = await fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-        headers: { Authorization: `Client-ID ${IMGUR_CLIENT_ID}` },
-        body: formData,
-      });
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.png`;
+      const filePath = `drawings/${fileName}`;
 
-      const data = await response.json();
-      if (!data.success) throw new Error("Imgur upload failed");
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('oekaki-drawings')
+        .upload(filePath, blob, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (storageError) throw storageError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('oekaki-drawings')
+        .getPublicUrl(filePath);
 
       const author = document.getElementById("oekaki-author")?.value.trim() || "Anonymous";
-      const { error } = await supabase.from("oekaki").insert([
-        { author: author, image_url: data.data.link }
+      const { error: dbError } = await supabase.from("oekaki").insert([
+        { author: author, image_url: publicUrl }
       ]);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
 
       const dingSound = document.getElementById("ding-sound");
       if (dingSound) {
@@ -1207,6 +1348,7 @@ const brushBtn = document.getElementById("oekaki-brush");
       btn.textContent = origText;
     }
   });
+
 })();
 
 const oekakiPageSize = 8;
