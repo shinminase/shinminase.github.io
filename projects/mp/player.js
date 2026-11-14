@@ -67,8 +67,8 @@ const PLAYLIST = [
         artist: "Steven Universe",
         album: "Steven Universe, Vol. 1",
         cover: "https://images.genius.com/b0f774acb0ff2de584a211bbb3583ce1.1000x1000x1.png",
-        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Do%20It%20For%20Her.mp3",
-        isVideo: false,
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/Steven%20Universe%20-%20'Do%20It%20for%20Her'%20Song%20-%20Song%20(720p).mp4",
+        isVideo: true,
         requesterName: "Kaya",
         requesterHandle: "KayaToast017",
         requesterUrl: "https://github.com/KayaToast017"
