@@ -130,7 +130,6 @@ const EMOJI_MAP = {
   ':kiss:': '<img src="emoticons/kiss.gif" class="custom-emoji" alt="kiss">',
   ':cry:': '<img src="emoticons/cry.gif" class="custom-emoji" alt="cry">',
   ':smoke:': '<img src="emoticons/smoke.gif" class="custom-emoji" alt="smoke">',
-  ':walkin:': '<img src="emoticons/walkin.gif" class="custom-emoji" alt="walkin">',
   ':drool:': '<img src="emoticons/drool.gif" class="custom-emoji" alt="drool">',
   ':silly:': '<img src="emoticons/silly.gif" class="custom-emoji" alt="silly">',
   ':uaa:': '<img src="emoticons/uaa.gif" class="custom-emoji" alt="uaa">'
@@ -847,7 +846,7 @@ window.logoutAdmin = async () => {
 };
 
 // ==========================================
-// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES, LINE & GHOST-FREE S-CURVE)
+// OEKAKI BOARD (DRAGGABLE, RESIZABLE, CTRL+Z, REPLIES, RECT/FREEFORM SELECT/ROTATE, LINE & GHOST-FREE S-CURVE)
 // ==========================================
 
 (function () {
@@ -862,10 +861,15 @@ window.logoutAdmin = async () => {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Block external image pasting
+  // Save private reference for internal Select/Rotate rendering, then block external image pasting
+  const internalDrawImage = ctx.drawImage.bind(ctx);
   ctx.drawImage = function () {
     console.warn("noo >:(");
   };
+
+  // Offscreen canvas to hold the cut-out selection
+  const selCanvas = document.createElement("canvas");
+  const selCtx = selCanvas.getContext("2d");
 
   let restoreArray = [];
   let startIndex = -1;
@@ -875,16 +879,120 @@ window.logoutAdmin = async () => {
   // State variables for line and multi-point curves
   let startX = 0, startY = 0;
   let endX = 0, endY = 0;
-  let cp1X = 0, cp1Y = 0; 
+  let cp1X = 0, cp1Y = 0;
   let cp2X = 0, cp2Y = 0;
   let snapshot = null;
   let curveStep = 0; // 0 = idle, 1 = dragging line, 2 = waiting for pull 1, 3 = dragging pull 1, 4 = waiting for pull 2, 5 = dragging pull 2
 
+  // State variables for Select / Freeform / Drag / Rotate
+  let selection = null; // { x, y, w, h, angle, path, baseSnapshot }
+  let selAction = null; // 'selecting' | 'freeform-selecting' | 'dragging' | 'rotating'
+  let dragOffset = { x: 0, y: 0 };
+  let pathPoints = [];
+
+  // --- SELECTION & ROTATION HELPERS ---
+  function renderSelectionOverlay() {
+    if (!selection) return;
+    ctx.putImageData(selection.baseSnapshot, 0, 0);
+
+    const cx = selection.x + selection.w / 2;
+    const cy = selection.y + selection.h / 2;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(selection.angle);
+
+    // If it's a freeform shape, clip the rendering to the lasso path
+    if (selection.path) {
+      ctx.save();
+      ctx.translate(-selection.w / 2, -selection.h / 2);
+      ctx.clip(selection.path);
+      internalDrawImage(selCanvas, 0, 0);
+      ctx.restore();
+    } else {
+      internalDrawImage(selCanvas, -selection.w / 2, -selection.h / 2);
+    }
+
+    // Draw dashed bounding box
+    ctx.strokeStyle = "#0055ea";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.strokeRect(-selection.w / 2, -selection.h / 2, selection.w, selection.h);
+    ctx.setLineDash([]);
+
+    // Draw rotation handle stem & green circle above top center
+    ctx.beginPath();
+    ctx.moveTo(0, -selection.h / 2);
+    ctx.lineTo(0, -selection.h / 2 - 16);
+    ctx.stroke();
+
+    ctx.fillStyle = "#389638";
+    ctx.beginPath();
+    ctx.arc(0, -selection.h / 2 - 16, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function commitSelection() {
+    if (!selection) return;
+    ctx.putImageData(selection.baseSnapshot, 0, 0);
+
+    const cx = selection.x + selection.w / 2;
+    const cy = selection.y + selection.h / 2;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(selection.angle);
+
+    if (selection.path) {
+      ctx.save();
+      ctx.translate(-selection.w / 2, -selection.h / 2);
+      ctx.clip(selection.path);
+      internalDrawImage(selCanvas, 0, 0);
+      ctx.restore();
+    } else {
+      internalDrawImage(selCanvas, -selection.w / 2, -selection.h / 2);
+    }
+    ctx.restore();
+
+    selection = null;
+    selAction = null;
+    restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    startIndex++;
+  }
+
+  function hitTestSelection(mx, my) {
+    if (!selection) return null;
+    const cx = selection.x + selection.w / 2;
+    const cy = selection.y + selection.h / 2;
+
+    // Convert cursor coordinates into the selection's rotated local space
+    const dx = mx - cx;
+    const dy = my - cy;
+    const cos = Math.cos(-selection.angle);
+    const sin = Math.sin(-selection.angle);
+    const localX = dx * cos - dy * sin;
+    const localY = dx * sin + dy * cos;
+
+    // Check rotation handle knob (at 0, -h/2 - 16)
+    if (Math.hypot(localX, localY - (-selection.h / 2 - 16)) <= 9) {
+      return "rotating";
+    }
+    // Check inside selection bounding box
+    if (Math.abs(localX) <= selection.w / 2 && Math.abs(localY) <= selection.h / 2) {
+      return "dragging";
+    }
+    return null;
+  }
+
   // --- DRAWING & CTRL+Z UNDO ---
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+    const clientX = touch ? touch.clientX : e.clientX;
+    const clientY = touch ? touch.clientY : e.clientY;
     return {
       x: clientX - rect.left,
       y: clientY - rect.top
@@ -897,13 +1005,59 @@ window.logoutAdmin = async () => {
     const x = Math.floor(pos.x);
     const y = Math.floor(pos.y);
 
+    // 0A. RECTANGULAR SELECT TOOL
+    if (currentTool === "select") {
+      if (selection) {
+        const hit = hitTestSelection(x, y);
+        if (hit === "rotating") {
+          selAction = "rotating";
+          isDrawing = true;
+          return;
+        } else if (hit === "dragging") {
+          selAction = "dragging";
+          dragOffset = { x: x - selection.x, y: y - selection.y };
+          isDrawing = true;
+          return;
+        } else {
+          commitSelection();
+        }
+      }
+
+      isDrawing = true;
+      selAction = "selecting";
+      startX = x;
+      startY = y;
+      snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    // 0B. FREE-FORM SELECT TOOL
+    if (currentTool === "freeform") {
+      if (selection) {
+        const hit = hitTestSelection(x, y);
+        if (hit) {
+          selAction = hit;
+          if (hit === "dragging") dragOffset = { x: x - selection.x, y: y - selection.y };
+          isDrawing = true;
+          return;
+        }
+        commitSelection();
+      }
+
+      isDrawing = true;
+      selAction = "freeform-selecting";
+      pathPoints = [{ x, y }];
+      snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
     // 1. TEXT TOOL
     if (currentTool === "text") {
       const userText = prompt("Enter text to stamp on canvas:");
       if (userText && userText.trim() !== "") {
         const color = document.getElementById("oekaki-color").value;
         const size = document.getElementById("oekaki-size").value;
-        
+
         ctx.fillStyle = color;
         ctx.font = `${Math.max(10, size * 3)}px Tahoma, sans-serif`;
         ctx.textBaseline = "top";
@@ -923,10 +1077,10 @@ window.logoutAdmin = async () => {
         const hex = "#" + [pixel[0], pixel[1], pixel[2]]
           .map(c => c.toString(16).padStart(2, "0"))
           .join("");
-        
+
         const colorInput = document.getElementById("oekaki-color");
         if (colorInput) colorInput.value = hex;
-        
+
         setTool("brush");
       }
       return;
@@ -960,7 +1114,6 @@ window.logoutAdmin = async () => {
         startY = y;
         endX = x;
         endY = y;
-        // Take clean snapshot ONCE at the very beginning of the curve tool workflow
         snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
         curveStep = 1;
       } else if (curveStep === 2) {
@@ -985,6 +1138,56 @@ window.logoutAdmin = async () => {
     const x = Math.floor(pos.x);
     const y = Math.floor(pos.y);
 
+    if (currentTool === "select") {
+      if (selAction === "selecting") {
+        ctx.putImageData(snapshot, 0, 0);
+        ctx.strokeStyle = "#0055ea";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 3]);
+        ctx.strokeRect(startX, startY, x - startX, y - startY);
+        ctx.setLineDash([]);
+      } else if (selAction === "dragging" && selection) {
+        selection.x = x - dragOffset.x;
+        selection.y = y - dragOffset.y;
+        renderSelectionOverlay();
+      } else if (selAction === "rotating" && selection) {
+        const cx = selection.x + selection.w / 2;
+        const cy = selection.y + selection.h / 2;
+        selection.angle = Math.atan2(y - cy, x - cx) + Math.PI / 2;
+        renderSelectionOverlay();
+      }
+      e.preventDefault();
+      return;
+    }
+
+    if (currentTool === "freeform") {
+      if (selAction === "freeform-selecting") {
+        pathPoints.push({ x, y });
+        ctx.putImageData(snapshot, 0, 0);
+        ctx.strokeStyle = "#0055ea";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+        for (let i = 1; i < pathPoints.length; i++) {
+          ctx.lineTo(pathPoints[i].x, pathPoints[i].y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (selAction === "dragging" && selection) {
+        selection.x = x - dragOffset.x;
+        selection.y = y - dragOffset.y;
+        renderSelectionOverlay();
+      } else if (selAction === "rotating" && selection) {
+        const cx = selection.x + selection.w / 2;
+        const cy = selection.y + selection.h / 2;
+        selection.angle = Math.atan2(y - cy, x - cx) + Math.PI / 2;
+        renderSelectionOverlay();
+      }
+      e.preventDefault();
+      return;
+    }
+
     const color = document.getElementById("oekaki-color").value;
     const size = document.getElementById("oekaki-size").value;
 
@@ -1001,7 +1204,6 @@ window.logoutAdmin = async () => {
     }
 
     if (currentTool === "curve") {
-      // Always restore the original clean snapshot before rendering preview to completely eliminate ghosting
       ctx.putImageData(snapshot, 0, 0);
       ctx.beginPath();
       ctx.moveTo(startX, startY);
@@ -1017,7 +1219,6 @@ window.logoutAdmin = async () => {
       } else if (curveStep === 5) {
         cp2X = x;
         cp2Y = y;
-        // Render true cubic bezier curve cleanly from original endpoints using locked cp1 and live cp2
         ctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, endX, endY);
       }
 
@@ -1040,6 +1241,108 @@ window.logoutAdmin = async () => {
   function stopDraw(e) {
     if (!isDrawing) return;
 
+    if (currentTool === "select") {
+      isDrawing = false;
+      if (selAction === "selecting") {
+        ctx.putImageData(snapshot, 0, 0);
+        const pos = getPos(e);
+        const endSelX = Math.max(0, Math.min(canvas.width, Math.floor(pos.x)));
+        const endSelY = Math.max(0, Math.min(canvas.height, Math.floor(pos.y)));
+        const clampedStartX = Math.max(0, Math.min(canvas.width, startX));
+        const clampedStartY = Math.max(0, Math.min(canvas.height, startY));
+
+        const rx = Math.min(clampedStartX, endSelX);
+        const ry = Math.min(clampedStartY, endSelY);
+        const rw = Math.abs(endSelX - clampedStartX);
+        const rh = Math.abs(endSelY - clampedStartY);
+
+        if (rw > 2 && rh > 2) {
+          selCanvas.width = rw;
+          selCanvas.height = rh;
+          selCtx.clearRect(0, 0, rw, rh);
+          selCtx.drawImage(canvas, rx, ry, rw, rh, 0, 0, rw, rh);
+
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(rx, ry, rw, rh);
+
+          selection = {
+            x: rx,
+            y: ry,
+            w: rw,
+            h: rh,
+            angle: 0,
+            path: null,
+            baseSnapshot: ctx.getImageData(0, 0, canvas.width, canvas.height)
+          };
+          renderSelectionOverlay();
+        }
+        snapshot = null;
+      }
+      selAction = null;
+      e.preventDefault();
+      return;
+    }
+
+    if (currentTool === "freeform") {
+      isDrawing = false;
+      if (selAction === "freeform-selecting") {
+        ctx.putImageData(snapshot, 0, 0);
+
+        if (pathPoints.length > 3) {
+          let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+          pathPoints.forEach(pt => {
+            minX = Math.min(minX, pt.x);
+            minY = Math.min(minY, pt.y);
+            maxX = Math.max(maxX, pt.x);
+            maxY = Math.max(maxY, pt.y);
+          });
+
+          const rw = Math.max(4, maxX - minX);
+          const rh = Math.max(4, maxY - minY);
+
+          const p2d = new Path2D();
+          p2d.moveTo(pathPoints[0].x - minX, pathPoints[0].y - minY);
+          for (let i = 1; i < pathPoints.length; i++) {
+            p2d.lineTo(pathPoints[i].x - minX, pathPoints[i].y - minY);
+          }
+          p2d.closePath();
+
+          selCanvas.width = rw;
+          selCanvas.height = rh;
+          selCtx.clearRect(0, 0, rw, rh);
+
+          selCtx.save();
+          selCtx.clip(p2d);
+          selCtx.drawImage(canvas, minX, minY, rw, rh, 0, 0, rw, rh);
+          selCtx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          pathPoints.forEach((pt, idx) => idx === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+          ctx.closePath();
+          ctx.clip();
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(minX, minY, rw, rh);
+          ctx.restore();
+
+          selection = {
+            x: minX,
+            y: minY,
+            w: rw,
+            h: rh,
+            angle: 0,
+            path: p2d,
+            baseSnapshot: ctx.getImageData(0, 0, canvas.width, canvas.height)
+          };
+          renderSelectionOverlay();
+        }
+        snapshot = null;
+      }
+      selAction = null;
+      e.preventDefault();
+      return;
+    }
+
     if (currentTool === "line") {
       isDrawing = false;
       snapshot = null;
@@ -1048,11 +1351,11 @@ window.logoutAdmin = async () => {
     } else if (currentTool === "curve") {
       isDrawing = false;
       if (curveStep === 1) {
-        curveStep = 2; // Baseline line set, waiting for first pull
+        curveStep = 2;
       } else if (curveStep === 3) {
-        curveStep = 4; // First bend locked in, waiting for second twist pull
+        curveStep = 4;
       } else if (curveStep === 5) {
-        curveStep = 0; // Final twist locked in, shape complete!
+        curveStep = 0;
         snapshot = null;
         restoreArray.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
         startIndex++;
@@ -1069,6 +1372,8 @@ window.logoutAdmin = async () => {
   }
 
   function clearCanvas() {
+    selection = null;
+    selAction = null;
     ctx.fillStyle = "#ffffff";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1078,6 +1383,9 @@ window.logoutAdmin = async () => {
   }
 
   function undoCanvas() {
+    if (selection) {
+      commitSelection();
+    }
     if (startIndex <= 0) {
       clearCanvas();
     } else {
@@ -1163,6 +1471,8 @@ window.logoutAdmin = async () => {
   document.getElementById("oekaki-undo")?.addEventListener("click", undoCanvas);
   document.getElementById("oekaki-clear")?.addEventListener("click", clearCanvas);
 
+  const freeformBtn = document.getElementById("oekaki-freeform");
+  const selectBtn = document.getElementById("oekaki-select");
   const brushBtn = document.getElementById("oekaki-brush");
   const eraserBtn = document.getElementById("oekaki-eraser");
   const pencilBtn = document.getElementById("oekaki-pencil");
@@ -1173,8 +1483,13 @@ window.logoutAdmin = async () => {
   const curveBtn = document.getElementById("oekaki-curve");
 
   function setTool(toolName) {
+    if (selection && toolName !== "select" && toolName !== "freeform") {
+      commitSelection();
+    }
     currentTool = toolName;
-    curveStep = 0; 
+    curveStep = 0;
+    if (freeformBtn) freeformBtn.classList.toggle("active", toolName === "freeform");
+    if (selectBtn) selectBtn.classList.toggle("active", toolName === "select");
     if (brushBtn) brushBtn.classList.toggle("active", toolName === "brush");
     if (pencilBtn) pencilBtn.classList.toggle("active", toolName === "pencil");
     if (fillBtn) fillBtn.classList.toggle("active", toolName === "fill");
@@ -1188,6 +1503,8 @@ window.logoutAdmin = async () => {
     }
   }
 
+  freeformBtn?.addEventListener("click", () => setTool("freeform"));
+  selectBtn?.addEventListener("click", () => setTool("select"));
   brushBtn?.addEventListener("click", () => setTool("brush"));
   pencilBtn?.addEventListener("click", () => setTool("pencil"));
   fillBtn?.addEventListener("click", () => setTool("fill"));
@@ -1232,6 +1549,7 @@ window.logoutAdmin = async () => {
   });
 
   resizer.addEventListener("mousedown", (e) => {
+    if (selection) commitSelection();
     floatPaintWindow();
     isResizingWin = true;
     paintWin.style.zIndex = 200;
@@ -1282,6 +1600,7 @@ window.logoutAdmin = async () => {
   resetBtn?.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (selection) commitSelection();
     const snap = ctx.getImageData(0, 0, canvas.width, canvas.height);
     paintWin.style.position = "";
     paintWin.style.left = "";
@@ -1298,6 +1617,8 @@ window.logoutAdmin = async () => {
 
   // --- SUBMIT TO SUPABASE STORAGE & DATABASE ---
   document.getElementById("oekaki-submit")?.addEventListener("click", async (e) => {
+    if (selection) commitSelection();
+
     const btn = e.target;
     btn.disabled = true;
     const origText = btn.textContent;
@@ -1442,4 +1763,3 @@ if (oekakiAuthorInput && oekakiWindowTitle) {
     oekakiWindowTitle.textContent = nameVal !== "" ? nameVal : "untitled";
   });
 }
-
