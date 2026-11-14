@@ -73,6 +73,18 @@ const PLAYLIST = [
         requesterHandle: "KayaToast017",
         requesterUrl: "https://github.com/KayaToast017"
     }
+	,
+				    {
+        title: "Make Your Wish ft. Miss Lina ",
+        artist: "AQ Flora",
+        album: "Make Your Wish",
+        cover: "https://images.genius.com/f33ff6f7cfd5dfd64cb7532cffecbef8.1000x1000x1.png",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/AQ%20Flora%20-%20Make%20Your%20Wish%20(Official%20Animated%20Video)%20ft.%20Miss%20Lina%20-%20AQFloraVEVO%20(1080p%2C%20h264).mp4",
+        isVideo: true,
+        requesterName: "PizzaGuy",
+        requesterHandle: "NikaMokochi",
+        requesterUrl: "https://github.com/NikaMokochi"
+    }	
 
 ];
 
