@@ -97,6 +97,18 @@ const PLAYLIST = [
         requesterHandle: "HerWordsKill",
         requesterUrl: "https://github.com/HerWordsKill"
     }
+	,
+		  			   {
+        title: "La Matanza",
+        artist: "Grace Gale",
+        album: "Stronger, Faster, Science",
+        cover: "https://images.genius.com/7d29461c224d9362de7b703324278d24.749x749x1.jpg",
+        src: "https://file.garden/ZlwiKgzAvyz0wLRz/songs/La%20Matanza%20-%20Grace%20Gale.mp3",
+        isVideo: false,
+        requesterName: "arachnidsGrip",
+        requesterHandle: "REVERISTCALICO",
+        requesterUrl: "https://github.com/REVERISTCALICO"
+    }
 	
 
 ];
