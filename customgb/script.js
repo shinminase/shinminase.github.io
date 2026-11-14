@@ -15,7 +15,7 @@ function getPageFromHash() {
 
 let currentPage = getPageFromHash();
 const pageSize = 10;
-let isNewSubmission = false; // Flag to trigger popup animation for new submissions
+let isNewSubmission = false; 
 
 // ==========================================
 // SUPABASE AUTH & SESSION MANAGEMENT
@@ -129,6 +129,7 @@ const EMOJI_MAP = {
   ':kiss:': '<img src="emoticons/kiss.gif" class="custom-emoji" alt="kiss">',
   ':cry:': '<img src="emoticons/cry.gif" class="custom-emoji" alt="cry">',
   ':smoke:': '<img src="emoticons/smoke.gif" class="custom-emoji" alt="smoke">',
+  ':walkin:': '<img src="emoticons/walkin.gif" class="custom-emoji" alt="walkin">',
   ':drool:': '<img src="emoticons/drool.gif" class="custom-emoji" alt="drool">',
   ':silly:': '<img src="emoticons/silly.gif" class="custom-emoji" alt="silly">',
   ':uaa:': '<img src="emoticons/uaa.gif" class="custom-emoji" alt="uaa">'
