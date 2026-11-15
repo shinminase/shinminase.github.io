@@ -70,7 +70,7 @@ body {
   margin-right: 4px;
 }
 
-/* Inline Avatar next to Name */
+/* INLINE AVATAR NEXT TO NAME */
 .entry-name-container {
   display: inline-flex;
   align-items: center;
@@ -86,7 +86,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Owner Reply Container styled like an XP Dialog box */
+/* OWNER REPLY CONTAINER STYLED LIKE AN XP DIALOG BOX */
 .owner-reply {
   margin-top: 15px;
   padding: 10px 12px;
@@ -172,7 +172,7 @@ body {
 
 
 
-/* Side-by-side Emoji Grid Dropdown */
+/* SIDE-BY-SIDE EMOJI GRID DROPDOWN */
 #emoji-dropdown {
   display: none;
   position: absolute;
@@ -220,7 +220,7 @@ body {
   display: inline-block;
 }
 
-/* Auto-shrink images posted inside message body to 50% */
+/* AUTO-SHRINK IMAGES POSTED INSIDE MESSAGE BODY TO 50% */
 .entry-message-body img:not(.custom-emoji) { 
   max-width: 50%; 
   max-height: 50%;
@@ -242,7 +242,7 @@ body.is-admin .admin-actions { display: flex; }
   min-width: unset !important;
 }
 
-/* Modal Styling */
+/* MODAL STYLING */
 .custom-modal {
   display: none;
   position: fixed;
@@ -253,7 +253,24 @@ body.is-admin .admin-actions { display: flex; }
   z-index: 1000;
 }
 
-/* Windows XP Admin Log On Avatar */
+#app-dialog-modal {
+  z-index: 2000;
+}
+
+.app-dialog-message {
+  margin-bottom: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.app-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* WINDOWS XP ADMIN LOG ON AVATAR */
 .xp-login-avatar {
   width: 48px;
   height: 48px;
@@ -263,7 +280,7 @@ body.is-admin .admin-actions { display: flex; }
   background: #fff;
 }
 
-/* Fix XP.css field alignment */
+/* FIX XP.CSS FIELD ALIGNMENT */
 .entry-field {
   display: flex !important;
   align-items: flex-start !important;
@@ -279,7 +296,7 @@ body.is-admin .admin-actions { display: flex; }
   flex: 1 !important;
 }
 
-/* --- Windows XP Taskbar Styles --- */
+/* --- WINDOWS XP TASKBAR STYLES --- */
 .xp-taskbar {
   position: fixed;
   bottom: 0;
@@ -352,9 +369,31 @@ body.is-admin .admin-actions { display: flex; }
   align-items: center;
   gap: 8px;
   font-size: 11px;
+  position: relative;
+  cursor: help;
 }
 
-/* Start Menu Popup */
+.xp-clock-tooltip {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  z-index: 1;
+  padding: 4px 7px;
+  border: 1px solid #000;
+  background: #ffffe1;
+  color: #000;
+  font: 11px 'Tahoma', sans-serif;
+  white-space: nowrap;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.xp-tray:hover .xp-clock-tooltip,
+.xp-tray:focus .xp-clock-tooltip {
+  display: block;
+}
+
+/* START MENU POPUP */
 .xp-start-menu {
   display: none;
   position: fixed;
@@ -376,7 +415,7 @@ body.is-admin .admin-actions { display: flex; }
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
+  cursor: default;
   user-select: none;
 }
 .xp-start-body {
@@ -397,7 +436,7 @@ body.is-admin .admin-actions { display: flex; }
   color: #fff;
 }
 
-/* Pagination Controls */
+/* PAGINATION CONTROLS */
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -427,7 +466,7 @@ body.is-admin .admin-actions { display: flex; }
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
-/* About System Modal Video Styling */
+/* ABOUT SYSTEM MODAL VIDEO STYLING */
 .about-video-container {
   margin-top: 8px;
   border: 1px solid #7f9db9;
@@ -443,7 +482,7 @@ body.is-admin .admin-actions { display: flex; }
   display: block;
 }
 
-/* Windows XP Retro Dropdown Menus */
+/* WINDOWS XP RETRO DROPDOWN MENUS */
 .toolbar-popup-dropdown {
   display: none;
   position: absolute;
@@ -456,7 +495,7 @@ body.is-admin .admin-actions { display: flex; }
   padding: 3px;
 }
 
-/* Color Swatches Grid */
+/* COLOR SWATCHES GRID */
 #color-dropdown {
   width: 70px;
   display: none;
@@ -476,7 +515,7 @@ body.is-admin .admin-actions { display: flex; }
   outline: 1px solid #0055ea;
 }
 
-/* Font and Size Options List */
+/* FONT AND SIZE OPTIONS LIST */
 .font-option, .size-option {
   padding: 3px 8px;
   font-size: 11px;
@@ -509,17 +548,17 @@ body.is-admin .admin-actions { display: flex; }
   transform-origin: center center;
 }
 
-/* Hide Log Off option by default */
+/* HIDE LOG OFF OPTION BY DEFAULT */
 .admin-only-item {
   display: none !important;
 }
 
-/* Show Log Off option when body has .is-admin */
+/* SHOW LOG OFF OPTION WHEN BODY HAS .IS-ADMIN */
 body.is-admin .admin-only-item {
   display: flex !important;
 }
 
-/* Windows XP Window Resizing Handle Styling */
+/* WINDOWS XP WINDOW RESIZING HANDLE STYLING */
 .window.resizable-window {
   position: relative;
   overflow: hidden; 
@@ -536,13 +575,13 @@ body.is-admin .admin-only-item {
   z-index: 10;
 }
 
-/* Bug fix */
+/* BUG FIX */
 #reply-modal .window-body {
   max-height: 80vh;
   overflow-y: auto;
 }
 
-/* Page Switch Animations */
+/* PAGE SWITCH ANIMATIONS */
 @keyframes pageExit {
   from {
     opacity: 1;
@@ -573,7 +612,7 @@ body.is-admin .admin-only-item {
   animation: pageEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Legacy Archive Banner (Pre-2025 Entries) */
+/* LEGACY ARCHIVE BANNER (PRE-2025 ENTRIES) */
 .legacy-archive-banner {
   background: #ece9d8;
   border: 1px solid #7f9db9;
@@ -596,11 +635,11 @@ body.is-admin .admin-only-item {
   margin: 0 auto;
 }
 
-/* Oekaki */
+/* OEKAKI */
 .guestbook-wrapper {
   flex: 1;
   max-width: 580px;
-  margin: 0; /* Override margin: 0 auto */
+  margin: 0; /* OVERRIDE MARGIN: 0 AUTO */
 }
 
 .oekaki-sidebar {
@@ -615,7 +654,7 @@ body.is-admin .admin-only-item {
   cursor: crosshair;
   display: block;
   margin: 6px auto;
-  touch-action: none; /* Prevents scrolling while drawing on mobile */
+  touch-action: none; /* PREVENTS SCROLLING WHILE DRAWING ON MOBILE */
 }
 
 #oekaki-gallery {
@@ -643,7 +682,7 @@ body.is-admin .admin-only-item {
   vertical-align: middle !important;
 }
 
-/* Stack vertically on smaller screens */
+/* STACK VERTICALLY ON SMALLER SCREENS */
 @media (max-width: 860px) {
   .main-layout {
     flex-direction: column;
@@ -671,15 +710,116 @@ body.is-admin .admin-only-item {
   touch-action: none;
 }
 
+#oekaki-canvas-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+#oekaki-canvas-viewport.zoomed {
+  overflow: auto;
+}
+
+#oekaki-canvas-container {
+  transform-origin: top left;
+}
+
+#oekaki-wiggly-layer {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.oekaki-quick-controls {
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.oekaki-quick-controls #oekaki-font {
+  width: 88px !important;
+  min-width: 0 !important;
+  max-width: 88px;
+}
+
+.oekaki-quick-controls button {
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+#oekaki-zoom-controls {
+  flex: 0 0 auto;
+}
+
+#oekaki-zoom-controls button {
+  min-width: 0 !important;
+  width: 20px !important;
+  padding: 0;
+  line-height: 16px;
+}
+
+#oekaki-zoom-level {
+  min-width: 32px;
+  text-align: center;
+  font-size: 0.7em;
+}
+
+#oekaki-text-editor {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 40px;
+  min-height: 34px;
+  border: 1px dashed #000;
+  background: #fff;
+  touch-action: none;
+}
+
+#oekaki-text-move {
+  flex: 0 0 12px;
+  cursor: move;
+  background: #ece9d8;
+  border-bottom: 1px solid #7f9db9;
+  touch-action: none;
+}
+
+#oekaki-text-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+}
+
+#oekaki-text-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, #808080 50%, #808080 60%, transparent 60%, transparent 70%, #fff 70%);
+  touch-action: none;
+}
+
 #oekaki-gallery {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-/* --- Windows XP MS Paint Layout Styling --- */
+/* --- WINDOWS XP MS PAINT LAYOUT STYLING --- */
 .mspaint-menu {
   display: flex;
+  align-items: center;
   gap: 10px;
   font-size: 11px;
   padding: 2px 4px;
@@ -690,8 +830,23 @@ body.is-admin .admin-only-item {
 }
 .mspaint-menu span {
   cursor: pointer;
+  line-height: 14px;
 }
 .mspaint-menu span:hover {
+  background: #316ac5;
+  color: #fff;
+}
+.mspaint-menu > button {
+  min-width: 0 !important;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 14px;
+  cursor: pointer;
+}
+.mspaint-menu > button:hover {
   background: #316ac5;
   color: #fff;
 }
@@ -745,7 +900,7 @@ body.is-admin .admin-only-item {
   border-color: #0055ea;
 }
 
-/* Flush Menu Bar directly under Title Bar with no gap */
+/* FLUSH MENU BAR DIRECTLY UNDER TITLE BAR WITH NO GAP */
 .mspaint-menu {
   display: flex;
   gap: 10px;
@@ -765,7 +920,63 @@ body.is-admin .admin-only-item {
   color: #fff;
 }
 
-/* Ms Paint Disclaimer Box */
+.mspaint-file-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 14px;
+}
+
+.mspaint-file-menu > button {
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  min-width: 0 !important;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 14px;
+  cursor: pointer;
+}
+
+.mspaint-file-menu > button:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+#oekaki-file-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  min-width: 132px;
+  padding: 2px;
+  background: #ece9d8;
+  border: 1px solid #7f9db9;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25);
+}
+
+#oekaki-file-dropdown button {
+  display: block;
+  width: 100%;
+  min-width: 0 !important;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: #000;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#oekaki-file-dropdown button:hover {
+  background: #316ac5;
+  color: #fff;
+}
+
+/* MS PAINT DISCLAIMER BOX */
 .mspaint-disclaimer {
   margin-top: 6px;
   padding: 4px 6px;
@@ -776,4 +987,60 @@ body.is-admin .admin-only-item {
   line-height: 1.3;
   font-family: 'Tahoma', sans-serif;
   word-break: break-word;
+}
+
+.oekaki-submit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.oekaki-artist-fields {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+#oekaki-author {
+  flex: 1;
+  min-width: 70px;
+  font-size: 0.85em;
+}
+
+.oekaki-artist-link-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-size: 0.7em;
+  cursor: pointer;
+}
+
+.oekaki-artist-url-field {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.oekaki-artist-url-field[hidden] {
+  display: none;
+}
+
+#oekaki-artist-url {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  font-size: 0.8em;
+}
+
+#oekaki-gallery .title-bar-text a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+#oekaki-gallery .title-bar-text a:hover {
+  color: #316ac5;
 }
