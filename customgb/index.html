@@ -182,7 +182,7 @@
           </div>
 
           <div class="form-group">
-            <label>github / socmed*:</label>
+            <label>github or social media*:</label>
             <input type="text" id="gb-github" placeholder="username">
           </div>
 
@@ -306,7 +306,9 @@
     </div>
 
     <!-- MESSAGES LIST CONTAINER -->
-    <div id="entries-container">Loading entries...</div>
+    <div id="entries-container">
+      <p class="loading-message" role="status" aria-live="polite">Loading messages...</p>
+    </div>
 
     <!-- PAGINATION BUTTONS CONTAINER -->
     <div id="pagination-container"></div>
@@ -454,7 +456,7 @@
     </div>
     <div class="window-body">
       <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-        <img src="https://avatars.githubusercontent.com/u/139236438?v=4" class="xp-login-avatar">
+        <img src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" class="xp-login-avatar">
         <div>
           <div style="font-weight: bold; font-size: 1.1em;">serph / runo</div>
           <div style="font-size: 0.8em; color: #555;">Administrator</div>
@@ -483,13 +485,68 @@
 <div id="reply-modal" class="custom-modal">
   <div class="window" style="width: 420px;">
     <div class="title-bar">
-      <div class="title-bar-text">Owner Reply (HTML Supported)</div>
+      <div class="title-bar-text" id="reply-modal-title">Owner Reply (HTML Supported)</div>
       <div class="title-bar-controls"><button aria-label="Close" onclick="closeReplyModal()"></button></div>
     </div>
     <div class="window-body">
       <div class="form-group">
-        <label>Type custom reply:</label>
+        <label id="reply-input-label">Type reply (HTML):</label>
         <textarea id="modal-reply-html" rows="4" style="width:100%;" placeholder="s2 is so good!"></textarea>
+      </div>
+      <label style="display: block; margin-top: 6px;">
+        <input type="checkbox" id="reply-bbcode-mode" aria-controls="modal-reply-html reply-preview-output">
+        Use Basic Text / BBCode (no HTML)
+      </label>
+      <div id="reply-bbcode-toolbar" class="toolbar" style="display: none;" aria-label="BBCode formatting">
+        <button type="button" onclick="insertReplyBbcodeTag('[b]', '[/b]')" title="Bold"><b>B</b></button>
+        <button type="button" onclick="insertReplyBbcodeTag('[i]', '[/i]')" title="Italic"><i>I</i></button>
+        <div class="reply-toolbar-menu">
+          <button type="button" onclick="openReplyColorPicker()" title="Text color">
+            <img src="assets/UI/textcolor.png" width="14" height="14" alt="Text color">
+          </button>
+          <input type="color" id="reply-bbcode-color" onchange="insertReplyColor(this.value)" aria-label="Choose text color">
+        </div>
+        <div class="reply-toolbar-menu">
+          <button type="button" onclick="toggleReplyFontDropdown()" title="Font">
+            <img src="assets/UI/font.png" width="17" height="14" alt="Font"> ▼
+          </button>
+          <div id="reply-font-dropdown" class="toolbar-popup-dropdown">
+            <div class="font-option" style="font-family: Arial;" onclick="insertReplyFont('Arial')">Arial</div>
+            <div class="font-option" style="font-family: 'Courier New';" onclick="insertReplyFont('Courier New')">Courier New</div>
+            <div class="font-option" style="font-family: Georgia;" onclick="insertReplyFont('Georgia')">Georgia</div>
+            <div class="font-option" style="font-family: Tahoma;" onclick="insertReplyFont('Tahoma')">Tahoma</div>
+            <div class="font-option" style="font-family: 'Times New Roman';" onclick="insertReplyFont('Times New Roman')">Times New Roman</div>
+            <div class="font-option" style="font-family: Verdana;" onclick="insertReplyFont('Verdana')">Verdana</div>
+            <div class="font-option" style="font-family: 'Comic Sans MS';" onclick="insertReplyFont('Comic Sans MS')">Comic Sans MS</div>
+            <div class="font-option" style="font-family: Papyrus;" onclick="insertReplyFont('Papyrus')">Papyrus</div>
+            <div class="font-option" style="font-family: 'Brush Script MT', cursive;" onclick="insertReplyFont('Brush Script MT')">Brush Script</div>
+            <div class="font-option" style="font-family: serif;" onclick="insertReplyFont('serif')">Serif</div>
+            <div class="font-option" style="font-family: 'Gaster';" onclick="insertReplyFont('Gaster')">Wingdings</div>
+          </div>
+        </div>
+        <div class="reply-toolbar-menu">
+          <button type="button" onclick="toggleReplySizeDropdown()" title="Text size">
+            <img src="assets/UI/textsize.png" width="14" height="14" alt="Text size"> ▼
+          </button>
+          <div id="reply-size-dropdown" class="toolbar-popup-dropdown">
+            <div class="size-option" onclick="insertReplySize('8px')">8px</div>
+            <div class="size-option" onclick="insertReplySize('10px')">10px</div>
+            <div class="size-option" onclick="insertReplySize('13px')">13px</div>
+            <div class="size-option" onclick="insertReplySize('16px')">16px</div>
+            <div class="size-option" onclick="insertReplySize('20px')">20px</div>
+            <div class="size-option" onclick="insertReplySize('24px')">24px</div>
+          </div>
+        </div>
+        <div class="reply-toolbar-menu">
+          <button type="button" onclick="toggleReplyEmojiDropdown()" title="Emoticons">
+            <img src="emoticons/smile.gif" width="14" height="14" alt="Emoticons"> ▼
+          </button>
+          <div id="reply-emoji-dropdown"></div>
+        </div>
+        <input type="url" id="reply-image-url" placeholder="Paste image URL">
+        <button type="button" onclick="insertReplyImageUrl()" title="Insert image URL">
+          <img src="assets/UI/viewer.png" width="16" height="14" alt="Insert image">
+        </button>
       </div>
 
       <!-- LIVE REPLY PREVIEW BOX -->
@@ -512,23 +569,79 @@
 <!-- WINDOWS XP START MENU POPUP -->
 <div id="xp-start-menu" class="xp-start-menu">
   <div class="xp-start-header" id="xp-start-header">
-    <img src="assets/UI/admin.png" width="20" height="20" style="border-radius:2px;">
-    <span>serph / runo</span>
+    <img class="xp-start-avatar" src="https://avatars.githubusercontent.com/u/176790056?s=200&v=4" alt="">
+    <div class="xp-start-user">
+      <span class="xp-start-user-name">serph / runo</span>
+      <a class="xp-start-social-link" href="https://github.com/shinminase" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
   </div>
   <div class="xp-start-body">
-    <div class="xp-start-item" onclick="window.scrollTo({top:0, behavior:'smooth'}); toggleStartMenu();">
-      <span>Back to Top</span>
+    <div class="xp-start-columns">
+      <div class="xp-start-column xp-start-programs">
+        <div class="xp-start-item" onclick="document.getElementById('gb-form-window').scrollIntoView({behavior:'smooth'}); toggleStartMenu();">
+         <img class="xp-start-icon" src="assets/UI/pn.png" alt="">
+          <span>Sign Guestbook</span>
+        </div>
+        <div class="xp-start-item" onclick="focusPaintWindow(); toggleStartMenu();">
+          <img class="xp-start-icon" src="assets/UI/paint/mspaint.png" alt="">
+          <span>Paint</span>
+        </div>
+        <div class="xp-start-item" onclick="openAboutModal(); toggleStartMenu();">
+          <img class="xp-start-icon" src="assets/UI/question.png" alt="">
+          <span>About System</span>
+        </div>
+      </div>
+      <div class="xp-start-column xp-start-places">
+        <div class="xp-start-item" onclick="openMyMusic(); toggleStartMenu();">
+          <img class="xp-start-icon" src="assets/UI/music.png" alt="">
+          <span>My Music</span>
+          <span class="xp-start-submenu-arrow" aria-hidden="true">▶</span>
+        </div>
+      </div>
     </div>
-    <div class="xp-start-item" onclick="document.getElementById('gb-form-window').scrollIntoView({behavior:'smooth'}); toggleStartMenu();">
-      <span>Sign Guestbook</span>
+  </div>
+  <div class="xp-start-footer">
+    <div class="xp-start-footer-navigation">
+      <div class="xp-start-item xp-start-go-bottom" onclick="window.scrollTo({top:document.documentElement.scrollHeight, behavior:'smooth'}); toggleStartMenu();">
+        <span class="xp-start-footer-arrow" aria-hidden="true">↓</span>
+        <span>Go To Bottom</span>
+      </div>
+      <div class="xp-start-item xp-start-all-programs" onclick="window.scrollTo({top:0, behavior:'smooth'}); toggleStartMenu();">
+        <span>Back to Top</span>
+        <span class="xp-start-footer-arrow" aria-hidden="true">↑</span>
+      </div>
     </div>
-    <div class="xp-start-item" onclick="openAboutModal(); toggleStartMenu();">
-      <span>About System</span>
+    <div class="xp-start-item xp-start-logoff admin-only-item" onclick="logoutAdmin(); toggleStartMenu();">
+      <img class="xp-start-icon" src="assets/UI/logoff.png" alt="">
+      <span>Log off</span>
     </div>
+  </div>
+</div>
 
-    <!-- ADDED LOG OFF OPTION -->
-    <div class="xp-start-item admin-only-item" onclick="logoutAdmin(); toggleStartMenu();" style="border-top: 1px solid #d0d0d0; margin-top: 4px; padding-top: 6px;">
-      <span style="color: #cc0000; font-weight: bold;">Log Off</span>
+<!-- MY MUSIC MODAL -->
+<div id="my-music-modal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="my-music-title">
+  <div class="window my-music-window">
+    <div class="title-bar">
+      <div class="title-bar-text" id="my-music-title">My Music</div>
+      <div class="title-bar-controls">
+        <button type="button" aria-label="Close" onclick="closeMyMusic()"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <p class="my-music-description">the people's favorite songs:</p>
+      <div class="my-music-table-container">
+        <table class="my-music-table">
+          <thead>
+            <tr><th>Name</th><th>Favorite song</th></tr>
+          </thead>
+          <tbody id="my-music-list" aria-live="polite">
+            <tr><td colspan="2">Loading music...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="my-music-actions">
+        <button type="button" onclick="closeMyMusic()">Close</button>
+      </div>
     </div>
   </div>
 </div>

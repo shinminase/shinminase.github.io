@@ -4,18 +4,24 @@ const SUPABASE_URL = 'https://twvtjoehfbzusmfaisum.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_erf69vfCX7qHMafcXo1FSw_MP_xGrza';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const OWNER_AVATAR_URL = 'https://avatars.githubusercontent.com/u/176790056?s=200&v=4';
+const REPLY_BBCODE_PREFIX = '[[bbcode-v1]]\n';
 
 let activeReplyId = null;
 let activeReplyTable = 'guestbook';
+let entriesLoadVersion = 0;
+let myMusicLoadVersion = 0;
+let paintWindowHighlightTimer = null;
 
+// READ INITIAL PAGE FROM URL HASH (E.G. #PAGE2) IF PRESENT
 function getPageFromHash() {
   const match = window.location.hash.match(/^#page(\d+)$/i);
   return match ? Math.max(1, parseInt(match[1], 10)) : 1;
 }
 
 let currentPage = getPageFromHash();
+let lastGuestbookPage = 1;
 const pageSize = 10;
-let isNewSubmission = false; 
+let isNewSubmission = false; // FLAG TO TRIGGER POPUP ANIMATION FOR NEW SUBMISSIONS
 
 const appDialogQueue = [];
 let activeAppDialog = null;
@@ -143,6 +149,107 @@ window.toggleStartMenu = function() {
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
   }
 }
+
+window.focusPaintWindow = function() {
+  const paintWindow = document.getElementById('oekaki-paint-window');
+  if (!paintWindow) return;
+
+  paintWindow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  paintWindow.classList.remove('paint-window-focus-highlight');
+  void paintWindow.offsetWidth;
+  paintWindow.classList.add('paint-window-focus-highlight');
+
+  if (paintWindowHighlightTimer) clearTimeout(paintWindowHighlightTimer);
+  paintWindowHighlightTimer = setTimeout(() => {
+    paintWindow.classList.remove('paint-window-focus-highlight');
+    paintWindowHighlightTimer = null;
+  }, 800);
+};
+
+window.closeMyMusic = function() {
+  myMusicLoadVersion++;
+  const modal = document.getElementById('my-music-modal');
+  if (modal) modal.style.display = 'none';
+};
+
+window.openMyMusic = async function() {
+  const loadVersion = ++myMusicLoadVersion;
+  const modal = document.getElementById('my-music-modal');
+  const list = document.getElementById('my-music-list');
+  if (!modal || !list) return;
+
+  modal.style.display = 'flex';
+  setMyMusicMessage(list, 'Loading list...');
+
+  const songsByPair = new Map();
+  const batchSize = 500;
+  let offset = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from('guestbook')
+      .select('name, fav_song, created_at')
+      .not('fav_song', 'is', null)
+      .neq('fav_song', '')
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true })
+      .range(offset, offset + batchSize - 1);
+
+    if (loadVersion !== myMusicLoadVersion) return;
+    if (error) {
+      setMyMusicMessage(list, `Error loading music: ${error.message}`);
+      return;
+    }
+    if (!data || data.length === 0) break;
+
+    for (const entry of data) {
+      if (typeof entry.fav_song !== 'string' || !entry.fav_song.trim()) continue;
+      const name = typeof entry.name === 'string' && entry.name.trim()
+        ? entry.name.trim()
+        : 'Anonymous';
+      const key = JSON.stringify([
+        name.replace(/\s+/g, ' ').toLowerCase(),
+        entry.fav_song.trim().replace(/\s+/g, ' ').toLowerCase()
+      ]);
+      const existing = songsByPair.get(key);
+      if (!existing || Date.parse(entry.created_at) < Date.parse(existing.created_at)) {
+        songsByPair.set(key, entry);
+      }
+    }
+    offset += data.length;
+    if (data.length < batchSize) break;
+  }
+
+  const songs = [...songsByPair.values()].sort((a, b) =>
+    Date.parse(b.created_at) - Date.parse(a.created_at));
+  list.innerHTML = '';
+  if (songs.length === 0) {
+    setMyMusicMessage(list, 'No visitors have listed a favorite song yet.');
+    return;
+  }
+
+  for (const entry of songs) {
+    const row = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    const songCell = document.createElement('td');
+    nameCell.textContent = typeof entry.name === 'string' && entry.name.trim()
+      ? entry.name.trim()
+      : 'Anonymous';
+    songCell.textContent = entry.fav_song.trim();
+    row.append(nameCell, songCell);
+    list.appendChild(row);
+  }
+};
+
+function setMyMusicMessage(list, message) {
+  list.innerHTML = '';
+  const row = document.createElement('tr');
+  const cell = document.createElement('td');
+  cell.colSpan = 2;
+  cell.textContent = message;
+  row.appendChild(cell);
+  list.appendChild(row);
+}
+
 window.addEventListener('click', (e) => {
   if (!e.target.closest('.xp-start-menu') && !e.target.closest('.xp-start-btn')) {
     const menu = document.getElementById('xp-start-menu');
@@ -216,6 +323,20 @@ const EMOJI_MAP = {
   ':silly:': '<img src="emoticons/silly.gif" class="custom-emoji" alt="silly">',
   ':uaa:': '<img src="emoticons/uaa.gif" class="custom-emoji" alt="uaa">'
 };
+
+const replyEmojiDropdown = document.getElementById('reply-emoji-dropdown');
+if (replyEmojiDropdown) {
+  for (const code of Object.keys(EMOJI_MAP)) {
+    const imageSource = EMOJI_MAP[code].match(/src="([^"]+)"/);
+    if (!imageSource) continue;
+    const emoji = document.createElement('img');
+    emoji.src = imageSource[1];
+    emoji.alt = code;
+    emoji.title = code;
+    emoji.addEventListener('click', () => window.insertReplyEmoji(code));
+    replyEmojiDropdown.appendChild(emoji);
+  }
+}
 
 window.toggleEmojiDropdown = function() {
   const dd = document.getElementById('emoji-dropdown');
@@ -417,11 +538,15 @@ if (adminPassInput) {
 window.openReplyModal = (id, currentHtml, table = 'guestbook') => {
   activeReplyId = id;
   activeReplyTable = table;
+  const isBbcode = (currentHtml || '').startsWith(REPLY_BBCODE_PREFIX);
   const textarea = document.getElementById('modal-reply-html');
+  const bbcodeMode = document.getElementById('reply-bbcode-mode');
+  if (bbcodeMode) bbcodeMode.checked = isBbcode;
   if (textarea) {
-    textarea.value = currentHtml || '';
+    textarea.value = isBbcode ? currentHtml.slice(REPLY_BBCODE_PREFIX.length) : (currentHtml || '');
     updateReplyPreview(textarea.value);
   }
+  updateReplyMode();
   const modal = document.getElementById('reply-modal');
   if (modal) modal.style.display = 'flex';
 };
@@ -429,8 +554,14 @@ window.openReplyModal = (id, currentHtml, table = 'guestbook') => {
 window.closeReplyModal = () => {
   const modal = document.getElementById('reply-modal');
   if (modal) modal.style.display = 'none';
+  closeReplyToolbarDropdowns();
   const textarea = document.getElementById('modal-reply-html');
   if (textarea) textarea.value = '';
+  const bbcodeMode = document.getElementById('reply-bbcode-mode');
+  if (bbcodeMode) bbcodeMode.checked = false;
+  const imageUrlInput = document.getElementById('reply-image-url');
+  if (imageUrlInput) imageUrlInput.value = '';
+  updateReplyMode();
   const output = document.getElementById('reply-preview-output');
   if (output) {
     output.innerHTML = '(Type something above to preview...)';
@@ -445,7 +576,139 @@ if (replyTextarea) {
   replyTextarea.addEventListener('input', (e) => {
     updateReplyPreview(e.target.value);
   });
+  replyTextarea.addEventListener('paste', (event) => {
+    if (!document.getElementById('reply-bbcode-mode')?.checked) return;
+    const pastedText = event.clipboardData?.getData('text/plain').trim() || '';
+    if (!/^https?:\/\/\S+$/i.test(pastedText)) return;
+    event.preventDefault();
+    insertReplyText(`[img]${pastedText}[/img]`);
+  });
 }
+
+const replyBbcodeMode = document.getElementById('reply-bbcode-mode');
+if (replyBbcodeMode) {
+  replyBbcodeMode.addEventListener('change', () => {
+    updateReplyMode();
+    updateReplyPreview(replyTextarea ? replyTextarea.value : '');
+  });
+}
+
+function updateReplyMode() {
+  const isBbcode = Boolean(document.getElementById('reply-bbcode-mode')?.checked);
+  const title = document.getElementById('reply-modal-title');
+  const inputLabel = document.getElementById('reply-input-label');
+  const textarea = document.getElementById('modal-reply-html');
+  const toolbar = document.getElementById('reply-bbcode-toolbar');
+  if (title) title.textContent = isBbcode ? 'Owner Reply (Basic Text / BBCode)' : 'Owner Reply (HTML Supported)';
+  if (inputLabel) inputLabel.textContent = isBbcode ? 'Type reply (BBCode):' : 'Type custom reply (HTML):';
+  if (toolbar) toolbar.style.display = isBbcode ? 'flex' : 'none';
+  if (textarea) {
+    textarea.placeholder = isBbcode
+      ? 'Plain text...'
+      : 'HTML text...';
+  }
+}
+
+function insertReplyText(text) {
+  const textarea = document.getElementById('modal-reply-html');
+  if (!textarea) return;
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
+  const cursor = start + text.length;
+  textarea.setSelectionRange(cursor, cursor);
+  textarea.focus();
+  updateReplyPreview(textarea.value);
+}
+
+window.insertReplyBbcodeTag = function(startTag, endTag) {
+  closeReplyToolbarDropdowns();
+  const textarea = document.getElementById('modal-reply-html');
+  if (!textarea) return;
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const selectedText = textarea.value.substring(start, end);
+  textarea.value = textarea.value.substring(0, start) + startTag + selectedText + endTag + textarea.value.substring(end);
+  textarea.setSelectionRange(start + startTag.length, start + startTag.length + selectedText.length);
+  textarea.focus();
+  updateReplyPreview(textarea.value);
+};
+
+window.insertReplyColor = function(color) {
+  closeReplyToolbarDropdowns();
+  window.insertReplyBbcodeTag(`[color=${color}]`, '[/color]');
+};
+
+window.openReplyColorPicker = function() {
+  closeReplyToolbarDropdowns();
+  document.getElementById('reply-bbcode-color')?.click();
+};
+
+window.toggleReplyFontDropdown = function() {
+  const dropdown = document.getElementById('reply-font-dropdown');
+  const shouldOpen = dropdown && dropdown.style.display !== 'block';
+  closeReplyToolbarDropdowns();
+  if (dropdown && shouldOpen) dropdown.style.display = 'block';
+};
+
+window.insertReplyFont = function(font) {
+  closeReplyToolbarDropdowns();
+  if (font) window.insertReplyBbcodeTag(`[font=${font}]`, '[/font]');
+};
+
+window.toggleReplySizeDropdown = function() {
+  const dropdown = document.getElementById('reply-size-dropdown');
+  const shouldOpen = dropdown && dropdown.style.display !== 'block';
+  closeReplyToolbarDropdowns();
+  if (dropdown && shouldOpen) dropdown.style.display = 'block';
+};
+
+window.insertReplySize = function(size) {
+  closeReplyToolbarDropdowns();
+  if (size) window.insertReplyBbcodeTag(`[size=${size}]`, '[/size]');
+};
+
+window.toggleReplyEmojiDropdown = function() {
+  const dropdown = document.getElementById('reply-emoji-dropdown');
+  const shouldOpen = dropdown && dropdown.style.display !== 'grid';
+  closeReplyToolbarDropdowns();
+  if (dropdown && shouldOpen) dropdown.style.display = 'grid';
+};
+
+window.insertReplyEmoji = function(code) {
+  closeReplyToolbarDropdowns();
+  if (code) insertReplyText(code);
+};
+
+function closeReplyToolbarDropdowns() {
+  for (const id of ['reply-font-dropdown', 'reply-size-dropdown', 'reply-emoji-dropdown']) {
+    const dropdown = document.getElementById(id);
+    if (dropdown) dropdown.style.display = 'none';
+  }
+}
+
+window.addEventListener('click', (event) => {
+  if (!event.target.closest('#reply-bbcode-toolbar')) closeReplyToolbarDropdowns();
+});
+
+window.insertReplyImageUrl = async function() {
+  closeReplyToolbarDropdowns();
+  const input = document.getElementById('reply-image-url');
+  const imageUrl = input ? input.value.trim() : '';
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(imageUrl);
+  } catch {
+    await showAppAlert('Enter a valid image URL starting with http:// or https://.', 'Invalid image URL');
+    return;
+  }
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    await showAppAlert('Enter a valid image URL starting with http:// or https://.', 'Invalid image URL');
+    return;
+  }
+  insertReplyText(`[img]${imageUrl}[/img]`);
+  input.value = '';
+};
 
 function updateReplyPreview(val) {
   const output = document.getElementById('reply-preview-output');
@@ -455,7 +718,9 @@ function updateReplyPreview(val) {
     output.style.color = '#444';
     output.style.fontStyle = 'italic';
   } else {
-    output.innerHTML = val;
+    output.innerHTML = document.getElementById('reply-bbcode-mode')?.checked
+      ? parseReplyBbcode(val)
+      : val;
     output.style.color = '#000';
     output.style.fontStyle = 'normal';
   }
@@ -463,7 +728,10 @@ function updateReplyPreview(val) {
 
 window.confirmReplySubmit = async () => {
   const textarea = document.getElementById('modal-reply-html');
-  const htmlReply = textarea ? textarea.value : '';
+  const replyText = textarea ? textarea.value : '';
+  const htmlReply = document.getElementById('reply-bbcode-mode')?.checked
+    ? REPLY_BBCODE_PREFIX + replyText
+    : replyText;
   if (activeReplyId) {
     const { error } = await supabase
       .from(activeReplyTable)
@@ -479,6 +747,43 @@ window.confirmReplySubmit = async () => {
   window.closeReplyModal();
 };
 
+function parseReplyBbcode(text) {
+  let safe = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
+    safe = safe.split(code).join(imgTag);
+  }
+  safe = safe.replace(/\[b\]([\s\S]*?)\[\/b\]/gi, '<b>$1</b>');
+  safe = safe.replace(/\[i\]([\s\S]*?)\[\/i\]/gi, '<i>$1</i>');
+  safe = safe.replace(/\[color=([#a-z0-9]+)\]([\s\S]*?)\[\/color\]/gi, (match, color, content) => {
+    const validColor = /^#[0-9a-f]{3,8}$/i.test(color) || /^[a-z]{1,20}$/i.test(color);
+    return validColor ? `<span style="color: ${color};">${content}</span>` : content;
+  });
+  safe = safe.replace(/\[font=([^\]]+)\]([\s\S]*?)\[\/font\]/gi, (match, font, content) => {
+    const validFonts = ['Arial', 'Courier New', 'Georgia', 'Tahoma', 'Times New Roman', 'Verdana', 'Comic Sans MS', 'Papyrus', 'Brush Script MT', 'serif', 'Gaster'];
+    const selectedFont = validFonts.find(option => option.toLowerCase() === font.trim().toLowerCase());
+    return selectedFont ? `<span style="font-family: '${selectedFont}';">${content}</span>` : content;
+  });
+  safe = safe.replace(/\[size=(\d{1,2})px\]([\s\S]*?)\[\/size\]/gi, (match, size, content) => {
+    const pixelSize = Number(size);
+    return pixelSize >= 8 && pixelSize <= 72 ? `<span style="font-size: ${pixelSize}px;">${content}</span>` : content;
+  });
+  safe = safe.replace(/\[img\](https?:\/\/[^\s<>"']+)\[\/img\]/gi, '<img src="$1" alt="image">');
+  return safe.replace(/\n/g, '<br>');
+}
+
+function renderReply(reply) {
+  if (reply.startsWith(REPLY_BBCODE_PREFIX)) {
+    return parseReplyBbcode(reply.slice(REPLY_BBCODE_PREFIX.length));
+  }
+  return reply;
+}
+
 function parseMessageText(text) {
   let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   for (const [code, imgTag] of Object.entries(EMOJI_MAP)) {
@@ -493,10 +798,13 @@ function parseMessageText(text) {
   return safe.replace(/\n/g, '<br>');
 }
 
-window.changePage = function(direction) {
+function navigateToPage(targetPage) {
+  const page = Math.max(1, Math.min(targetPage, lastGuestbookPage));
+  if (page === currentPage) return;
+
   const container = document.getElementById('entries-container');
   const oekakiGallery = document.getElementById('oekaki-gallery');
-  currentPage += direction;
+  currentPage = page;
   
   history.pushState(null, '', `#page${currentPage}`);
   window.scrollTo({ top: 400, behavior: 'smooth' });
@@ -514,6 +822,18 @@ window.changePage = function(direction) {
     loadEntries(true);
   }, 180);
 }
+
+window.changePage = function(direction) {
+  navigateToPage(currentPage + direction);
+};
+
+window.goToFirstPage = function() {
+  navigateToPage(1);
+};
+
+window.goToLastPage = function() {
+  navigateToPage(lastGuestbookPage);
+};
 
 // HANDLE BROWSER BACK/FORWARD NAVIGATION OR DIRECT HASH INPUTS
 window.addEventListener('hashchange', () => {
@@ -539,11 +859,14 @@ window.addEventListener('hashchange', () => {
 });
 
 async function loadEntries(animateTransition = false) {
+  const loadVersion = ++entriesLoadVersion;
   const container = document.getElementById('entries-container');
   const paginationContainer = document.getElementById('pagination-container');
   if (!container) return;
+  showLoadingMessage(container, 'Loading messages...');
 
   const { count, error: countError } = await supabase.from('guestbook').select('*', { count: 'exact', head: true });
+  if (loadVersion !== entriesLoadVersion) return;
   if (countError) {
     container.classList.remove('page-exit');
     container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading count: ${countError.message}</p>`;
@@ -552,6 +875,7 @@ async function loadEntries(animateTransition = false) {
   }
 
   const totalPages = Math.ceil((count || 0) / pageSize) || 1;
+  lastGuestbookPage = totalPages;
   if (currentPage > totalPages) currentPage = totalPages;
   if (currentPage < 1) currentPage = 1;
 
@@ -568,6 +892,7 @@ async function loadEntries(animateTransition = false) {
     .order('created_at', { ascending: false })
     .range(from, to);
 
+  if (loadVersion !== entriesLoadVersion) return;
   if (error) {
     container.classList.remove('page-exit');
     container.innerHTML = `<p style="color:red; text-shadow:1px 1px 0 #fff;">Error loading entries: ${error.message}</p>`;
@@ -637,12 +962,12 @@ async function loadEntries(animateTransition = false) {
         ${entry.reply_html ? `
           <div class="owner-reply">
             <img src="${OWNER_AVATAR_URL}" class="owner-avatar">
-            <div class="reply-content"><span class="reply-prefix">R:</span>${entry.reply_html}</div>
+            <div class="reply-content"><span class="reply-prefix">R:</span>${renderReply(entry.reply_html)}</div>
           </div>
         ` : ''}
 
         <div class="admin-actions">
-          <button class="admin-btn reply-html-btn">Reply HTML</button>
+          <button class="admin-btn reply-html-btn">Reply</button>
           <button class="admin-btn" onclick="deleteEntry('${entry.id}')" style="background:#f2acac;">Delete</button>
         </div>
       </div>
@@ -668,15 +993,28 @@ container.classList.remove('page-exit');
   if (paginationContainer) {
     paginationContainer.innerHTML = `
       <div class="pagination-controls">
+        <button onclick="goToFirstPage()" aria-label="First page" title="First page" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt;&lt;</button>
         <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt; Prev</button>
         <span class="page-indicator">Page ${currentPage} of ${totalPages}</span>
         <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next &gt;&gt;</button>
+        <button onclick="goToLastPage()" aria-label="Last page" title="Last page" ${currentPage === totalPages ? 'disabled' : ''}>&gt;&gt;&gt;</button>
       </div>
     `;
   }
 
   isNewSubmission = false;
   loadOekakiGallery(animateTransition);
+}
+
+function showLoadingMessage(container, message) {
+  container.innerHTML = '';
+  const loadingMessage = document.createElement('p');
+  loadingMessage.className = 'loading-message';
+  loadingMessage.textContent = message;
+  loadingMessage.setAttribute('role', 'status');
+  loadingMessage.setAttribute('aria-live', 'polite');
+  container.appendChild(loadingMessage);
+  return loadingMessage;
 }
 
 const gbForm = document.getElementById('gb-form');
@@ -2819,12 +3157,12 @@ function renderOekakiGalleryItem(item) {
         ${item.reply_html ? `
           <div class="owner-reply" style="margin-top: 8px; padding: 6px 8px;">
             <img src="${OWNER_AVATAR_URL}" class="owner-avatar" style="width: 20px; height: 20px;">
-            <div class="reply-content" style="font-size: 0.85em;"><span class="reply-prefix">R:</span>${item.reply_html}</div>
+            <div class="reply-content" style="font-size: 0.85em;"><span class="reply-prefix">R:</span>${renderReply(item.reply_html)}</div>
           </div>
         ` : ""}
 
         <div class="admin-actions">
-          <button class="admin-btn reply-html-btn">Reply HTML</button>
+          <button class="admin-btn reply-html-btn">Reply</button>
           <button class="admin-btn" onclick="deleteOekaki('${item.id}')" style="background:#f2acac;">Delete</button>
         </div>
       </div>
@@ -2862,6 +3200,7 @@ window.loadOekakiGallery = async function (animateTransition = false) {
   const loadVersion = ++oekakiGalleryLoadVersion;
   const gallery = document.getElementById("oekaki-gallery");
   if (!gallery) return;
+  const loadingMessage = showLoadingMessage(gallery, "Loading images...");
 
   const entries = document.getElementById("entries-container");
   const matchGuestbookHeight = window.matchMedia("(min-width: 861px)").matches;
@@ -2880,7 +3219,6 @@ window.loadOekakiGallery = async function (animateTransition = false) {
     nextOffset = (currentPage - 1) * oekakiPageSize;
   }
 
-  gallery.innerHTML = "";
   let displayedCount = 0;
   let reachedEnd = false;
   let reachedHeight = false;
@@ -2938,6 +3276,8 @@ window.loadOekakiGallery = async function (animateTransition = false) {
 
     if (data.length < batchSize) reachedEnd = true;
   }
+
+  loadingMessage.remove();
 
   if (displayedCount === 0 && !failed) {
     gallery.innerHTML = `<p style="color: #fff; text-shadow: 1px 1px 2px #000; text-align: center; font-size: 0.85em;">No drawings on this page.</p>`;
