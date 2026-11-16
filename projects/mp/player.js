@@ -109,6 +109,18 @@ const PLAYLIST = [
         requesterHandle: "REVERISTCALICO",
         requesterUrl: "https://github.com/REVERISTCALICO"
     }
+	,
+			  			   {
+        title: "Stare Like You'll Stay",
+        artist: "Circa Survive",
+        album: "Blue Sky Noise",
+        cover: "https://i.scdn.co/image/ab67616d0000b273a08039493aa600896baadd3f",
+        src: "songs/Stare Like You'll Stay - Circa Survive.mp3",
+        isVideo: false,
+        requesterName: "gackt",
+        requesterHandle: "rickgriimes",
+        requesterUrl: "https://github.com/rickgriimes"
+    }
 	
 
 ];
